@@ -3,18 +3,14 @@
 }
 
 <h2>Register</h2>
-<form method="post" asp-controller="Home" asp-action="Register">
+<form method="post" asp-controller="Home" asp-action="Index">
     <div asp-validation-summary="ModelOnly"></div>
     <div>
-        <label asp-for="Email"></label><br />
-        <input asp-for="Email" />
-        <span asp-validation-for="Email"></span>
+        <label>Name</label><br />
+        <input type="text" name="userName" />
+       
     </div>
-    <div>
-        <label asp-for="PasswordHash"></label><br />
-        <input asp-for="PasswordHash" />
-        <span asp-validation-for="PasswordHash"></span>
-    </div>
+    
     <div>
         <input type="submit" value="Register" />
     </div>

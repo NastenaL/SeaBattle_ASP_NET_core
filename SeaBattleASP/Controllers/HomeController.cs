@@ -1,19 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using SeaBattleASP.Models;
-
-namespace SeaBattleASP.Controllers
+﻿namespace SeaBattleASP.Controllers
 {
+    using System.Diagnostics;
+    using Microsoft.AspNetCore.Mvc;
+    using SeaBattleASP.Models;
+
     public class HomeController : Controller
     {
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
+
+        [HttpPost]
+        public IActionResult Index(string userName)
+        {
+            Player player = new Player
+            {
+                Name = userName
+            };
+            
+            return this.RedirectToAction("Index", "Game");
+        }
+
 
         public IActionResult About()
         {
