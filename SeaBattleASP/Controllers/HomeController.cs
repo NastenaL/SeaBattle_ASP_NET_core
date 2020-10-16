@@ -15,11 +15,8 @@
         [HttpPost]
         public IActionResult Index(string userName)
         {
-            Player player = new Player
-            {
-                Name = userName
-            };
-            
+            TempData["PlayerName"] = userName;
+
             return this.RedirectToAction("Index", "Game");
         }
 
