@@ -4,9 +4,19 @@
     ViewData["Title"] = "Game Page";
 }
 
+<h2>@ViewData["PlayerName"].</h2>
 <table class="table">
     @foreach (Player p in Model)
     {
-        <tr><td>@p.Id</td><td>@p.Name</td><td><button >Play</button></td></tr>
+        <tr>
+            <td>@p.Id</td>
+            <td>@p.Name</td>
+            <td>
+                @using (Html.BeginForm("Index", "Game", FormMethod.Post))
+                {
+                    <button>PLAY</button>
+                }
+            </td>
+        </tr>
     }
 </table>
