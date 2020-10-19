@@ -5,7 +5,7 @@
     using System.Collections.Generic;
     using System.Drawing;
 
-    public class Rules
+    public static class Rules
     {
         public static int FieldHeight = 10;
         public static int FieldWidth = 10;
@@ -32,6 +32,7 @@
             {
                 decks.Add(new Deck( decks.Count+1, Enums.DeckState.Normal, decks.Count == 0? true:false));
             }
+            ship.Range = range;
             ship.Decks = decks;
          
             ship.Direction = GenerateDirection(range);

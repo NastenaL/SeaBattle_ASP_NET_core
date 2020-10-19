@@ -3,6 +3,7 @@
     using System.Diagnostics;
     using Microsoft.AspNetCore.Mvc;
     using SeaBattleASP.Models;
+    using SeaBattleASP.Models.Constants;
 
     public class HomeController : Controller
     {
@@ -20,24 +21,14 @@
             return this.RedirectToAction("Index", "Game");
         }
 
-
-        public IActionResult About()
+        [HttpGet]
+        public IActionResult Setting()
         {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
+           
+            ViewData["Width"] = Rules.FieldWidth;
+            ViewData["Height"] = Rules.FieldHeight;
+            var ships = Rules.CreateShips();
+            return View(ships);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
