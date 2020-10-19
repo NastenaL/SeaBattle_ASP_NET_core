@@ -31,6 +31,12 @@
                 PlayingField = playingField
             };
            
+            return this.RedirectToAction("StartGame", "Game", game.Id);
+        }
+
+        [HttpGet]
+        public IActionResult StartGame()
+        {
             return View();
         }
 
