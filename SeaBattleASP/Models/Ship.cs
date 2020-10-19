@@ -7,7 +7,6 @@
     public abstract class Ship : IRepairable, IFireable
     {
         public int Id { get; set; }
-        public int Lenght { get; set; }
         public int Range { get; set; }
         public Point Direction { get; set; }
         public Player Player { get; set; }

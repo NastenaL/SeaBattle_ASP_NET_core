@@ -2,6 +2,7 @@
 {
     using Microsoft.AspNetCore.Mvc;
     using SeaBattleASP.Models;
+    using SeaBattleASP.Models.Constants;
     using System.Collections.Generic;
 
     public class GameController : Controller
@@ -10,11 +11,12 @@
         {
             Players = new List<Player>();
             Games = new List<Game>();
+            Ships = new List<Ship>();
         }
 
         List<Player> Players { get; set; }
         List<Game> Games { get; set; }
-
+        List<Ship> Ships { get; set; }
        
         [HttpPost]
         public IActionResult Index(Player Player2)
@@ -38,6 +40,16 @@
         public IActionResult StartGame()
         {
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult StartGame(string action)
+        {
+            if (action == "addShips")
+            {
+                Ships = Rules.CreateShips();
+            }
+            return View(Ships);
         }
 
         [HttpGet]

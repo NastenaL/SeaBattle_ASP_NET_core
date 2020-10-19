@@ -1,19 +1,44 @@
 ﻿@{
-    ViewData["Title"] = "Game Page";
+    ViewData["Title"] = "StartGame Page";
 }
 
-<script src="~/js/site.js"></script>
-<section>
-    <div id="leftFieldText">
-        <p>Игрок1</p>
-        <div id="leftText"></div>
-        <div id="leftField">
-        </div><div id="leftTextLeft"></div>
+    <section>
+        <div id="leftFieldText">
+            <p>Игрок1</p>
+            <div id="leftText"></div>
+            <div id="leftField">
+                <div id="leftShade">
+                </div>
+            </div><div id="leftTextLeft"></div>
+        </div>
+        <div id="rightFieldText">
+            <p>Игрок2</p>
+            <div id="rightText"></div>
+            <div id="rightField">
+                <div id="rightShade">
+                </div>
+            </div><div id="rightTextLeft"></div>
+        </div>
+    </section>
+
+<button id="reload">TEST</button>
+<button type="button" name="btnAddShips" id="btnAddShips">Add Ships</button>
+<button value="StartGame">Start game</button>
+
+<div class="modal fade" id="ModalPopUp" role="dialog">
+    <div class="modal-dialog err-pop" style="">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="DivClose" type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align:center;">
+                ships
+                @using (Html.BeginForm("StartGame", "Game", FormMethod.Post))
+                {
+                    <button name="action" value="addShips">Add Ships</button>
+                }
+
+            </div>
+        </div>
     </div>
-    <div id="rightFieldText">
-        <p>Игрок2</p>
-        <div id="rightText"></div>
-        <div id="rightField">
-        </div><div id="rightTextLeft"></div>
-    </div>
-</section>
+</div>

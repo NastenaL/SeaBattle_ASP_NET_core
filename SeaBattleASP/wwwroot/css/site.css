@@ -93,3 +93,13 @@ section div {
     .cell:hover {
         opacity: 0.5;
     }
+
+.shipColor {
+    content: '';
+    display: block;
+    position: relative;
+    width: 30px;
+    height: 30px;
+    background-color: #000000;
+    margin: 0;
+}
