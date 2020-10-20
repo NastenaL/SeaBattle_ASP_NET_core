@@ -1,14 +1,19 @@
 ﻿namespace SeaBattleASP.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using SeaBattleASP.Helpers;
     using SeaBattleASP.Models;
     using SeaBattleASP.Models.Constants;
     using System.Collections.Generic;
 
     public class GameController : Controller
     {
-        public GameController()
+        private ApplicationContext db;
+
+        public GameController(ApplicationContext context)
         {
+            db = context;
             Players = new List<Player>();
             Games = new List<Game>();
             Ships = new List<Ship>();
@@ -59,15 +64,7 @@
         public IActionResult Index()
         {
             ViewBag.Message = TempData["PlayerName"];
-            if(!string.IsNullOrEmpty(ViewBag.Message))
-            {
-                Player player = new Player
-                {
-                    Id = Players.Count + 1,
-                    Name = ViewBag.Message
-                };
-                Players.Add(player);
-            }    
+            Players = db.Players.ToListAsync<Player>().Result;
             return View(Players);
         }
     }

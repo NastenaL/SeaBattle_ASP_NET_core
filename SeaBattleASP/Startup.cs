@@ -4,8 +4,10 @@
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using SeaBattleASP.Helpers;
 
     public class Startup
     {
@@ -26,6 +28,10 @@
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            string connection = Configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<ApplicationContext>(options =>
+                options.UseSqlServer(connection));
+         
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

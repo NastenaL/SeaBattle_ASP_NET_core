@@ -2,11 +2,19 @@
 {
     using System.Diagnostics;
     using Microsoft.AspNetCore.Mvc;
+    using SeaBattleASP.Helpers;
     using SeaBattleASP.Models;
     using SeaBattleASP.Models.Constants;
 
     public class HomeController : Controller
     {
+        private ApplicationContext db;
+
+        public HomeController(ApplicationContext context)
+        {
+            db = context;
+        }
+
         [HttpGet]
         public IActionResult Index()
         {
@@ -17,6 +25,11 @@
         public IActionResult Index(string userName)
         {
             TempData["PlayerName"] = userName;
+            Player player = new Player();
+         
+            player.Name = userName;
+            db.Players.Add(player);
+            db.SaveChanges();
 
             return this.RedirectToAction("Index", "Game");
         }
