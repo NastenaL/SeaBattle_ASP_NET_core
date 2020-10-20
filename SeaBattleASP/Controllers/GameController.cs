@@ -39,6 +39,9 @@
         [HttpGet]
         public IActionResult StartGame()
         {
+            ViewData["Width"] = Rules.FieldWidth;
+            ViewData["Height"] = Rules.FieldHeight;
+            
             return View();
         }
 

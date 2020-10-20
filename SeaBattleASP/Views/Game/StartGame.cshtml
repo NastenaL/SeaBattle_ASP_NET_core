@@ -2,24 +2,29 @@
     ViewData["Title"] = "StartGame Page";
 }
 
-    <section>
-        <div id="leftFieldText">
-            <p>Игрок1</p>
-            <div id="leftText"></div>
-            <div id="leftField">
-                <div id="leftShade">
-                </div>
-            </div><div id="leftTextLeft"></div>
-        </div>
-        <div id="rightFieldText">
-            <p>Игрок2</p>
-            <div id="rightText"></div>
-            <div id="rightField">
-                <div id="rightShade">
-                </div>
-            </div><div id="rightTextLeft"></div>
-        </div>
-    </section>
+<script type="text/javascript">
+    var width = '@ViewData["Width"]';
+    var height = '@ViewData["Height"]';
+</script>
+
+<section>
+    <div id="leftFieldText">
+        <p>Игрок1</p>
+        <div id="leftText"></div>
+        <div id="leftField">
+            <div id="leftShade">
+            </div>
+        </div><div id="leftTextLeft"></div>
+    </div>
+    <div id="rightFieldText">
+        <p>Игрок2</p>
+        <div id="rightText"></div>
+        <div id="rightField">
+            <div id="rightShade">
+            </div>
+        </div><div id="rightTextLeft"></div>
+    </div>
+</section>
 
 <button id="reload">TEST</button>
 <button type="button" name="btnAddShips" id="btnAddShips">Add Ships</button>
