@@ -2,11 +2,13 @@
 {
     using SeaBattleASP.Models.Constants;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public class PlayingField
     {
         public int Id { get; set; }
-        Dictionary<Cell, Ship> Ships { get; set; }
+        [NotMapped]
+        public Dictionary<Cell, Deck> Ships { get; set; }
         public int Width { get; set; }
         public int Heigth {get; set;}
 

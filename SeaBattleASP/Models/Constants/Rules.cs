@@ -58,8 +58,11 @@
         public static List<Ship> CreateShips()
         {
            var a = CreateShip(4, ShipType.Auxiliary);
+           a.Id = 1;
            var b = CreateShip(3, ShipType.Military);
+           b.Id = 2;
            var c = CreateShip(3, ShipType.Mix);
+           c.Id = 3;
             List<Ship> ships = new List<Ship>
             {
                 a,

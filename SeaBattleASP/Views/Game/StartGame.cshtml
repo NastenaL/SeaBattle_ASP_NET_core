@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<SeaBattleASP.Models.Ship>
+
+@{
     ViewData["Title"] = "StartGame Page";
 }
 
@@ -26,7 +28,6 @@
     </div>
 </section>
 
-<button id="reload">TEST</button>
 <button type="button" name="btnAddShips" id="btnAddShips">Add Ships</button>
 <button value="StartGame">Start game</button>
 
@@ -37,12 +38,20 @@
                 <button id="DivClose" type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body" style="text-align:center;">
-                ships
-                @using (Html.BeginForm("StartGame", "Game", FormMethod.Post))
-                {
-                    <button name="action" value="addShips">Add Ships</button>
-                }
-
+                 <table class="table">
+                     @foreach (Ship p in Model)
+                     {
+                           <tr>
+                               <td>@p.Id</td>
+                               <td>@p.Range</td>
+                               <td>@p.GetType()</td>
+                               @using (Html.BeginForm("AddShipToField", "Game", new { Id = @p.Id }, FormMethod.Post))
+                               {
+                                   <td><button>Select</button></td>
+                               }
+                           </tr>
+                     }
+                 </table>
             </div>
         </div>
     </div>
