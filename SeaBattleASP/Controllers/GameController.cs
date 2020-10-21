@@ -33,11 +33,11 @@
         public IActionResult AddShipToField(int id)
         {
             var ship = DefaultShips.Find(i => i.Id == id);
+            Dictionary<Cell, Deck> shipCoordinates = new Dictionary<Cell, Deck>();
             if(ship != null)
             {
                 PlayingField playingField = new PlayingField();
-                var dd = GetCoordinatesForShip(ship);
-
+                shipCoordinates = GetCoordinatesForShip(ship);
             }
             return RedirectToAction("StartGame");
         }
