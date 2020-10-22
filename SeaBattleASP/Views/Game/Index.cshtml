@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SeaBattleASP.Models.Player>
+﻿@model SeaBattleASP.Models.MapModel
 
 @{
     ViewData["Title"] = "Game Page";
@@ -6,7 +6,7 @@
 
 <h2>@ViewData["PlayerName"].</h2>
 <table class="table">
-    @foreach (Player p in Model)
+    @foreach (Player p in Model.Players)
     {
         <tr>
             <td>@p.Id</td>

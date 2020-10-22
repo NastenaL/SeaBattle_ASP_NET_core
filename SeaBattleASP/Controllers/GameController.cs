@@ -17,29 +17,32 @@
         public GameController(ApplicationContext context)
         {
             db = context;
-            Players = new List<Player>();
             Games = new List<Game>();
-            DefaultShips = new List<Ship>();
-            DefaultShips = Rules.CreateShips();
+            model = new MapModel
+            {
+                Ships = Rules.CreateShips()
+            };
         }
 
-        List<Player> Players { get; set; }
         List<Game> Games { get; set; }
-        List<Ship> DefaultShips { get; set; }
 
-      
+        MapModel model { get; set; }
 
         [HttpPost]
         public IActionResult AddShipToField(int id)
         {
-            var ship = DefaultShips.Find(i => i.Id == id);
+            var ship = model.Ships.Find(i => i.Id == id);
             Dictionary<Cell, Deck> shipCoordinates = new Dictionary<Cell, Deck>();
             if(ship != null)
             {
                 PlayingField playingField = new PlayingField();
                 shipCoordinates = GetCoordinatesForShip(ship);
+            }          
+           foreach(var keyValuePair in shipCoordinates)
+            {
+                model.Coord.Add(keyValuePair.Key);
             }
-            return RedirectToAction("StartGame");
+            return View("StartGame", model);
         }
 
         private Dictionary<Cell, Deck> GetCoordinatesForShip(Ship ship)
@@ -81,14 +84,14 @@
             Game game = new Game
             {
                 Id = Games.Count + 1,
-                Player1 = Players.Find(p => p.Name == ViewBag.Message),
+                Player1 = model.Players.Find(p => p.Name == ViewBag.Message),
                 Player2 = Player2,
                 PlayingField = playingField
             };
 
             db.Games.Add(game);
            // db.SaveChanges();
-            return this.RedirectToAction("StartGame", "Game", game.Id);
+            return this.RedirectToAction("StartGame", "Game");
         }
 
         [HttpGet]
@@ -97,7 +100,7 @@
             ViewData["Width"] = Rules.FieldWidth;
             ViewData["Height"] = Rules.FieldHeight;
             
-            return View(DefaultShips);
+            return View(model);
         }
 
         [HttpPost]
@@ -106,15 +109,15 @@
             if (action == "addShips")
             { 
             }
-            return View(DefaultShips);
+            return View(model);
         }
 
         [HttpGet]
         public IActionResult Index()
         {
             ViewBag.Message = TempData["PlayerName"];
-            Players = db.Players.ToListAsync<Player>().Result;
-            return View(Players);
+            model.Players = db.Players.ToListAsync<Player>().Result;
+            return View(model);
         }
     }
 }

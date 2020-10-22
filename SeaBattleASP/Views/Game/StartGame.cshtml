@@ -1,60 +1,61 @@
-﻿@model IEnumerable<SeaBattleASP.Models.Ship>
+﻿@model SeaBattleASP.Models.MapModel
 
-@{
-    ViewData["Title"] = "StartGame Page";
-}
+    @{
+        ViewData["Title"] = "StartGame Page";
+    }
 
-<script type="text/javascript">
-    var width = '@ViewData["Width"]';
-    var height = '@ViewData["Height"]';
-    var points = [{ x: 3, y: 1 }, {x: 3, y:2}]
-</script>
+    <script type="text/javascript">
+        var width = '@ViewData["Width"]';
+        var height = '@ViewData["Height"]';
+       // var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+        var points = [{ x: 3, y: 1 }, {x: 3, y:2}]//serializer.Serialize(Model.Coord.Coordinate);
+    </script>
 
-<section>
-    <div id="leftFieldText">
-        <p>Игрок1</p>
-        <div id="leftText"></div>
-        <div id="leftField">
-            <div id="leftShade">
-            </div>
-        </div><div id="leftTextLeft"></div>
-    </div>
-    <div id="rightFieldText">
-        <p>Игрок2</p>
-        <div id="rightText"></div>
-        <div id="rightField">
-            <div id="rightShade">
-            </div>
-        </div><div id="rightTextLeft"></div>
-    </div>
-</section>
+    <section>
+        <div id="leftFieldText">
+            <p>Игрок1</p>
+            <div id="leftText"></div>
+            <div id="leftField">
+                <div id="leftShade">
+                </div>
+            </div><div id="leftTextLeft"></div>
+        </div>
+        <div id="rightFieldText">
+            <p>Игрок2</p>
+            <div id="rightText"></div>
+            <div id="rightField">
+                <div id="rightShade">
+                </div>
+            </div><div id="rightTextLeft"></div>
+        </div>
+    </section>
 
-<button id="reload">PAINT</button>
-<button type="button" name="btnAddShips" id="btnAddShips">Add Ships</button>
-<button value="StartGame">Start game</button>
+    <button id="reload">PAINT</button>
+    <button type="button" name="btnAddShips" id="btnAddShips">Add Ships</button>
+    <button value="StartGame">Start game</button>
 
-<div class="modal fade" id="ModalPopUp" role="dialog">
-    <div class="modal-dialog err-pop" style="">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button id="DivClose" type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body" style="text-align:center;">
-                 <table class="table">
-                     @foreach (Ship p in Model)
-                     {
-                           <tr>
-                               <td>@p.Id</td>
-                               <td>@p.Range</td>
-                               <td>@p.GetType()</td>
-                               @using (Html.BeginForm("AddShipToField", "Game", new { Id = @p.Id }, FormMethod.Post))
-                               {
-                                   <td><button>Select</button></td>
-                               }
-                           </tr>
-                     }
-                 </table>
+    <div class="modal fade" id="ModalPopUp" role="dialog">
+        <div class="modal-dialog err-pop" style="">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button id="DivClose" type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body" style="text-align:center;">
+                    <table class="table">
+                        @foreach (Ship p in Model.Ships)
+                        {
+                            <tr>
+                                <td>@p.Id</td>
+                                <td>@p.Range</td>
+                                <td>@p.GetType()</td>
+                                @using (Html.BeginForm("AddShipToField", "Game", new { Id = @p.Id }, FormMethod.Post))
+                                {
+                                    <td><button>Select</button></td>
+                                }
+                            </tr>
+                        }
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
