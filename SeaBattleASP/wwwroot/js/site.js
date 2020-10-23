@@ -23,13 +23,25 @@ function emptyCellsToField(field) {
     }
 };
 
-$('#reload').click(function () {//по клику создается поле боя
-    emptyCellsToField('#leftField');//очищается левое поле
-
-    var len = points.length;
-    for (var i = 0; i < len; i++) {
-        addShipPart(points[i], '#leftField');
+$('#reload').click(function () {
+    var convertedPoints = [];
+    for (var i = 0; i < points.length; i++) {
+        convertedPoints[i] = {};
+        [convertedPoints[i].x, convertedPoints[i].y] = points[i].Coordinate.split(',').filter(c => c !== '').map(c => Number(c));
     }
+
+    $.ajax({
+        type: 'POST',
+        url: '/Game/AddShipToField',
+        success: function () {
+
+            emptyCellsToField('#leftField');
+            var len = convertedPoints.length;
+            for (var i = 0; i < len; i++) {
+                addShipPart(convertedPoints[i], '#leftField');
+            }  
+        },
+    });
 });
 
 function addShipPart(point, field) {

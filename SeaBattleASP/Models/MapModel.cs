@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-
-namespace SeaBattleASP.Models
+﻿namespace SeaBattleASP.Models
 {
+    using System.Collections.Generic;
 
     public class MapModel
     {
