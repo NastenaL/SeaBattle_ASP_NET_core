@@ -12,7 +12,9 @@
         }
 
         public int Id { get; set; }
+
         public DeckState State { get; set; }
+
         public bool IsHead { get; set; }
     }
 }

@@ -32,7 +32,6 @@
             services.AddDbContext<ApplicationContext>(options =>
                 options.UseSqlServer(connection));
          
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

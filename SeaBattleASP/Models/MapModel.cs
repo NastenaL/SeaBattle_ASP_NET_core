@@ -5,6 +5,9 @@
 
     public class MapModel
     {
+        public int width;
+        public int height;
+
         public MapModel()
         {
             Coord = new List<Cell>();
@@ -14,10 +17,10 @@
             height = Rules.FieldHeight;
         }
 
-        public int width;
-        public int height;
         public List<Cell> Coord { get; set; }
+
         public List<Player> Players { get; set; }
+
         public List<Ship> Ships { get; set; }
     }
 }

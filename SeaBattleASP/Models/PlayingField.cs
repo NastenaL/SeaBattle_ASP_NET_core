@@ -7,9 +7,12 @@
     public class PlayingField
     {
         public int Id { get; set; }
+
         [NotMapped]
         public Dictionary<Cell, Deck> Ships { get; set; }
+
         public int Width { get; set; }
+
         public int Heigth {get; set;}
 
         public PlayingField CreateField()

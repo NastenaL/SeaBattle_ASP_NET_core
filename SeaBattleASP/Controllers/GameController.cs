@@ -37,11 +37,13 @@
             {
                 PlayingField playingField = new PlayingField();
                 shipCoordinates = GetCoordinatesForShip(ship);
-            }          
+            }   
+            
            foreach(var keyValuePair in shipCoordinates)
             {
                 model.Coord.Add(keyValuePair.Key);
             }
+
             return Json(model);
         }
 
@@ -71,6 +73,7 @@
                 result.Clear();
                 result = GetCoordinatesForShip(ship);
             }
+
             return result;
         }
 
@@ -109,7 +112,7 @@
             if (action == "addShips")
             { 
             }
-            return View(model);
+            return View();
         }
 
         [HttpGet]

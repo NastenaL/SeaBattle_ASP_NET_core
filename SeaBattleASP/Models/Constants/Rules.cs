@@ -32,6 +32,7 @@
             {
                 decks.Add(new Deck( decks.Count+1, Enums.DeckState.Normal, decks.Count == 0? true:false));
             }
+
             ship.Range = range;
             ship.Decks = decks;
          
@@ -52,6 +53,7 @@
             {
                 GenerateDirection(range);
             }
+
             return shipDirection;
         }
 
@@ -70,7 +72,6 @@
                 c
             };
             return ships;
-        }
-       
+        } 
     }
 }

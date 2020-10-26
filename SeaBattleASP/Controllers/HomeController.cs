@@ -37,7 +37,6 @@
         [HttpGet]
         public IActionResult Setting()
         {
-           
             ViewData["Width"] = Rules.FieldWidth;
             ViewData["Height"] = Rules.FieldHeight;
             var ships = Rules.CreateShips();

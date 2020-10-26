@@ -4,12 +4,10 @@
     {
         public override void Fire()
         {
-
         }
 
         public override void Repair()
         {
-
         }
     }
 }

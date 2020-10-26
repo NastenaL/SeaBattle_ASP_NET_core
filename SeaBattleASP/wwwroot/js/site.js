@@ -29,22 +29,30 @@ function selectShip(id) {
         url: '/Game/AddShipToField',
         data: { id: id },
         success: function (points) {
-            var convertedPoints = [];
-            var cell = points.coord;
-            for (var i = 0; i < points.coord.length; i++) {
-                convertedPoints[i] = {};
-                [convertedPoints[i].x, convertedPoints[i].y] = cell[i].coordinate.split(',').filter(c => c !== '').map(c => Number(c));
-            }
-            emptyCellsToField('#leftField');
-            var len = points.coord.length;
-            for (var i = 0; i < len; i++) {
-                addShipPart(convertedPoints[i], '#leftField');
-            }  
+            var convertedPoints = getCellPoint(points);
+            paintShip(convertedPoints);
         },
     });
 };
 
-function addShipPart(point, field) {
+function getCellPoint(points) {
+    var convertedPoints = [];
+    var cell = points.coord;
+    for (var i = 0; i < points.coord.length; i++) {
+        convertedPoints[i] = {};
+        [convertedPoints[i].x, convertedPoints[i].y] = cell[i].coordinate.split(',').filter(c => c !== '').map(c => Number(c));
+    }
+    return convertedPoints;
+}
+
+function paintShip(convertedPoints) {
+    var len = convertedPoints.length;
+    for (var i = 0; i < len; i++) {
+        paintDeckShip(convertedPoints[i], '#leftField');
+    }
+}
+
+function paintDeckShip(point, field) {
     
     $(field + ' #cell' + point.x + point.y).removeClass('shipColor cellColor').addClass('shipColor');
     $(field + ' #cell' + point.x + point.y).addClass('ship');
