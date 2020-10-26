@@ -42,7 +42,7 @@
             {
                 model.Coord.Add(keyValuePair.Key);
             }
-            return View("StartGame", model);
+            return Json(model);
         }
 
         private Dictionary<Cell, Deck> GetCoordinatesForShip(Ship ship)

@@ -23,26 +23,26 @@ function emptyCellsToField(field) {
     }
 };
 
-$('#reload').click(function () {
-    var convertedPoints = [];
-    for (var i = 0; i < points.length; i++) {
-        convertedPoints[i] = {};
-        [convertedPoints[i].x, convertedPoints[i].y] = points[i].Coordinate.split(',').filter(c => c !== '').map(c => Number(c));
-    }
-
+function selectShip(id) {
     $.ajax({
         type: 'POST',
         url: '/Game/AddShipToField',
-        success: function () {
-
+        data: { id: id },
+        success: function (points) {
+            var convertedPoints = [];
+            var cell = points.coord;
+            for (var i = 0; i < points.coord.length; i++) {
+                convertedPoints[i] = {};
+                [convertedPoints[i].x, convertedPoints[i].y] = cell[i].coordinate.split(',').filter(c => c !== '').map(c => Number(c));
+            }
             emptyCellsToField('#leftField');
-            var len = convertedPoints.length;
+            var len = points.coord.length;
             for (var i = 0; i < len; i++) {
                 addShipPart(convertedPoints[i], '#leftField');
             }  
         },
     });
-});
+};
 
 function addShipPart(point, field) {
     
@@ -60,16 +60,3 @@ addTextToPositioning('right');
 $("#btnAddShips").click(function () {
     $('#ModalPopUp').modal('show');
 })
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -5,9 +5,8 @@
 }
 
 <script type="text/javascript">
-        var width = '@ViewData["Width"]';
-        var height = '@ViewData["Height"]';
-    var points = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Coord));
+    var width = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.width));
+    var height = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.height));
 </script>
 
 <section>
@@ -42,12 +41,12 @@
                 <table class="table">
                     @foreach (Ship p in Model.Ships)
                     {
-                    <tr>
-                        <td>@p.Id</td>
-                        <td>@p.Range</td>
-                        <td>@p.GetType()</td>
-                            <td><button id="reload">Select</button></td>
-                    </tr>
+                        <tr>
+                            <td>@p.Id</td>
+                            <td>@p.Range</td>
+                            <td>@p.GetType()</td>
+                            <td><button onclick="return selectShip(@p.Id)">Select</button></td>
+                        </tr>
                     }
                 </table>
             </div>
