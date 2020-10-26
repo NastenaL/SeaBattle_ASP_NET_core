@@ -12,13 +12,18 @@ function addTextToPositioning(id) {
     }
 }
 
+function getCursorCoordinate(x,y) {
+    console.log("x = ", x);
+    console.log("y = ", y);
+}
+
 // функция заполняет поле элементами span
 // входной параметр - поля(левое или правое)
 function emptyCellsToField(field) {
     $(field).empty();
     for (var i = 0; i < width; i++) {
         for (var j = 0; j < height; j++) {
-            $(field).append('<span class="cell cellColor" id=cell' + i + j + '  oncontextmenu="blocker(' + i + j + ');return false" ></span>');
+            $(field).append('<span onclick="return getCursorCoordinate('+i+','+j+')" class="cell cellColor" id=cell' + i + j + '  oncontextmenu="blocker(' + i + j + ');return false" ></span>');
         }     
     }
 };
