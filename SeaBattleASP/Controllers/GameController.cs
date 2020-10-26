@@ -52,6 +52,20 @@
 
             return Json(model);
         }
+        
+        [HttpPost]
+        public IActionResult SelectShip(int x, int y)
+        {
+            foreach(Cell p in playingField.Ships.Keys)
+            {
+                if(p.Coordinate.X == x && p.Coordinate.Y == y)
+                {
+                    // select ship
+                }
+            }
+            
+            return Json(x);
+        }
 
         private Dictionary<Cell, Deck> GetCoordinatesForShip(Ship ship)
         {

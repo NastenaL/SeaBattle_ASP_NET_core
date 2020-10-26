@@ -15,7 +15,17 @@ function addTextToPositioning(id) {
 function getCursorCoordinate(x,y) {
     console.log("x = ", x);
     console.log("y = ", y);
+
+    $.ajax({
+        type: 'POST',
+        url: '/Game/SelectShip',
+        data: { x: x, y:y },
+        success: function (result) {
+           
+        },
+    });
 }
+
 
 // функция заполняет поле элементами span
 // входной параметр - поля(левое или правое)
