@@ -24,6 +24,9 @@ function emptyCellsToField(field) {
 };
 
 function selectShip(id) {
+    var element = document.getElementById(id);
+    element.style.display = 'none';
+
     $.ajax({
         type: 'POST',
         url: '/Game/AddShipToField',

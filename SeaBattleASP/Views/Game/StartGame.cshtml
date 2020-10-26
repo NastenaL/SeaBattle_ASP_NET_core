@@ -45,7 +45,7 @@
                             <td>@p.Id</td>
                             <td>@p.Range</td>
                             <td>@p.GetType()</td>
-                            <td><button onclick="return selectShip(@p.Id)">Select</button></td>
+                            <td><button id="@p.Id" onclick="return selectShip(@p.Id)">Select</button></td>
                         </tr>
                     }
                 </table>

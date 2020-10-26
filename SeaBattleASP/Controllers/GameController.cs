@@ -40,7 +40,7 @@
             Dictionary<Cell, Deck> shipCoordinates = new Dictionary<Cell, Deck>();
             if(ship != null)
             {
-               
+                ship.IsSelectedShip = true;
                 shipCoordinates = GetCoordinatesForShip(ship);
              //   playingField.Ships = shipCoordinates;
             }   
