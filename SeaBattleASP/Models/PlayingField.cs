@@ -6,6 +6,10 @@
 
     public class PlayingField
     {
+        public PlayingField()
+        {
+            Ships = new Dictionary<Cell, Deck>();
+        }
         public int Id { get; set; }
 
         [NotMapped]

@@ -16,6 +16,8 @@
 
         public List<Deck> Decks { get; set; }
 
+        public bool IsSelectedShip { get; set; }
+
         public abstract void Fire();
 
         public void Move()

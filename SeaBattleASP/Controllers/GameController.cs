@@ -9,6 +9,7 @@
     using System;
     using System.Collections.Generic;
     using System.Drawing;
+    using System.Linq;
 
     public class GameController : Controller
     {
@@ -22,8 +23,12 @@
             {
                 Ships = Rules.CreateShips()
             };
-        }
 
+            playingField = new PlayingField();
+        }
+        PlayingField playingField { get; set; }
+
+        readonly Array shipDirections = Enum.GetValues(typeof(ShipDirection));
         List<Game> Games { get; set; }
 
         MapModel model { get; set; }
@@ -35,8 +40,9 @@
             Dictionary<Cell, Deck> shipCoordinates = new Dictionary<Cell, Deck>();
             if(ship != null)
             {
-                PlayingField playingField = new PlayingField();
+               
                 shipCoordinates = GetCoordinatesForShip(ship);
+             //   playingField.Ships = shipCoordinates;
             }   
             
            foreach(var keyValuePair in shipCoordinates)
@@ -54,11 +60,10 @@
 
             Point point = new Point
             {
-                X = random.Next(1, Rules.FieldWidth),
-                Y = random.Next(1, Rules.FieldHeight)
+                X = random.Next(0, Rules.FieldWidth-1),
+                Y = random.Next(0, Rules.FieldHeight-1)
             };
 
-            Array shipDirections = Enum.GetValues(typeof(ShipDirection));
             var direction = (ShipDirection)shipDirections.GetValue(random.Next(shipDirections.Length));
 
             foreach (Deck deck in ship.Decks)
@@ -66,12 +71,31 @@
                 point.X = direction == ShipDirection.horizontal ? point.X + 1 : point.X;
                 point.Y = direction == ShipDirection.vertical ? point.Y + 1 : point.Y;
                 result.Add(new Cell { Color = CellColor.White, Coordinate = point, State = CellState.ShipDeck }, deck);
-            }
+                Cell cell = new Cell { Color = CellColor.White, Coordinate = point, State = CellState.ShipDeck };
 
-            if (point.X > Rules.FieldWidth || point.Y > Rules.FieldHeight)
-            {
-                result.Clear();
-                result = GetCoordinatesForShip(ship);
+                if (playingField.Ships.Count > 1)
+                {
+                    foreach (var po in playingField.Ships.ToList())
+                    {
+                        if (point.X == po.Key.Coordinate.X && point.Y == po.Key.Coordinate.Y) //Check coincidence cells
+                           /* || ((point.X == po.Key.Coordinate.X + 1 && point.Y == po.Key.Coordinate.Y) ||//Check adjacent cells
+                                (point.X == po.Key.Coordinate.X && point.Y == po.Key.Coordinate.Y + 1))) */
+                        {
+                            result.Clear();
+                            result = GetCoordinatesForShip(ship);
+                        }
+                        
+                    }
+                }
+
+                if (point.X > Rules.FieldWidth-1 || point.Y > Rules.FieldHeight-1)//Check abroad
+                {
+                    result.Clear();
+                    result = GetCoordinatesForShip(ship);
+                }
+                playingField.Ships.Add(cell, deck);
+                db.PlayingFields.Add(playingField);
+                //db.SaveChanges();
             }
 
             return result;
