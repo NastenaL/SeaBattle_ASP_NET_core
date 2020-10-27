@@ -8,7 +8,7 @@
 
     public class HomeController : Controller
     {
-        private ApplicationContext db;
+        private readonly ApplicationContext db;
 
         public HomeController(ApplicationContext context)
         {
@@ -25,9 +25,10 @@
         public IActionResult Index(string userName)
         {
             TempData["PlayerName"] = userName;
-            Player player = new Player();
-         
-            player.Name = userName;
+            Player player = new Player
+            {
+                Name = userName
+            };
             db.Players.Add(player);
             db.SaveChanges();
 

@@ -15,5 +15,11 @@
             : base(options)
         {
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Player>().ToTable("Player");
+            modelBuilder.Entity<Game>().ToTable("Game");
+            modelBuilder.Entity<PlayingField>().ToTable("PlayingField");
+        }
     }
 }

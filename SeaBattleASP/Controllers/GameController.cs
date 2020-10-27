@@ -24,9 +24,9 @@
                 Ships = Rules.CreateShips()
             };
 
-            playingField = new PlayingField();
+            PlayingField = new PlayingField();
         }
-        PlayingField playingField { get; set; }
+        PlayingField PlayingField { get; set; }
 
         readonly Array shipDirections = Enum.GetValues(typeof(ShipDirection));
         List<Game> Games { get; set; }
@@ -56,9 +56,9 @@
         [HttpPost]
         public IActionResult SelectShip(int x, int y)
         {
-            foreach(Cell p in playingField.Ships.Keys)
+            foreach(DeckCell p in PlayingField.Ships)
             {
-                if(p.Coordinate.X == x && p.Coordinate.Y == y)
+                if(p.Cell.Coordinate.X == x && p.Cell.Coordinate.Y == y)
                 {
                     // select ship
                 }
@@ -80,6 +80,8 @@
 
             var direction = (ShipDirection)shipDirections.GetValue(random.Next(shipDirections.Length));
 
+            List<DeckCell> deckCell = new List<DeckCell>(); 
+
             foreach (Deck deck in ship.Decks)
             {
                 point.X = direction == ShipDirection.horizontal ? point.X + 1 : point.X;
@@ -87,11 +89,11 @@
                 result.Add(new Cell { Color = CellColor.White, Coordinate = point, State = CellState.ShipDeck }, deck);
                 Cell cell = new Cell { Color = CellColor.White, Coordinate = point, State = CellState.ShipDeck };
 
-                if (playingField.Ships.Count > 1)
+                if (PlayingField.Ships.Count > 1)
                 {
-                    foreach (var po in playingField.Ships.ToList())
+                    foreach (var po in PlayingField.Ships.ToList())
                     {
-                        if (point.X == po.Key.Coordinate.X && point.Y == po.Key.Coordinate.Y) //Check coincidence cells
+                        if (point.X == po.Cell.Coordinate.X && point.Y == po.Cell.Coordinate.Y) //Check coincidence cells
                            /* || ((point.X == po.Key.Coordinate.X + 1 && point.Y == po.Key.Coordinate.Y) ||//Check adjacent cells
                                 (point.X == po.Key.Coordinate.X && point.Y == po.Key.Coordinate.Y + 1))) */
                         {
@@ -107,11 +109,12 @@
                     result.Clear();
                     result = GetCoordinatesForShip(ship);
                 }
-                playingField.Ships.Add(cell, deck);
-                db.PlayingFields.Add(playingField);
-                //db.SaveChanges();
+                deckCell.Add(new DeckCell() { Deck = deck, Cell = cell});
             }
+            PlayingField.Ships.AddRange(deckCell);
 
+            db.PlayingFields.Add(PlayingField);
+            //db.SaveChanges();
             return result;
         }
 
@@ -122,6 +125,8 @@
 
             PlayingField playingField = new PlayingField();
             playingField.CreateField();
+            db.PlayingFields.Add(playingField);
+           // db.SaveChanges();
             Game game = new Game
             {
                 Id = Games.Count + 1,

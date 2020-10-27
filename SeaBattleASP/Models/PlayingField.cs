@@ -8,12 +8,12 @@
     {
         public PlayingField()
         {
-            Ships = new Dictionary<Cell, Deck>();
+            Ships = new List<DeckCell>();
         }
         public int Id { get; set; }
 
         [NotMapped]
-        public Dictionary<Cell, Deck> Ships { get; set; }
+        public List<DeckCell> Ships { get; set; }
 
         public int Width { get; set; }
 
