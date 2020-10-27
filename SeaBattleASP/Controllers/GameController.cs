@@ -25,6 +25,7 @@
             };
 
             PlayingField = new PlayingField();
+            PlayingField.CreateField();
         }
         PlayingField PlayingField { get; set; }
 
@@ -42,7 +43,6 @@
             {
                 ship.IsSelectedShip = true;
                 shipCoordinates = GetCoordinatesForShip(ship);
-             //   playingField.Ships = shipCoordinates;
             }   
             
            foreach(var keyValuePair in shipCoordinates)
@@ -56,15 +56,12 @@
         [HttpPost]
         public IActionResult SelectShip(int x, int y)
         {
-            foreach(DeckCell p in PlayingField.Ships)
+            var ship = PlayingField.Ships.Find(s => s.Cell.Coordinate.X == x && s.Cell.Coordinate.Y == y);
+            if(ship == null)
             {
-                if(p.Cell.Coordinate.X == x && p.Cell.Coordinate.Y == y)
-                {
-                    // select ship
-                }
+                return Json("Ship not found");
             }
-            
-            return Json(x);
+            return Json(ship);
         }
 
         private Dictionary<Cell, Deck> GetCoordinatesForShip(Ship ship)
@@ -113,8 +110,8 @@
             }
             PlayingField.Ships.AddRange(deckCell);
 
-            db.PlayingFields.Add(PlayingField);
-            //db.SaveChanges();
+            db.PlayingField.Add(PlayingField);
+            db.SaveChanges();
             return result;
         }
 
@@ -123,20 +120,16 @@
         {
             ViewBag.Message = TempData["PlayerName"];
 
-            PlayingField playingField = new PlayingField();
-            playingField.CreateField();
-            db.PlayingFields.Add(playingField);
-           // db.SaveChanges();
             Game game = new Game
             {
-                Id = Games.Count + 1,
+                
                 Player1 = model.Players.Find(p => p.Name == ViewBag.Message),
                 Player2 = Player2,
-                PlayingField = playingField
+                PlayingField = PlayingField
             };
 
             db.Games.Add(game);
-           // db.SaveChanges();
+            db.SaveChanges();
             return this.RedirectToAction("StartGame", "Game");
         }
 

@@ -9,17 +9,12 @@
 
         public DbSet<Game> Games { get; set; }
 
-        public DbSet<PlayingField> PlayingFields { get; set; }
+        public DbSet<PlayingField> PlayingField { get; set; }
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
-        }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Player>().ToTable("Player");
-            modelBuilder.Entity<Game>().ToTable("Game");
-            modelBuilder.Entity<PlayingField>().ToTable("PlayingField");
+            Database.EnsureCreated();
         }
     }
 }

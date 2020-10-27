@@ -10,6 +10,7 @@
         {
             Ships = new List<DeckCell>();
         }
+
         public int Id { get; set; }
 
         [NotMapped]
@@ -21,13 +22,9 @@
 
         public PlayingField CreateField()
         {
-            PlayingField playingField = new PlayingField
-            {
-                Width = Rules.FieldWidth,
-                Heigth = Rules.FieldHeight
-            };
-
-            return playingField;
+            this.Width = Rules.FieldWidth;
+            this.Heigth = Rules.FieldHeight;
+            return this;
         }
     }
 }
