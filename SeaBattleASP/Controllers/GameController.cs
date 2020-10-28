@@ -38,16 +38,16 @@
         public IActionResult AddShipToField(int id)
         {
             var ship = model.Ships.Find(i => i.Id == id);
-            Dictionary<Cell, Deck> shipCoordinates = new Dictionary<Cell, Deck>();
+            List<DeckCell> shipCoordinates = new List<DeckCell>();
             if(ship != null)
-            {
+            { 
                 ship.IsSelectedShip = true;
                 shipCoordinates = GetCoordinatesForShip(ship);
             }   
             
            foreach(var keyValuePair in shipCoordinates)
             {
-                model.Coord.Add(keyValuePair.Key);
+                model.Coord.Add(keyValuePair.Cell);
             }
 
             return Json(model);
@@ -64,9 +64,9 @@
             return Json(ship);
         }
 
-        private Dictionary<Cell, Deck> GetCoordinatesForShip(Ship ship)
+        private List<DeckCell> GetCoordinatesForShip(Ship ship)
         {
-            Dictionary<Cell, Deck> result = new Dictionary<Cell, Deck>();
+            List<DeckCell> result = new List<DeckCell>();
             Random random = new Random();
 
             Point point = new Point
@@ -83,7 +83,12 @@
             {
                 point.X = direction == ShipDirection.horizontal ? point.X + 1 : point.X;
                 point.Y = direction == ShipDirection.vertical ? point.Y + 1 : point.Y;
-                result.Add(new Cell { Color = CellColor.White, Coordinate = point, State = CellState.ShipDeck }, deck);
+                DeckCell res = new DeckCell
+                {
+                    Cell = new Cell { Color = CellColor.White, Coordinate = point, State = CellState.ShipDeck },
+                    Deck = deck
+                };
+                result.Add(res);
                 Cell cell = new Cell { Color = CellColor.White, Coordinate = point, State = CellState.ShipDeck };
 
                 if (PlayingField.Ships.Count > 1)
