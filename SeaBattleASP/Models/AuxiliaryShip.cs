@@ -14,14 +14,19 @@
 
         public override void Repair(List<DeckCell> shipDecks)
         {
-            //get neighbor coordinates
             var neighborsPoints = GetNeighboringPoints(shipDecks);
-            CheckHurtesShip(neighborsPoints, shipDecks);
-            // check hurted ship
-            // change state
+            var hurtedDecks = GetHurtesShip(neighborsPoints, shipDecks);
+            if(hurtedDecks.Count > 0)
+            {
+                foreach(DeckCell hurtedDeck in hurtedDecks)
+                {
+                    hurtedDeck.Deck.State = Enums.DeckState.Normal;
+                    //Update to DB
+                }
+            }
         }
 
-        private void CheckHurtesShip(List<Point> repairedPoints, List<DeckCell> allShipsDecks)
+        private List<DeckCell> GetHurtesShip(List<Point> repairedPoints, List<DeckCell> allShipsDecks)
         {
             List<DeckCell> hurtedShips = new List<DeckCell>();
             foreach(Point point in repairedPoints)
@@ -33,8 +38,7 @@
                 }
                 
             }
-
-            var res = hurtedShips;
+            return hurtedShips;
         }
 
         private List<Point> GetNeighboringPoints(List<DeckCell> shipDecks)
