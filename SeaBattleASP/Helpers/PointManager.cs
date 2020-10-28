@@ -22,6 +22,22 @@
             return hurtedShips;
         }
 
+        public static List<DeckCell> CheckEnemyShips(List<DeckCell> enemyShips, List<Point> neighborsPoints)
+        {
+            List<DeckCell> result = new List<DeckCell>();
+
+            foreach (Point point in neighborsPoints)
+            {
+                var firedDeck = enemyShips.Find(s => s.Cell.Coordinate == point);
+                if (firedDeck != null)
+                {
+                    result.Add(firedDeck);
+                }
+
+            }
+            return result;
+        }
+
         public static List<Point> GetNeighboringPoints(List<DeckCell> shipDecks, int range)
         {
             List<Point> NeighboringCoordinates = new List<Point>();

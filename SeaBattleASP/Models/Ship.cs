@@ -29,23 +29,7 @@
         public virtual void Fire(List<DeckCell> enemyShips, List<DeckCell> selectedShip)
         {
             var neighborsPoints = PointManager.GetNeighboringPoints(selectedShip, this.Range);
-            var firedShips = CheckEnemyShips(enemyShips, neighborsPoints);
-        }
-
-        private List<DeckCell> CheckEnemyShips(List<DeckCell> enemyShips, List<Point> neighborsPoints)
-        {
-            List<DeckCell> result = new List<DeckCell>();
-
-            foreach (Point point in neighborsPoints)
-            {
-                var firedDeck = enemyShips.Find(s => s.Cell.Coordinate == point);
-                if(firedDeck != null)
-                {
-                    result.Add(firedDeck);
-                }
-                
-            }
-            return result;
+            var firedShips = PointManager.CheckEnemyShips(enemyShips, neighborsPoints);
         }
 
         public List<DeckCell> Move(List<DeckCell> shipDecks)
@@ -67,14 +51,8 @@
                         Y = cell.Cell.Coordinate.Y
                     };
 
-                    if (this.Direction.X != 0)
-                    {
-                        p.X += this.Range;
-                    }
-                    else
-                    {
-                        p.Y += this.Range;
-                    }
+                    p.X = this.Direction.X != 0 ? p.X + this.Range : p.X;
+                    p.Y = this.Direction.Y != 0 ? p.Y + this.Range : p.Y;
 
                     CheckNewCoordinate(p, result, shipDecks);
 
