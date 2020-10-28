@@ -36,22 +36,22 @@
             ship.Range = range;
             ship.Decks = decks;
          
-            ship.Direction = GenerateDirection(range);
+            ship.Direction = GenerateDirection();
             return ship;
         }
 
-        private static Point GenerateDirection(int range)
+        private static Point GenerateDirection()
         {
             Point shipDirection = new Point();
             Random random = new Random();
-            int x = random.Next(0, range);
+            int x = random.Next(0, 1);
 
-            int y = x == 0 ? random.Next(0, range) : 0;
+            int y = x == 0 ? 1 : 0;
             shipDirection.X = x;
             shipDirection.Y = y;
             if(shipDirection.X == 0 && shipDirection.Y == 0)
             {
-                GenerateDirection(range);
+                GenerateDirection();
             }
 
             return shipDirection;
@@ -59,18 +59,21 @@
 
         public static List<Ship> CreateShips()
         {
-           var a = CreateShip(4, ShipType.Auxiliary);
-           a.Id = 1;
-           var b = CreateShip(3, ShipType.Military);
-           b.Id = 2;
-           var c = CreateShip(3, ShipType.Mix);
-           c.Id = 3;
-            List<Ship> ships = new List<Ship>
-            {
+            var a = CreateShip(4, ShipType.Auxiliary);
+            a.Id = 1;
+            var b = CreateShip(3, ShipType.Military);
+            b.Id = 2;
+            var c = CreateShip(3, ShipType.Mix);
+            c.Id = 3;
+            var d = CreateShip(1, ShipType.Auxiliary);
+            d.Id = 4;
+           List<Ship> ships = new List<Ship>
+           {
                 a,
                 b,
-                c
-            };
+                c,
+                d
+           };
             return ships;
         } 
     }
