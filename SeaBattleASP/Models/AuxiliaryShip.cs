@@ -16,8 +16,25 @@
         {
             //get neighbor coordinates
             var neighborsPoints = GetNeighboringPoints(shipDecks);
+            CheckHurtesShip(neighborsPoints, shipDecks);
             // check hurted ship
             // change state
+        }
+
+        private void CheckHurtesShip(List<Point> repairedPoints, List<DeckCell> allShipsDecks)
+        {
+            List<DeckCell> hurtedShips = new List<DeckCell>();
+            foreach(Point point in repairedPoints)
+            {
+                var hurtedDeck = allShipsDecks.Find(s => s.Deck.State == Enums.DeckState.Hurted && s.Cell.Coordinate == point);
+                if(hurtedDeck != null)
+                {
+                    hurtedShips.Add(hurtedDeck);
+                }
+                
+            }
+
+            var res = hurtedShips;
         }
 
         private List<Point> GetNeighboringPoints(List<DeckCell> shipDecks)
