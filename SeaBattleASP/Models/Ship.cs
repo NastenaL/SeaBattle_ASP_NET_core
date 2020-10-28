@@ -65,23 +65,17 @@
 
         private void CheckNewCoordinate(Point p, List<DeckCell> result, List<DeckCell> shipDecks)
         {
-            if (p.X > Rules.FieldWidth)
+            if (p.X > Rules.FieldWidth-1 || p.Y > Rules.FieldHeight-1)
             {
-                var newDirection = new Point() { X = 0, Y = 1 };
+                var newDirection = p.X > Rules.FieldWidth? new Point() { X = 0, Y = 1 }: new Point() { X = 1, Y = 0 };
                 this.Direction = newDirection;
 
                 result.Clear();
                 Move(shipDecks);
             }
-            else if (p.Y > Rules.FieldHeight)
-            {
-                var newDirection = new Point() { X = 1, Y = 0 };
-                this.Direction = newDirection;
-
-                result.Clear();
-                Move(shipDecks);
-            }
+           
         }
+
         public virtual void Repair(List<DeckCell> shipDecks)
         {
             var neighborsPoints = PointManager.GetNeighboringPoints(shipDecks, this.Range);
