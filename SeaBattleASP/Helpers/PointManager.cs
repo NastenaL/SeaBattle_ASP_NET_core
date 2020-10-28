@@ -7,7 +7,7 @@
 
     public static class PointManager
     {
-        public static List<DeckCell> GetHurtesShip(List<Point> repairedPoints, List<DeckCell> allShipsDecks)
+        public static List<DeckCell> GetHurtedShip(List<Point> repairedPoints, List<DeckCell> allShipsDecks)
         {
             List<DeckCell> hurtedShips = new List<DeckCell>();
             foreach (Point point in repairedPoints)

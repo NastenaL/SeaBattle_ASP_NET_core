@@ -29,7 +29,16 @@
         public virtual void Fire(List<DeckCell> enemyShips, List<DeckCell> selectedShip)
         {
             var neighborsPoints = PointManager.GetNeighboringPoints(selectedShip, this.Range);
-            var firedShips = PointManager.CheckEnemyShips(enemyShips, neighborsPoints);
+            var firedShipDecks = PointManager.CheckEnemyShips(enemyShips, neighborsPoints);
+            if (firedShipDecks.Count > 0)
+            {
+                foreach (DeckCell firedDeck in firedShipDecks)
+                {
+                    firedDeck.Deck.State = Enums.DeckState.Normal;
+                    //Update to DB
+                }
+            }
+
         }
 
         public List<DeckCell> Move(List<DeckCell> shipDecks)
@@ -79,7 +88,7 @@
         public virtual void Repair(List<DeckCell> shipDecks)
         {
             var neighborsPoints = PointManager.GetNeighboringPoints(shipDecks, this.Range);
-            var hurtedDecks = PointManager.GetHurtesShip(neighborsPoints, shipDecks);
+            var hurtedDecks = PointManager.GetHurtedShip(neighborsPoints, shipDecks);
             if (hurtedDecks.Count > 0)
             {
                 foreach (DeckCell hurtedDeck in hurtedDecks)
