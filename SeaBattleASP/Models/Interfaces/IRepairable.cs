@@ -1,7 +1,8 @@
 ﻿namespace SeaBattleASP.Models.Interfaces
 {
+    using System.Collections.Generic;
     public interface IRepairable
     {
-        void Repair();
+        void Repair(List<DeckCell> shipDecks);
     }
 }

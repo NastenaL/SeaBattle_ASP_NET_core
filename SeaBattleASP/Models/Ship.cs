@@ -83,6 +83,6 @@
                 Move(shipDecks);
             }
         }
-        public abstract void Repair();
+        public abstract void Repair(List<DeckCell> shipDecks);
     }
 }
