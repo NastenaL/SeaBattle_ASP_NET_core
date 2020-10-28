@@ -5,11 +5,6 @@
 
     public class MilitaryShip : Ship
     {
-        public override void Fire()
-        {
-  
-        }
-
         public override void Repair(List<DeckCell> shipDecks)
         {
             throw new NotImplementedException();

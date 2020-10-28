@@ -26,7 +26,27 @@
 
         public bool IsSelectedShip { get; set; }
 
-        public abstract void Fire();
+        public virtual void Fire(List<DeckCell> enemyShips, List<DeckCell> selectedShip)
+        {
+            var neighborsPoints = PointManager.GetNeighboringPoints(selectedShip, this.Range);
+            var firedShips = CheckEnemyShips(enemyShips, neighborsPoints);
+        }
+
+        private List<DeckCell> CheckEnemyShips(List<DeckCell> enemyShips, List<Point> neighborsPoints)
+        {
+            List<DeckCell> result = new List<DeckCell>();
+
+            foreach (Point point in neighborsPoints)
+            {
+                var firedDeck = enemyShips.Find(s => s.Cell.Coordinate == point);
+                if(firedDeck != null)
+                {
+                    result.Add(firedDeck);
+                }
+                
+            }
+            return result;
+        }
 
         public List<DeckCell> Move(List<DeckCell> shipDecks)
         {
@@ -97,8 +117,5 @@
                 }
             }
         }
-
-      
-
     }
 }
