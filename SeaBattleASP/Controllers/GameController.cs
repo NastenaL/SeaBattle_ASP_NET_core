@@ -44,6 +44,15 @@
             { 
                 ship.IsSelectedShip = true;
                 shipCoordinates = GetCoordinatesForShip(ship);
+
+                foreach(DeckCell deckCell in shipCoordinates)
+                {
+                   db.Cells.Add(deckCell.Cell);
+                   //db.Decks.Add(deckCell.Deck);
+                   db.SaveChanges();
+                    // db.DeckCells.Add(deckCell);
+
+                }
             }   
             
            foreach(var keyValuePair in shipCoordinates)

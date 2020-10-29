@@ -7,6 +7,8 @@
     {
         public DbSet<Player> Players { get; set; }
 
+        public DbSet<Cell> Cells { get; set; }
+
         public DbSet<Deck> Decks { get; set; }
 
         public DbSet<DeckCell> DeckCells { get; set; }
@@ -26,7 +28,5 @@
         {
             Database.EnsureCreated();
         }
-
-       
     }
 }
