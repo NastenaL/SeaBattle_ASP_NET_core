@@ -9,6 +9,8 @@
 
         public DbSet<Deck> Decks { get; set; }
 
+        public DbSet<DeckCell> DeckCells { get; set; }
+
         public DbSet<AuxiliaryShip> AuxiliaryShips { get; set; }
 
         public DbSet<MilitaryShip> MilitaryShips { get; set; }

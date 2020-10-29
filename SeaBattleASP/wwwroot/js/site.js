@@ -58,7 +58,8 @@ function getCellPoint(points) {
     var cell = points.coord;
     for (var i = 0; i < points.coord.length; i++) {
         convertedPoints[i] = {};
-        [convertedPoints[i].x, convertedPoints[i].y] = cell[i].coordinate.split(',').filter(c => c !== '').map(c => Number(c));
+        convertedPoints[i].x = points.coord[i].x;
+        convertedPoints[i].y = points.coord[i].y;
     }
     return convertedPoints;
 }

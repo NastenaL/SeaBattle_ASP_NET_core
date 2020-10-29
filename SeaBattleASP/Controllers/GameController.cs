@@ -57,7 +57,7 @@
         [HttpPost]
         public IActionResult SelectShip(int x, int y)
         {
-            var ship = PlayingField.Ships.Find(s => s.Cell.Coordinate.X == x && s.Cell.Coordinate.Y == y);
+            var ship = PlayingField.Ships.Find(s => s.Cell.X == x && s.Cell.Y == y);
             if(ship == null)
             {
                 return Json("Ship not found");
@@ -86,17 +86,17 @@
                 point.Y = direction == ShipDirection.vertical ? point.Y + 1 : point.Y;
                 DeckCell res = new DeckCell
                 {
-                    Cell = new Cell { Color = CellColor.White, Coordinate = point, State = CellState.ShipDeck },
+                    Cell = new Cell { Color = CellColor.White, X = point.X, Y = point.Y, State = CellState.ShipDeck },
                     Deck = deck
                 };
                 result.Add(res);
-                Cell cell = new Cell { Color = CellColor.White, Coordinate = point, State = CellState.ShipDeck };
+                Cell cell = new Cell { Color = CellColor.White, X = point.X, Y = point.Y, State = CellState.ShipDeck };
 
                 if (PlayingField.Ships.Count > 1)
                 {
                     foreach (var po in PlayingField.Ships.ToList())
                     {
-                        if (point.X == po.Cell.Coordinate.X && point.Y == po.Cell.Coordinate.Y) //Check coincidence cells
+                        if (point.X == po.Cell.X && point.Y == po.Cell.Y) //Check coincidence cells
                            /* || ((point.X == po.Key.Coordinate.X + 1 && point.Y == po.Key.Coordinate.Y) ||//Check adjacent cells
                                 (point.X == po.Key.Coordinate.X && point.Y == po.Key.Coordinate.Y + 1))) */
                         {

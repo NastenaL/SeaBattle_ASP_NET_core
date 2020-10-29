@@ -12,7 +12,7 @@
             List<DeckCell> hurtedShips = new List<DeckCell>();
             foreach (Point point in repairedPoints)
             {
-                var hurtedDeck = allShipsDecks.Find(s => s.Deck.State == Models.Enums.DeckState.Hurted && s.Cell.Coordinate == point);
+                var hurtedDeck = allShipsDecks.Find(s => s.Deck.State == Models.Enums.DeckState.Hurted && s.Cell.X == point.X && s.Cell.Y == point.Y);
                 if (hurtedDeck != null)
                 {
                     hurtedShips.Add(hurtedDeck);
@@ -28,7 +28,7 @@
 
             foreach (Point point in neighborsPoints)
             {
-                var firedDeck = enemyShips.Find(s => s.Cell.Coordinate == point);
+                var firedDeck = enemyShips.Find(s => s.Cell.X == point.X && s.Cell.Y == point.Y);
                 if (firedDeck != null)
                 {
                     result.Add(firedDeck);
@@ -48,10 +48,14 @@
                 var upPoint = new Point();
                 var downPoint = new Point();
 
-                leftPoint = deckCell.Cell.Coordinate;
-                rightPoint = deckCell.Cell.Coordinate;
-                upPoint = deckCell.Cell.Coordinate;
-                downPoint = deckCell.Cell.Coordinate;
+                leftPoint.X = deckCell.Cell.X;
+                leftPoint.Y = deckCell.Cell.Y;
+                rightPoint.X = deckCell.Cell.X;
+                rightPoint.Y = deckCell.Cell.Y;
+                upPoint.X = deckCell.Cell.X;
+                upPoint.Y = deckCell.Cell.Y;
+                downPoint.X = deckCell.Cell.X;
+                downPoint.Y = deckCell.Cell.Y;
 
                 for (int i = 0; i < range; i++)
                 {

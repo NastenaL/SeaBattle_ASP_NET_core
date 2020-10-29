@@ -1,11 +1,13 @@
 ﻿namespace SeaBattleASP.Models
 {
     using SeaBattleASP.Models.Enums;
-    using System.Drawing;
 
     public class Cell
     {
-        public Point Coordinate { get; set; }
+        public int id { get; set; }
+        public int X { get; set; }
+
+        public int Y { get; set; }
 
         public CellColor Color { get; set; }
 

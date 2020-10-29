@@ -53,8 +53,8 @@
                     };
                     Point p = new Point
                     {
-                        X = cell.Cell.Coordinate.X,
-                        Y = cell.Cell.Coordinate.Y
+                        X = cell.Cell.X,
+                        Y = cell.Cell.Y
                     };
 
                     p.X = this.Direction.X != 0 ? p.X + this.Range : p.X;
@@ -62,7 +62,9 @@
 
                     CheckNewCoordinate(p, result, shipDecks);
 
-                    cell.Cell.Coordinate = p;
+                    cell.Cell.X = p.X;
+                    cell.Cell.Y = p.Y;
+
                     result.Add(cell);
                 }
             }
