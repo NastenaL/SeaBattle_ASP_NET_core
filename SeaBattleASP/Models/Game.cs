@@ -1,7 +1,8 @@
-﻿using SeaBattleASP.Models.Enums;
-
-namespace SeaBattleASP.Models
+﻿namespace SeaBattleASP.Models
 {
+    using SeaBattleASP.Models.Enums;
+    using System;
+
     public class Game
     {
         public int Id { get; set; }
@@ -17,13 +18,18 @@ namespace SeaBattleASP.Models
         public bool IsPl1Turn { get; set; }
 
 
-        public void StartGame()
+        public bool StartGame()
         {
+            this.State = GameState.Started;
 
+            Random gen = new Random();
+            this.IsPl1Turn = gen.Next(100) < 50 ? true : false;
+            return this.IsPl1Turn;
         }
 
         public void EndGame()
         {
+            this.State = GameState.Finished;
         }
 
         public void MakeStep()
