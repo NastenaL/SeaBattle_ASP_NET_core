@@ -19,9 +19,10 @@
         {
             db = context;
             Games = new List<Game>();
+          //  var allShips = db.Ships.ToListAsync<Ship>().Result;
             model = new MapModel
             {
-                Ships = Rules.CreateShips()
+                Ships = Rules.CreateShips()//allShips)
             };
 
             PlayingField = new PlayingField();

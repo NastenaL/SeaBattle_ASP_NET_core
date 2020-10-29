@@ -16,5 +16,7 @@
         public DeckState State { get; set; }
 
         public bool IsHead { get; set; }
+
+        public int ShipId { get; set; }
     }
 }

@@ -3,7 +3,6 @@
     using SeaBattleASP.Helpers;
     using SeaBattleASP.Models.Constants;
     using SeaBattleASP.Models.Interfaces;
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Drawing;
@@ -14,12 +13,10 @@
 
         public int Range { get; set; }
 
+        [NotMapped]
         public Point Direction { get; set; }
 
-        [NotMapped]
         public Player Player { get; set; }
-
-        public Guid PlayerId { get; set; }
 
         [NotMapped]
         public List<Deck> Decks { get; set; }

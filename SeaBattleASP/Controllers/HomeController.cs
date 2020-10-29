@@ -40,8 +40,10 @@
         {
             ViewData["Width"] = Rules.FieldWidth;
             ViewData["Height"] = Rules.FieldHeight;
-            var ships = Rules.CreateShips();
-            return View(ships);
+
+            //   var allShips = db.Ships.ToListAsync<Ship>().Result;
+            var defaultShips = Rules.CreateShips();//allShips);
+            return View(defaultShips);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
