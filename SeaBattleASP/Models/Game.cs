@@ -47,6 +47,14 @@
             {
             //    ship.Fire();
             }
+            else if(movementType == MovementType.Repair)
+            {
+                ship.Repair(selectedShip);
+            }
+            else if(movementType == MovementType.Move)
+            {
+                ship.Move(selectedShip);
+            }
         }
     }
 }
