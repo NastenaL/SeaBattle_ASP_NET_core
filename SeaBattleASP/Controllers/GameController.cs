@@ -47,11 +47,10 @@
 
                 foreach(DeckCell deckCell in shipCoordinates)
                 {
-                   db.Cells.Add(deckCell.Cell);
-                   //db.Decks.Add(deckCell.Deck);
-                   db.SaveChanges();
-                    // db.DeckCells.Add(deckCell);
-
+                    db.Cells.Add(deckCell.Cell);
+                    db.Decks.Add(deckCell.Deck);
+                    db.DeckCells.Add(deckCell);
+                    db.SaveChanges();
                 }
             }   
             
@@ -66,7 +65,7 @@
         [HttpPost]
         public IActionResult SelectShip(int x, int y)
         {
-            var ship = PlayingField.Ships.Find(s => s.Cell.X == x && s.Cell.Y == y);
+            var ship = PlayingField.ShipsDeckCells.Find(s => s.Cell.X == x && s.Cell.Y == y);
             if(ship == null)
             {
                 return Json("Ship not found");
@@ -101,9 +100,9 @@
                 result.Add(res);
                 Cell cell = new Cell { Color = CellColor.White, X = point.X, Y = point.Y, State = CellState.ShipDeck };
 
-                if (PlayingField.Ships.Count > 1)
+                if (PlayingField.ShipsDeckCells.Count > 1)
                 {
-                    foreach (var po in PlayingField.Ships.ToList())
+                    foreach (var po in PlayingField.ShipsDeckCells.ToList())
                     {
                         if (point.X == po.Cell.X && point.Y == po.Cell.Y) //Check coincidence cells
                            /* || ((point.X == po.Key.Coordinate.X + 1 && point.Y == po.Key.Coordinate.Y) ||//Check adjacent cells
@@ -123,10 +122,10 @@
                 }
                 deckCell.Add(new DeckCell() { Deck = deck, Cell = cell});
             }
-            PlayingField.Ships.AddRange(deckCell);
+            PlayingField.ShipsDeckCells.AddRange(deckCell);
 
-            db.PlayingField.Add(PlayingField);
-            db.SaveChanges();
+            //db.PlayingField.Add(PlayingField);
+           // db.SaveChanges();
             return result;
         }
 

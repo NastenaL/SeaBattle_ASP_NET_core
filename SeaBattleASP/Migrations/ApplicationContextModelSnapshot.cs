@@ -40,7 +40,7 @@ namespace SeaBattleASP.Migrations
 
             modelBuilder.Entity("SeaBattleASP.Models.Cell", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -52,7 +52,7 @@ namespace SeaBattleASP.Migrations
 
                     b.Property<int>("Y");
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
                     b.ToTable("Cells");
                 });
@@ -63,32 +63,46 @@ namespace SeaBattleASP.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("AuxiliaryShipId");
+
                     b.Property<bool>("IsHead");
 
-                    b.Property<int>("ShipId");
+                    b.Property<int?>("MilitaryShipId");
+
+                    b.Property<int?>("MixShipId");
 
                     b.Property<int>("State");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AuxiliaryShipId");
+
+                    b.HasIndex("MilitaryShipId");
+
+                    b.HasIndex("MixShipId");
 
                     b.ToTable("Decks");
                 });
 
             modelBuilder.Entity("SeaBattleASP.Models.DeckCell", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("Cellid");
+                    b.Property<int?>("CellId");
 
                     b.Property<int?>("DeckId");
 
-                    b.HasKey("id");
+                    b.Property<int?>("PlayingFieldId");
 
-                    b.HasIndex("Cellid");
+                    b.HasKey("Id");
+
+                    b.HasIndex("CellId");
 
                     b.HasIndex("DeckId");
+
+                    b.HasIndex("PlayingFieldId");
 
                     b.ToTable("DeckCells");
                 });
@@ -193,15 +207,34 @@ namespace SeaBattleASP.Migrations
                         .HasForeignKey("PlayerId");
                 });
 
+            modelBuilder.Entity("SeaBattleASP.Models.Deck", b =>
+                {
+                    b.HasOne("SeaBattleASP.Models.AuxiliaryShip")
+                        .WithMany("Decks")
+                        .HasForeignKey("AuxiliaryShipId");
+
+                    b.HasOne("SeaBattleASP.Models.MilitaryShip")
+                        .WithMany("Decks")
+                        .HasForeignKey("MilitaryShipId");
+
+                    b.HasOne("SeaBattleASP.Models.MixShip")
+                        .WithMany("Decks")
+                        .HasForeignKey("MixShipId");
+                });
+
             modelBuilder.Entity("SeaBattleASP.Models.DeckCell", b =>
                 {
                     b.HasOne("SeaBattleASP.Models.Cell", "Cell")
                         .WithMany()
-                        .HasForeignKey("Cellid");
+                        .HasForeignKey("CellId");
 
                     b.HasOne("SeaBattleASP.Models.Deck", "Deck")
                         .WithMany()
                         .HasForeignKey("DeckId");
+
+                    b.HasOne("SeaBattleASP.Models.PlayingField")
+                        .WithMany("ShipsDeckCells")
+                        .HasForeignKey("PlayingFieldId");
                 });
 
             modelBuilder.Entity("SeaBattleASP.Models.Game", b =>

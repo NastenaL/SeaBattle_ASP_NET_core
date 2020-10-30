@@ -2,7 +2,7 @@
 {
     public class DeckCell
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         public Deck Deck { get; set; }
         public Cell Cell { get; set; }
     }

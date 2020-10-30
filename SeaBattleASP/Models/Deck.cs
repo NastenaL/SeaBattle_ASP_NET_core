@@ -4,9 +4,8 @@
 
     public class Deck
     {
-        public Deck(int id, DeckState state, bool isHead)
-        {
-            Id = id;
+        public Deck(DeckState state, bool isHead)
+        {  
             State = state;
             IsHead = isHead;
         }
@@ -16,7 +15,5 @@
         public DeckState State { get; set; }
 
         public bool IsHead { get; set; }
-
-        public int ShipId { get; set; }
     }
 }

@@ -30,7 +30,7 @@
 
             for (int i = 0; i < range; i++)
             {
-                decks.Add(new Deck( decks.Count+1, Enums.DeckState.Normal, decks.Count == 0? true:false));
+                decks.Add(new Deck(Enums.DeckState.Normal, decks.Count == 0? true:false));
             }
 
             ship.Range = range;
@@ -60,13 +60,13 @@
         public static List<Ship> CreateShips()
         {
             var a = CreateShip(4, ShipType.Auxiliary);
-            a.Id = 1;
+        
             var b = CreateShip(3, ShipType.Military);
-            b.Id = 2;
+        
             var c = CreateShip(3, ShipType.Mix);
-            c.Id = 3;
+          
             var d = CreateShip(1, ShipType.Auxiliary);
-            d.Id = 4;
+           
            List<Ship> ships = new List<Ship>
            {
                 a,
