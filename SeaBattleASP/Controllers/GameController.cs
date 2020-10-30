@@ -168,7 +168,6 @@
         [HttpGet]
         public IActionResult StartGame()
         {
-            
             return View(model);
         }
 
@@ -191,6 +190,37 @@
             ViewBag.Message = TempData["PlayerName"];
             model.Players = db.Players.ToListAsync<Player>().Result;
             return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult EndGame()
+        {
+            if(CurrantGame != null)
+            {
+                CurrantGame.EndGame();
+                db.Games.Remove(CurrantGame);
+
+                var fields = db.PlayingField.ToListAsync<PlayingField>().Result;
+                var decks = db.Decks.ToListAsync<Deck>().Result;
+                var cells = db.Cells.ToListAsync<Cell>().Result;
+                var cellDecks = db.DeckCells.ToListAsync<DeckCell>().Result;
+
+                foreach (var cell in CurrantGame.PlayingField.ShipsDeckCells)
+                {
+                    db.Decks.Remove(cell.Deck);
+                    db.Cells.Remove(cell.Cell);
+                    db.DeckCells.Remove(cell);
+                }
+                
+                var currentField = fields.Find(f => f == CurrantGame.PlayingField);
+                if(currentField != null)
+                {
+                    db.PlayingField.Remove(currentField);
+                }
+       
+                db.SaveChanges();
+            }
+            return View();
         }
     }
 }
