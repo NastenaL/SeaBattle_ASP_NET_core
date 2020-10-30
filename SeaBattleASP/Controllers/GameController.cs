@@ -18,6 +18,7 @@
         public GameController(ApplicationContext context)
         {
             db = context;
+            CurrantGame = new Game();
             model = new MapModel
             {
                 Ships = Rules.CreateShips()
@@ -29,7 +30,7 @@
         PlayingField PlayingField { get; set; }
 
         readonly Array shipDirections = Enum.GetValues(typeof(ShipDirection));
-
+        Game CurrantGame { get; set; }
         MapModel model { get; set; }
 
         [HttpPost]
@@ -152,14 +153,14 @@
         {
             var name = ViewData["PlayerName"];
 
-            Game game = new Game
+            CurrantGame = new Game
             { 
                 Player1 = model.Players.Find(p => p.Name == name.ToString()),
                 Player2 = Player2,
                 PlayingField = PlayingField
             };
            
-            db.Games.Add(game);
+            db.Games.Add(CurrantGame);
             db.SaveChanges();
             return this.RedirectToAction("StartGame", "Game");
         }
@@ -167,18 +168,20 @@
         [HttpGet]
         public IActionResult StartGame()
         {
-            ViewData["Width"] = Rules.FieldWidth;
-            ViewData["Height"] = Rules.FieldHeight;
             
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult StartGame(string action, Ship selected)
+        public IActionResult StartGame(string action)
         {
-            if (action == "addShips")
-            { 
+            if(CurrantGame != null)
+            {
+                CurrantGame.StartGame();
+                db.Update(CurrantGame);
+                db.SaveChanges();
             }
+            
             return View();
         }
 

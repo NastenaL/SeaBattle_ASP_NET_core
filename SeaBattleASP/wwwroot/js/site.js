@@ -53,6 +53,16 @@ function selectShip(id) {
     });
 };
 
+function startGame() {
+    $.ajax({
+        type: 'POST',
+        url: '/Game/StartGame',
+        success: function () {
+            
+        },
+    });
+};
+
 function getCellPoint(points) {
     var convertedPoints = [];
     var cell = points.coord;

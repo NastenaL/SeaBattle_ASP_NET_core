@@ -19,13 +19,12 @@
         public bool IsPl1Turn { get; set; }
 
 
-        public bool StartGame()
+        public void StartGame()
         {
             this.State = GameState.Started;
 
             Random gen = new Random();
             this.IsPl1Turn = gen.Next(100) < 50 ? true : false;
-            return this.IsPl1Turn;
         }
 
         public void EndGame()
@@ -33,7 +32,7 @@
             this.State = GameState.Finished;
         }
 
-        public void MakeStep(Ship ship, MovementType movementType)
+        public void MakeStep(Ship ship, MovementType movementType, List<DeckCell> EnemyShipsDecks)
         {
             List<DeckCell> selectedShip = new List<DeckCell>();
             
@@ -45,7 +44,7 @@
             var t = selectedShip;
             if (movementType == MovementType.Fire)
             {
-            //    ship.Fire();
+                ship.Fire(EnemyShipsDecks, selectedShip);
             }
             else if(movementType == MovementType.Repair)
             {
