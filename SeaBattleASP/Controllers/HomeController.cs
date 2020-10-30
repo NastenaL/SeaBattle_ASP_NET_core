@@ -25,12 +25,15 @@
         public IActionResult Index(string userName)
         {
             TempData["PlayerName"] = userName;
-            Player player = new Player
+            if(!string.IsNullOrEmpty(userName))
             {
-                Name = userName
-            };
-            db.Players.Add(player);
-            db.SaveChanges();
+                Player player = new Player
+                {
+                    Name = userName
+                };
+                db.Players.Add(player);
+                db.SaveChanges();
+            }
 
             return this.RedirectToAction("Index", "Game");
         }
