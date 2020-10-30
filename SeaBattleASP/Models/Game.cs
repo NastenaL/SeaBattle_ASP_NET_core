@@ -2,6 +2,7 @@
 {
     using SeaBattleASP.Models.Enums;
     using System;
+    using System.Collections.Generic;
 
     public class Game
     {
@@ -32,8 +33,20 @@
             this.State = GameState.Finished;
         }
 
-        public void MakeStep()
+        public void MakeStep(Ship ship, MovementType movementType)
         {
+            List<DeckCell> selectedShip = new List<DeckCell>();
+            
+            foreach(Deck deckCell in ship.Decks)
+            {
+                selectedShip.Add(this.PlayingField.ShipsDeckCells.Find(s => s.Deck == deckCell));
+            }
+
+            var t = selectedShip;
+            if (movementType == MovementType.Fire)
+            {
+            //    ship.Fire();
+            }
         }
     }
 }

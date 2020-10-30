@@ -24,7 +24,7 @@
         [HttpPost]
         public IActionResult Index(string userName)
         {
-            TempData["PlayerName"] = userName;
+            ViewData["PlayerName"] = userName;
             if(!string.IsNullOrEmpty(userName))
             {
                 Player player = new Player

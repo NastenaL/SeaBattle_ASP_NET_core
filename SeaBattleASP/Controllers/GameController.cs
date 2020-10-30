@@ -18,7 +18,6 @@
         public GameController(ApplicationContext context)
         {
             db = context;
-            Games = new List<Game>();
             model = new MapModel
             {
                 Ships = Rules.CreateShips()
@@ -30,7 +29,6 @@
         PlayingField PlayingField { get; set; }
 
         readonly Array shipDirections = Enum.GetValues(typeof(ShipDirection));
-        List<Game> Games { get; set; }
 
         MapModel model { get; set; }
 
@@ -152,16 +150,15 @@
         [HttpPost]
         public IActionResult Index(Player Player2)
         {
-            ViewBag.Message = TempData["PlayerName"];
+            var name = ViewData["PlayerName"];
 
             Game game = new Game
-            {
-                
-                Player1 = model.Players.Find(p => p.Name == ViewBag.Message),
+            { 
+                Player1 = model.Players.Find(p => p.Name == name.ToString()),
                 Player2 = Player2,
                 PlayingField = PlayingField
             };
-
+           
             db.Games.Add(game);
             db.SaveChanges();
             return this.RedirectToAction("StartGame", "Game");
