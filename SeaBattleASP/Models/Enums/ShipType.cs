@@ -2,8 +2,8 @@
 {
     public enum ShipType
     {
-        Auxiliary, 
-        Military, 
-        Mix
+        AuxiliaryShip, 
+        MilitaryShip, 
+        MixShip
     }
 }

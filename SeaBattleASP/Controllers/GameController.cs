@@ -19,10 +19,9 @@
         {
             db = context;
             Games = new List<Game>();
-          //  var allShips = db.Ships.ToListAsync<Ship>().Result;
             model = new MapModel
             {
-                Ships = Rules.CreateShips()//allShips)
+                Ships = Rules.CreateShips()
             };
 
             PlayingField = new PlayingField();
@@ -38,25 +37,47 @@
         [HttpPost]
         public IActionResult AddShipToField(int id)
         {
+
             var ship = model.Ships.Find(i => i.Id == id);
+            
             List<DeckCell> shipCoordinates = new List<DeckCell>();
             if(ship != null)
             { 
                 ship.IsSelectedShip = true;
                 shipCoordinates = GetCoordinatesForShip(ship);
 
-                foreach(DeckCell deckCell in shipCoordinates)
+                var shipType = ship.GetType();
+                var type = Enum.Parse(typeof(ShipType), shipType.Name);
+                switch ((ShipType)type)
+                {
+                    case ShipType.AuxiliaryShip:
+                        db.AuxiliaryShips.Add((AuxiliaryShip)ship);
+                        break;
+                    case ShipType.MilitaryShip:
+                        db.MilitaryShips.Add((MilitaryShip)ship);
+                        break;
+                    case ShipType.MixShip:
+                        db.MixShips.Add((MixShip)ship);
+                        break;
+                };
+              
+
+                foreach (DeckCell deckCell in shipCoordinates)
                 {
                     db.Cells.Add(deckCell.Cell);
                     db.Decks.Add(deckCell.Deck);
                     db.DeckCells.Add(deckCell);
                     db.SaveChanges();
                 }
+
+
+                db.PlayingField.Add(PlayingField);
+                db.SaveChanges();
             }   
             
-           foreach(var keyValuePair in shipCoordinates)
+           foreach(var shipDeckCell in shipCoordinates)
             {
-                model.Coord.Add(keyValuePair.Cell);
+                model.Coord.Add(shipDeckCell.Cell);
             }
 
             return Json(model);
@@ -124,8 +145,7 @@
             }
             PlayingField.ShipsDeckCells.AddRange(deckCell);
 
-            //db.PlayingField.Add(PlayingField);
-           // db.SaveChanges();
+           
             return result;
         }
 

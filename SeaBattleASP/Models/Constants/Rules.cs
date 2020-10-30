@@ -15,13 +15,13 @@
             Ship ship = null;
             switch (type)
             {
-                case ShipType.Auxiliary:
+                case ShipType.AuxiliaryShip:
                     ship = new AuxiliaryShip();
                     break;
-                case ShipType.Military:
+                case ShipType.MilitaryShip:
                     ship = new MilitaryShip();
                     break;
-                case ShipType.Mix:
+                case ShipType.MixShip:
                     ship = new MixShip();
                     break;
             };
@@ -59,13 +59,13 @@
 
         public static List<Ship> CreateShips()
         {
-            var a = CreateShip(4, ShipType.Auxiliary);
+            var a = CreateShip(4, ShipType.AuxiliaryShip);
         
-            var b = CreateShip(3, ShipType.Military);
+            var b = CreateShip(3, ShipType.MilitaryShip);
         
-            var c = CreateShip(3, ShipType.Mix);
+            var c = CreateShip(3, ShipType.MixShip);
           
-            var d = CreateShip(1, ShipType.Auxiliary);
+            var d = CreateShip(1, ShipType.AuxiliaryShip);
            
            List<Ship> ships = new List<Ship>
            {
