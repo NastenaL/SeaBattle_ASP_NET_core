@@ -13,11 +13,11 @@
 
     public class GameController : Controller
     {
-        private readonly ApplicationContext db;
+       // private readonly ApplicationContext db;
 
         public GameController(ApplicationContext context)
         {
-            db = context;
+            DbManager.db = context;
             CurrantGame = new Game();
             model = new MapModel
             {
@@ -44,8 +44,8 @@
                 ship.IsSelectedShip = true;
                 shipCoordinates = GetCoordinatesForShip(ship);
 
-                SaveShipToDB(ship);
-                SaveDeckCellAndPlayingFieldToDB(shipCoordinates);
+                DbManager.SaveShipToDB(ship);
+                DbManager.SaveDeckCellAndPlayingFieldToDB(shipCoordinates, PlayingField);
             }
             FillMapModel(shipCoordinates);
             return Json(model);
@@ -59,37 +59,7 @@
             }
         }
 
-        private void SaveShipToDB(Ship ship)
-        {
-            var shipType = ship.GetType();
-            var type = Enum.Parse(typeof(ShipType), shipType.Name);
-            switch ((ShipType)type)
-            {
-                case ShipType.AuxiliaryShip:
-                    db.AuxiliaryShips.Add((AuxiliaryShip)ship);
-                    break;
-                case ShipType.MilitaryShip:
-                    db.MilitaryShips.Add((MilitaryShip)ship);
-                    break;
-                case ShipType.MixShip:
-                    db.MixShips.Add((MixShip)ship);
-                    break;
-            };
-        }
-
-        private void SaveDeckCellAndPlayingFieldToDB(List<DeckCell> shipCoordinates)
-        {
-            foreach (DeckCell deckCell in shipCoordinates)
-            {
-                db.Cells.Add(deckCell.Cell);
-                db.Decks.Add(deckCell.Deck);
-                db.DeckCells.Add(deckCell);
-                db.SaveChanges();
-            }
-
-            db.PlayingField.Add(PlayingField);
-            db.SaveChanges();
-        }
+    
 
         [HttpPost]
         public IActionResult SelectShip(int x, int y)
@@ -168,9 +138,9 @@
                 Player2 = Player2,
                 PlayingField = PlayingField
             };
-           
-            db.Games.Add(CurrantGame);
-            db.SaveChanges();
+
+            DbManager.db.Games.Add(CurrantGame);
+            DbManager.db.SaveChanges();
             return this.RedirectToAction("StartGame", "Game");
         }
 
@@ -186,8 +156,8 @@
             if(CurrantGame != null)
             {
                 CurrantGame.StartGame();
-                db.Update(CurrantGame);
-                db.SaveChanges();
+                DbManager.db.Update(CurrantGame);
+                DbManager.db.SaveChanges();
             }
             
             return View();
@@ -197,7 +167,7 @@
         public IActionResult Index()
         {
             ViewBag.Message = TempData["PlayerName"];
-            model.Players = db.Players.ToListAsync<Player>().Result;
+            model.Players = DbManager.db.Players.ToListAsync<Player>().Result;
             return View(model);
         }
 
@@ -207,27 +177,27 @@
             if(CurrantGame != null)
             {
                 CurrantGame.EndGame();
-                db.Games.Remove(CurrantGame);
+                DbManager.db.Games.Remove(CurrantGame);
 
-                var fields = db.PlayingField.ToListAsync<PlayingField>().Result;
-                var decks = db.Decks.ToListAsync<Deck>().Result;
-                var cells = db.Cells.ToListAsync<Cell>().Result;
-                var cellDecks = db.DeckCells.ToListAsync<DeckCell>().Result;
+                var fields = DbManager.db.PlayingField.ToListAsync<PlayingField>().Result;
+                var decks = DbManager.db.Decks.ToListAsync<Deck>().Result;
+                var cells = DbManager.db.Cells.ToListAsync<Cell>().Result;
+                var cellDecks = DbManager.db.DeckCells.ToListAsync<DeckCell>().Result;
 
                 foreach (var cell in CurrantGame.PlayingField.ShipsDeckCells)
                 {
-                    db.Decks.Remove(cell.Deck);
-                    db.Cells.Remove(cell.Cell);
-                    db.DeckCells.Remove(cell);
+                    DbManager.db.Decks.Remove(cell.Deck);
+                    DbManager.db.Cells.Remove(cell.Cell);
+                    DbManager.db.DeckCells.Remove(cell);
                 }
                 
                 var currentField = fields.Find(f => f == CurrantGame.PlayingField);
                 if(currentField != null)
                 {
-                    db.PlayingField.Remove(currentField);
+                    DbManager.db.PlayingField.Remove(currentField);
                 }
-       
-                db.SaveChanges();
+
+                DbManager.db.SaveChanges();
             }
             return View();
         }
