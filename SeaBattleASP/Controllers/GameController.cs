@@ -36,7 +36,6 @@
         [HttpPost]
         public IActionResult AddShipToField(int id)
         {
-
             var ship = model.Ships.Find(i => i.Id == id);
             
             List<DeckCell> shipCoordinates = new List<DeckCell>();
@@ -45,43 +44,53 @@
                 ship.IsSelectedShip = true;
                 shipCoordinates = GetCoordinatesForShip(ship);
 
-                var shipType = ship.GetType();
-                var type = Enum.Parse(typeof(ShipType), shipType.Name);
-                switch ((ShipType)type)
-                {
-                    case ShipType.AuxiliaryShip:
-                        db.AuxiliaryShips.Add((AuxiliaryShip)ship);
-                        break;
-                    case ShipType.MilitaryShip:
-                        db.MilitaryShips.Add((MilitaryShip)ship);
-                        break;
-                    case ShipType.MixShip:
-                        db.MixShips.Add((MixShip)ship);
-                        break;
-                };
-              
-
-                foreach (DeckCell deckCell in shipCoordinates)
-                {
-                    db.Cells.Add(deckCell.Cell);
-                    db.Decks.Add(deckCell.Deck);
-                    db.DeckCells.Add(deckCell);
-                    db.SaveChanges();
-                }
-
-
-                db.PlayingField.Add(PlayingField);
-                db.SaveChanges();
-            }   
-            
-           foreach(var shipDeckCell in shipCoordinates)
-            {
-                model.Coord.Add(shipDeckCell.Cell);
+                SaveShipToDB(ship);
+                SaveDeckCellAndPlayingFieldToDB(shipCoordinates);
             }
-
+            FillMapModel(shipCoordinates);
             return Json(model);
         }
         
+        private void FillMapModel(List<DeckCell> shipCoordinates)
+        {
+            foreach (var shipDeckCell in shipCoordinates)
+            {
+                model.Coord.Add(shipDeckCell.Cell);
+            }
+        }
+
+        private void SaveShipToDB(Ship ship)
+        {
+            var shipType = ship.GetType();
+            var type = Enum.Parse(typeof(ShipType), shipType.Name);
+            switch ((ShipType)type)
+            {
+                case ShipType.AuxiliaryShip:
+                    db.AuxiliaryShips.Add((AuxiliaryShip)ship);
+                    break;
+                case ShipType.MilitaryShip:
+                    db.MilitaryShips.Add((MilitaryShip)ship);
+                    break;
+                case ShipType.MixShip:
+                    db.MixShips.Add((MixShip)ship);
+                    break;
+            };
+        }
+
+        private void SaveDeckCellAndPlayingFieldToDB(List<DeckCell> shipCoordinates)
+        {
+            foreach (DeckCell deckCell in shipCoordinates)
+            {
+                db.Cells.Add(deckCell.Cell);
+                db.Decks.Add(deckCell.Deck);
+                db.DeckCells.Add(deckCell);
+                db.SaveChanges();
+            }
+
+            db.PlayingField.Add(PlayingField);
+            db.SaveChanges();
+        }
+
         [HttpPost]
         public IActionResult SelectShip(int x, int y)
         {
