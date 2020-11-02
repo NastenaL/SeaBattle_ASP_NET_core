@@ -13,7 +13,6 @@
 
     public class GameController : Controller
     {
-       // private readonly ApplicationContext db;
 
         public GameController(ApplicationContext context)
         {
@@ -139,8 +138,7 @@
                 PlayingField = PlayingField
             };
 
-            DbManager.db.Games.Add(CurrantGame);
-            DbManager.db.SaveChanges();
+            DbManager.SaveGameToDB(CurrantGame);
             return this.RedirectToAction("StartGame", "Game");
         }
 
@@ -156,8 +154,7 @@
             if(CurrantGame != null)
             {
                 CurrantGame.StartGame();
-                DbManager.db.Update(CurrantGame);
-                DbManager.db.SaveChanges();
+                DbManager.UpdateGameInDb(CurrantGame);
             }
             
             return View();
@@ -177,29 +174,13 @@
             if(CurrantGame != null)
             {
                 CurrantGame.EndGame();
-                DbManager.db.Games.Remove(CurrantGame);
 
-                var fields = DbManager.db.PlayingField.ToListAsync<PlayingField>().Result;
-                var decks = DbManager.db.Decks.ToListAsync<Deck>().Result;
-                var cells = DbManager.db.Cells.ToListAsync<Cell>().Result;
-                var cellDecks = DbManager.db.DeckCells.ToListAsync<DeckCell>().Result;
+              DbManager.DeleteGameFromDb(CurrantGame);
 
-                foreach (var cell in CurrantGame.PlayingField.ShipsDeckCells)
-                {
-                    DbManager.db.Decks.Remove(cell.Deck);
-                    DbManager.db.Cells.Remove(cell.Cell);
-                    DbManager.db.DeckCells.Remove(cell);
-                }
-                
-                var currentField = fields.Find(f => f == CurrantGame.PlayingField);
-                if(currentField != null)
-                {
-                    DbManager.db.PlayingField.Remove(currentField);
-                }
 
-                DbManager.db.SaveChanges();
+
             }
             return View();
-        }
+        } 
     }
 }
