@@ -53,7 +53,17 @@ function selectShip(id) {
     });
 };
 
+function changeButtonVisibility() {
+    var makeStep = document.getElementById('makeStep');
+    makeStep.style.display = 'inline';
+
+    var startGame = document.getElementById('startGame');
+    startGame.style.display = 'none';
+}
+
 function startGame() {
+    changeButtonVisibility();
+
     $.ajax({
         type: 'POST',
         url: '/Game/StartGame',

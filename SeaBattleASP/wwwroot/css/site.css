@@ -94,6 +94,11 @@ section div {
         opacity: 0.5;
     }
 
+#makeStep
+{
+    display: none;
+}
+
 .shipColor {
     content: '';
     display: block;

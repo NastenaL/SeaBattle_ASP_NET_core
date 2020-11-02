@@ -97,9 +97,6 @@
                 var currentDeckCell = ShipManager.CreateDeckCell(point, deck);
                 ShipDeckCells.Add(currentDeckCell);
 
-                Cell cell = new Cell { Color = CellColor.White, X = point.X, Y = point.Y, State = CellState.ShipDeck };
-
-
                 var isShip = ShipManager.CheckShipWithOtherShips(point, PlayingField);
                 var isShipOutOfAbroad = ShipManager.CheckPointAbroad(point);
 
@@ -112,7 +109,6 @@
             PlayingField.ShipsDeckCells.AddRange(ShipDeckCells);
             return ShipDeckCells;
         }
-
 
         [HttpPost]
         public IActionResult Index(Player Player2)
