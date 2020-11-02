@@ -9,7 +9,7 @@
 
     public class ConnectionManager
     {
-        private ConcurrentDictionary<string, WebSocket> sockets = new ConcurrentDictionary<string, WebSocket>();
+        private readonly ConcurrentDictionary<string, WebSocket> sockets = new ConcurrentDictionary<string, WebSocket>();
 
         public WebSocket GetSocketById(string id)
         {

@@ -8,14 +8,14 @@
 
     public class WebSocketManagerMiddleware
     {
-        private readonly RequestDelegate next;
-        private WebSocketHandler webSocketHandler { get; set; }
+        private readonly RequestDelegate Next;
+        private WebSocketHandler WebSocketHandler { get; set; }
 
         public WebSocketManagerMiddleware(RequestDelegate next,
                                             WebSocketHandler webSocketHandler)
         {
-            this.next = next;
-            this.webSocketHandler = webSocketHandler;
+            this.Next = next;
+            this.WebSocketHandler = webSocketHandler;
         }
 
         public async Task Invoke(HttpContext context)
@@ -24,19 +24,19 @@
                 return;
 
             var socket = await context.WebSockets.AcceptWebSocketAsync();
-            webSocketHandler.OnConnected(socket);
+            WebSocketHandler.OnConnected(socket);
 
             await Receive(socket, async (result, buffer) =>
             {
                 if (result.MessageType == WebSocketMessageType.Text)
                 {
-                    await webSocketHandler.ReceiveAsync(socket, result, buffer);
+                    await WebSocketHandler.ReceiveAsync(socket, result, buffer);
                     return;
                 }
 
                 else if (result.MessageType == WebSocketMessageType.Close)
                 {
-                    await webSocketHandler.OnDisconnected(socket);
+                    await WebSocketHandler.OnDisconnected(socket);
                     return;
                 }
 

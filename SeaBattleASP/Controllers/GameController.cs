@@ -10,15 +10,28 @@
     using System.Collections.Generic;
     using System.Drawing;
     using System.Linq;
+    using System.Threading.Tasks;
 
     public class GameController : Controller
     {
+        private NotificationsMessageHandler NotificationsMessageHandler { get; set; }
+
+        public GameController(NotificationsMessageHandler notificationsMessageHandler)
+        {
+            this.NotificationsMessageHandler = notificationsMessageHandler;
+        }
+
+        [HttpGet]
+        public async Task SendMessage([FromQueryAttribute]string message)
+        {
+            await this.NotificationsMessageHandler.SendMessageToAllAsync(message);
+        }
 
         public GameController(ApplicationContext context)
         {
             DbManager.db = context;
             CurrantGame = new Game();
-            model = new MapModel
+            Model = new MapModel
             {
                 Ships = Rules.CreateShips()
             };
@@ -30,12 +43,12 @@
 
         readonly Array shipDirections = Enum.GetValues(typeof(ShipDirection));
         Game CurrantGame { get; set; }
-        MapModel model { get; set; }
+        MapModel Model { get; set; }
 
         [HttpPost]
         public IActionResult AddShipToField(int id)
         {
-            var ship = model.Ships.Find(i => i.Id == id);
+            var ship = Model.Ships.Find(i => i.Id == id);
             
             List<DeckCell> shipCoordinates = new List<DeckCell>();
             if(ship != null)
@@ -47,14 +60,14 @@
                 DbManager.SaveDeckCellAndPlayingFieldToDB(shipCoordinates, PlayingField);
             }
             FillMapModel(shipCoordinates);
-            return Json(model);
+            return Json(Model);
         }
         
         private void FillMapModel(List<DeckCell> shipCoordinates)
         {
             foreach (var shipDeckCell in shipCoordinates)
             {
-                model.Coord.Add(shipDeckCell.Cell);
+                Model.Coord.Add(shipDeckCell.Cell);
             }
         }
 
@@ -133,7 +146,7 @@
 
             CurrantGame = new Game
             { 
-                Player1 = model.Players.Find(p => p.Name == name.ToString()),
+                Player1 = Model.Players.Find(p => p.Name == name.ToString()),
                 Player2 = Player2,
                 PlayingField = PlayingField
             };
@@ -145,7 +158,7 @@
         [HttpGet]
         public IActionResult StartGame()
         {
-            return View(model);
+            return View(Model);
         }
 
         [HttpPost]
@@ -164,8 +177,8 @@
         public IActionResult Index()
         {
             ViewBag.Message = TempData["PlayerName"];
-            model.Players = DbManager.db.Players.ToListAsync<Player>().Result;
-            return View(model);
+            Model.Players = DbManager.db.Players.ToListAsync<Player>().Result;
+            return View(Model);
         }
 
         [HttpPost]
