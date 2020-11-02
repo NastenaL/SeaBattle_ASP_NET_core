@@ -99,6 +99,13 @@
             return result;
         }
 
+        public static Point ShiftPoint(Point initalPoint, ShipDirection direction)
+        {
+            initalPoint.X = direction == ShipDirection.horizontal ? initalPoint.X + 1 : initalPoint.X;
+            initalPoint.Y = direction == ShipDirection.vertical ? initalPoint.Y + 1 : initalPoint.Y;
+            return initalPoint;
+        }
+
         public static List<Point> GetNeighboringPoints(List<DeckCell> shipDecks, int range)
         {
             List<Point> NeighboringCoordinates = new List<Point>();

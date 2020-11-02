@@ -86,19 +86,18 @@
         {
             List<DeckCell> ShipDeckCells = new List<DeckCell>();
 
-            var point = ShipManager.GetRandomPoint(random);
+            var initalPoint = ShipManager.GetRandomPoint(random);
             var direction = (ShipDirection)shipDirections.GetValue(random.Next(shipDirections.Length));
 
             foreach (Deck deck in ship.Decks)
             {
-                point.X = direction == ShipDirection.horizontal ? point.X + 1 : point.X;
-                point.Y = direction == ShipDirection.vertical ? point.Y + 1 : point.Y;
-                
-                var currentDeckCell = ShipManager.CreateDeckCell(point, deck);
+                initalPoint  = ShipManager.ShiftPoint(initalPoint, direction);
+
+                var currentDeckCell = ShipManager.CreateDeckCell(initalPoint, deck);
                 ShipDeckCells.Add(currentDeckCell);
 
-                var isShip = ShipManager.CheckShipWithOtherShips(point, PlayingField);
-                var isShipOutOfAbroad = ShipManager.CheckPointAbroad(point);
+                var isShip = ShipManager.CheckShipWithOtherShips(initalPoint, PlayingField);
+                var isShipOutOfAbroad = ShipManager.CheckPointAbroad(initalPoint);
 
                 if(isShip || isShipOutOfAbroad)
                 {
