@@ -1,12 +1,73 @@
 ﻿namespace SeaBattleASP.Helpers
 {
     using SeaBattleASP.Models;
+    using SeaBattleASP.Models.Constants;
+    using SeaBattleASP.Models.Enums;
+    using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Linq;
 
-    public static class PointManager
+    public static class ShipManager
     {
+        public static void FillMapModel(List<DeckCell> shipCoordinates, MapModel Model)
+        {
+            foreach (var shipDeckCell in shipCoordinates)
+            {
+                Model.Coord.Add(shipDeckCell.Cell);
+            }
+        }
+
+        public static bool CheckShipWithOtherShips(Point point, PlayingField PlayingField)
+        {
+            bool error = false;
+            if (PlayingField.ShipsDeckCells.Count > 1)
+            {
+                foreach (var p in PlayingField.ShipsDeckCells.ToList())
+                {
+                    if (point.X == p.Cell.X && point.Y == p.Cell.Y) //Check coincidence cells
+                                                                    /* || ((point.X == po.Key.Coordinate.X + 1 && point.Y == po.Key.Coordinate.Y) ||//Check adjacent cells
+                                                                         (point.X == po.Key.Coordinate.X && point.Y == po.Key.Coordinate.Y + 1))) */
+                    {
+                        error = true;
+                    }
+
+                }
+            }
+            return error;
+        }
+
+        public static bool CheckPointAbroad(Point point)
+        {
+            bool isShipAbroad = false;
+            if (point.X > Rules.FieldWidth - 1 || point.Y > Rules.FieldHeight - 1)//Check abroad
+            {
+                isShipAbroad = true;
+            }
+
+            return isShipAbroad;
+        }
+
+        public static Point GetRandomPoint(Random random)
+        {
+            Point point = new Point
+            {
+                X = random.Next(0, Rules.FieldWidth - 1),
+                Y = random.Next(0, Rules.FieldHeight - 1)
+            };
+            return point;
+        }
+
+        public static DeckCell CreateDeckCell(Point point, Deck deck)
+        {
+            DeckCell currentDeckCell = new DeckCell
+            {
+                Cell = new Cell { Color = CellColor.White, X = point.X, Y = point.Y, State = CellState.ShipDeck },
+                Deck = deck
+            };
+            return currentDeckCell;
+        }
+
         public static List<DeckCell> GetHurtedShip(List<Point> repairedPoints, List<DeckCell> allShipsDecks)
         {
             List<DeckCell> hurtedShips = new List<DeckCell>();

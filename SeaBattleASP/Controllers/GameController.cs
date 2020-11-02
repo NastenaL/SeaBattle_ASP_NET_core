@@ -9,15 +9,15 @@
     using SeaBattleASP.Models.Enums;
     using System;
     using System.Collections.Generic;
-    using System.Drawing;
-    using System.Linq;
 
     public class GameController : Controller
     {
+        private readonly Random random;
         readonly Array shipDirections = Enum.GetValues(typeof(ShipDirection));
 
         public GameController(ApplicationContext context)
         {
+            random = new Random();
             DbManager.db = context;
             CurrantGame = new Game();
             Model = new MapModel
@@ -64,85 +64,55 @@
                 DbManager.SaveShipToDB(ship);
                 DbManager.SaveDeckCellAndPlayingFieldToDB(shipCoordinates, PlayingField);
 
-                FillMapModel(shipCoordinates);
+                ShipManager.FillMapModel(shipCoordinates, Model);
             }
             
             return Json(Model);
         }
-        
-        private void FillMapModel(List<DeckCell> shipCoordinates)
-        {
-            foreach (var shipDeckCell in shipCoordinates)
-            {
-                Model.Coord.Add(shipDeckCell.Cell);
-            }
-        }
+       
 
         [HttpPost]
         public IActionResult SelectShip(int x, int y)
         {
-            var ship = PlayingField.ShipsDeckCells.Find(s => s.Cell.X == x && s.Cell.Y == y);
-            if(ship == null)
+            var shipDeckCell = PlayingField.ShipsDeckCells.Find(s => s.Cell.X == x && s.Cell.Y == y);
+            if(shipDeckCell == null)
             {
                 return Json("Ship not found");
             }
-            return Json(ship);
+            return Json(shipDeckCell);
         }
 
         private List<DeckCell> GetCoordinatesForShip(Ship ship)
         {
-            List<DeckCell> result = new List<DeckCell>();
-            Random random = new Random();
+            List<DeckCell> ShipDeckCells = new List<DeckCell>();
 
-            Point point = new Point
-            {
-                X = random.Next(0, Rules.FieldWidth-1),
-                Y = random.Next(0, Rules.FieldHeight-1)
-            };
-
+            var point = ShipManager.GetRandomPoint(random);
             var direction = (ShipDirection)shipDirections.GetValue(random.Next(shipDirections.Length));
-
-            List<DeckCell> deckCell = new List<DeckCell>(); 
 
             foreach (Deck deck in ship.Decks)
             {
                 point.X = direction == ShipDirection.horizontal ? point.X + 1 : point.X;
                 point.Y = direction == ShipDirection.vertical ? point.Y + 1 : point.Y;
-                DeckCell res = new DeckCell
-                {
-                    Cell = new Cell { Color = CellColor.White, X = point.X, Y = point.Y, State = CellState.ShipDeck },
-                    Deck = deck
-                };
-                result.Add(res);
+                
+                var currentDeckCell = ShipManager.CreateDeckCell(point, deck);
+                ShipDeckCells.Add(currentDeckCell);
+
                 Cell cell = new Cell { Color = CellColor.White, X = point.X, Y = point.Y, State = CellState.ShipDeck };
 
-                if (PlayingField.ShipsDeckCells.Count > 1)
-                {
-                    foreach (var po in PlayingField.ShipsDeckCells.ToList())
-                    {
-                        if (point.X == po.Cell.X && point.Y == po.Cell.Y) //Check coincidence cells
-                           /* || ((point.X == po.Key.Coordinate.X + 1 && point.Y == po.Key.Coordinate.Y) ||//Check adjacent cells
-                                (point.X == po.Key.Coordinate.X && point.Y == po.Key.Coordinate.Y + 1))) */
-                        {
-                            result.Clear();
-                            result = GetCoordinatesForShip(ship);
-                        }
-                        
-                    }
-                }
 
-                if (point.X > Rules.FieldWidth-1 || point.Y > Rules.FieldHeight-1)//Check abroad
+                var isShip = ShipManager.CheckShipWithOtherShips(point, PlayingField);
+                var isShipOutOfAbroad = ShipManager.CheckPointAbroad(point);
+
+                if(isShip || isShipOutOfAbroad)
                 {
-                    result.Clear();
-                    result = GetCoordinatesForShip(ship);
+                    ShipDeckCells.Clear();
+                    ShipDeckCells = GetCoordinatesForShip(ship);
                 }
-                deckCell.Add(new DeckCell() { Deck = deck, Cell = cell});
             }
-            PlayingField.ShipsDeckCells.AddRange(deckCell);
-
-           
-            return result;
+            PlayingField.ShipsDeckCells.AddRange(ShipDeckCells);
+            return ShipDeckCells;
         }
+
 
         [HttpPost]
         public IActionResult Index(Player Player2)
@@ -192,11 +162,7 @@
             if(CurrantGame != null)
             {
                 CurrantGame.EndGame();
-
-              DbManager.DeleteGameFromDb(CurrantGame);
-
-
-
+                DbManager.DeleteGameFromDb(CurrantGame);
             }
             return View();
         } 

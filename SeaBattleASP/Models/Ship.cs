@@ -25,8 +25,8 @@
 
         public virtual void Fire(List<DeckCell> enemyShips, List<DeckCell> selectedShip)
         {
-            var neighborsPoints = PointManager.GetNeighboringPoints(selectedShip, this.Range);
-            var firedShipDecks = PointManager.CheckEnemyShips(enemyShips, neighborsPoints);
+            var neighborsPoints = ShipManager.GetNeighboringPoints(selectedShip, this.Range);
+            var firedShipDecks = ShipManager.CheckEnemyShips(enemyShips, neighborsPoints);
             if (firedShipDecks.Count > 0)
             {
                 foreach (DeckCell firedDeck in firedShipDecks)
@@ -86,8 +86,8 @@
 
         public virtual void Repair(List<DeckCell> shipDecks)
         {
-            var neighborsPoints = PointManager.GetNeighboringPoints(shipDecks, this.Range);
-            var hurtedDecks = PointManager.GetHurtedShip(neighborsPoints, shipDecks);
+            var neighborsPoints = ShipManager.GetNeighboringPoints(shipDecks, this.Range);
+            var hurtedDecks = ShipManager.GetHurtedShip(neighborsPoints, shipDecks);
             if (hurtedDecks.Count > 0)
             {
                 foreach (DeckCell hurtedDeck in hurtedDecks)
