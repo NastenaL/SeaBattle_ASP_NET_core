@@ -16,6 +16,12 @@
             DbManager.db.SaveChanges();
         }
 
+        public static void SavePlayerToDB(Player player)
+        {
+            db.Players.Add(player);
+            db.SaveChanges();
+        }
+
         public static void DeleteGameFromDb(Game CurrantGame)
         {
             DbManager.db.Games.Remove(CurrantGame);

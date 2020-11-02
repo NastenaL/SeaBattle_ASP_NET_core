@@ -3,6 +3,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using SeaBattleASP.Helpers;
+    using SeaBattleASP.Helpers.WebSocket;
     using SeaBattleASP.Models;
     using SeaBattleASP.Models.Constants;
     using SeaBattleASP.Models.Enums;
@@ -13,22 +14,7 @@
 
     public class GameController : Controller
     {
-        private NotificationsMessageHandler NotificationsMessageHandler { get; set; }
-
-        //public GameController(NotificationsMessageHandler notificationsMessageHandler)
-        //{
-        //    this.NotificationsMessageHandler = notificationsMessageHandler;
-        //}
-
-        [HttpPost]
-        public async void MakeStep([FromQueryAttribute]string message)
-        {
-            if (NotificationsMessageHandler != null)
-            {
-                await this.NotificationsMessageHandler.SendMessageToAllAsync(message);
-            }
-           
-        }
+        readonly Array shipDirections = Enum.GetValues(typeof(ShipDirection));
 
         public GameController(ApplicationContext context)
         {
@@ -41,28 +27,46 @@
 
             PlayingField = new PlayingField();
             PlayingField.CreateField();
+
+          //  this.NotificationsMessageHandler = notificationsMessageHandler;
         }
+
+        #region Properties 
         PlayingField PlayingField { get; set; }
 
-        readonly Array shipDirections = Enum.GetValues(typeof(ShipDirection));
-        Game CurrantGame { get; set; }
-        MapModel Model { get; set; }
+        private NotificationsMessageHandler NotificationsMessageHandler { get; set; }
+       
+        private Game CurrantGame { get; set; }
+
+        private MapModel Model { get; set; }
+        #endregion
+
+        [HttpPost]
+        public async void MakeStep([FromQueryAttribute]string message)
+        {
+            if (NotificationsMessageHandler != null)
+            {
+                await this.NotificationsMessageHandler.SendMessageToAllAsync(message);
+            }
+
+        }
 
         [HttpPost]
         public IActionResult AddShipToField(int id)
         {
             var ship = Model.Ships.Find(i => i.Id == id);
-            
-            List<DeckCell> shipCoordinates = new List<DeckCell>();
+          
             if(ship != null)
             { 
                 ship.IsSelectedShip = true;
-                shipCoordinates = GetCoordinatesForShip(ship);
+                var shipCoordinates = GetCoordinatesForShip(ship);
 
                 DbManager.SaveShipToDB(ship);
                 DbManager.SaveDeckCellAndPlayingFieldToDB(shipCoordinates, PlayingField);
+
+                FillMapModel(shipCoordinates);
             }
-            FillMapModel(shipCoordinates);
+            
             return Json(Model);
         }
         
@@ -73,8 +77,6 @@
                 Model.Coord.Add(shipDeckCell.Cell);
             }
         }
-
-    
 
         [HttpPost]
         public IActionResult SelectShip(int x, int y)

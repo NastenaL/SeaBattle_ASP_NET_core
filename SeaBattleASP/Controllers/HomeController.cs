@@ -8,11 +8,10 @@
 
     public class HomeController : Controller
     {
-        private readonly ApplicationContext db;
 
         public HomeController(ApplicationContext context)
         {
-            db = context;
+            DbManager.db = context;
         }
 
         [HttpGet]
@@ -31,8 +30,7 @@
                 {
                     Name = userName
                 };
-                db.Players.Add(player);
-                db.SaveChanges();
+              DbManager.SavePlayerToDB(player);
             }
 
             return this.RedirectToAction("Index", "Game");
@@ -44,8 +42,8 @@
             ViewData["Width"] = Rules.FieldWidth;
             ViewData["Height"] = Rules.FieldHeight;
 
-            //   var allShips = db.Ships.ToListAsync<Ship>().Result;
-            var defaultShips = Rules.CreateShips();//allShips);
+           
+            var defaultShips = Rules.CreateShips();
             return View(defaultShips);
         }
 

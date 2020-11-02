@@ -1,4 +1,4 @@
-﻿namespace SeaBattleASP.Helpers
+﻿namespace SeaBattleASP.Helpers.WebSocket
 {
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
