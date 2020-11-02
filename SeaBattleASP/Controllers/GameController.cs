@@ -10,21 +10,24 @@
     using System.Collections.Generic;
     using System.Drawing;
     using System.Linq;
-    using System.Threading.Tasks;
 
     public class GameController : Controller
     {
         private NotificationsMessageHandler NotificationsMessageHandler { get; set; }
 
-        public GameController(NotificationsMessageHandler notificationsMessageHandler)
-        {
-            this.NotificationsMessageHandler = notificationsMessageHandler;
-        }
+        //public GameController(NotificationsMessageHandler notificationsMessageHandler)
+        //{
+        //    this.NotificationsMessageHandler = notificationsMessageHandler;
+        //}
 
-        [HttpGet]
-        public async Task SendMessage([FromQueryAttribute]string message)
+        [HttpPost]
+        public async void MakeStep([FromQueryAttribute]string message)
         {
-            await this.NotificationsMessageHandler.SendMessageToAllAsync(message);
+            if (NotificationsMessageHandler != null)
+            {
+                await this.NotificationsMessageHandler.SendMessageToAllAsync(message);
+            }
+           
         }
 
         public GameController(ApplicationContext context)

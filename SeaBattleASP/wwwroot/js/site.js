@@ -63,6 +63,19 @@ function startGame() {
     });
 };
 
+function sendMessage(message) {
+    console.log("Sending: " + message);
+
+    $.ajax({
+        type: 'POST',
+        url: '/Game/MakeStep',
+        data: { type: message },
+        success: function () {
+            
+        },
+    });
+}
+
 function getCellPoint(points) {
     var convertedPoints = [];
     var cell = points.coord;

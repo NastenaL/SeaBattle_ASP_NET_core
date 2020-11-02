@@ -59,12 +59,12 @@
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
-            var serviceProvider = serviceScopeFactory.CreateScope().ServiceProvider;
+           // var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
+            //var serviceProvider = serviceScopeFactory.CreateScope().ServiceProvider;
 
-            app.UseWebSockets();
-            app.MapWebSocketManager("/ws", serviceProvider.GetService<NotificationsMessageHandler>());
-            app.UseStaticFiles();
+           // app.UseWebSockets();
+            //app.MapWebSocketManager("/ws", serviceProvider.GetService<NotificationsMessageHandler>());
+           // app.UseStaticFiles();
             //app.UseEndpoints(endpoints =>
             //{
             //    endpoints.MapControllers();
