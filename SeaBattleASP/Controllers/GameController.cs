@@ -67,6 +67,7 @@
                         DbManager.SaveShipToDB(ship);
                         DbManager.SaveDeckCellAndPlayingFieldToDB(shipCoordinates, PlayingField);
 
+                        Model.SelectedShip = ship;
                         ShipManager.FillMapModel(shipCoordinates, Model);
                     }
                 }

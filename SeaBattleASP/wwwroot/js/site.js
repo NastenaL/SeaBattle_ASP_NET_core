@@ -1,5 +1,6 @@
 ﻿var topText = ['а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'к', 'л', 'м', 'н', 'о','п','р','с'];
 var leftText = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17'];
+var a = new Array();
 
 // функция нанесения надписей слева и справа от полей
 // входной параметр - иднетификтор контрола(left или right)
@@ -46,8 +47,11 @@ function selectShip(id) {
         type: 'POST',
         url: '/Game/AddShipToField',
         data: { id: id },
-        success: function (points) {
-            var convertedPoints = getCellPoint(points);
+        success: function (mapModel) {
+            var convertedPoints = getCellPoint(mapModel);
+            var element1 = document.getElementById('ships');
+            a.push(mapModel.selectedShip);
+            console.log(a);
             paintShip(convertedPoints);
         },
     });
@@ -86,13 +90,12 @@ function sendMessage(message) {
     });
 }
 
-function getCellPoint(points) {
+function getCellPoint(mapModel) {
     var convertedPoints = [];
-    var cell = points.coord;
-    for (var i = 0; i < points.coord.length; i++) {
+    for (var i = 0; i < mapModel.coord.length; i++) {
         convertedPoints[i] = {};
-        convertedPoints[i].x = points.coord[i].x;
-        convertedPoints[i].y = points.coord[i].y;
+        convertedPoints[i].x = mapModel.coord[i].x;
+        convertedPoints[i].y = mapModel.coord[i].y;
     }
     return convertedPoints;
 }

@@ -22,5 +22,7 @@
         public List<Player> Players { get; set; }
 
         public Dictionary<int, Ship> Ships { get; set; }
+
+        public Ship SelectedShip { get; set; }
     }
 }
