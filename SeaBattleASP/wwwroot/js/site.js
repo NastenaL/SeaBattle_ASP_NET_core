@@ -1,6 +1,6 @@
 ﻿var topText = ['а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'к', 'л', 'м', 'н', 'о','п','р','с'];
 var leftText = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17'];
-var a = new Array();
+var addedShips = new Array();
 
 // функция нанесения надписей слева и справа от полей
 // входной параметр - иднетификтор контрола(left или right)
@@ -49,10 +49,29 @@ function selectShip(id) {
         data: { id: id },
         success: function (mapModel) {
             var convertedPoints = getCellPoint(mapModel);
-            var element1 = document.getElementById('ships');
-            a.push(mapModel.selectedShip);
-            console.log(a);
+
+            addedShips.push(mapModel.selectedShip);
             paintShip(convertedPoints);
+
+            var html = "<table>";
+                html += "<tr>";
+                html += "<td>Id</td>";
+                html += "<td>Range</td>";
+                html += "<td>Action</td>";
+                html += "</tr>";
+            for (var i = 0; i < addedShips.length; i++) {
+                html += "<tr>";
+                html += "<td>" + addedShips[i].id + "</td>";
+                html += "<td>" + addedShips[i].range + "</td>";
+                html += "<td><button id=" + addedShips[i].id +">Select</button></td>";
+                html += "</tr>";
+
+            }
+            html += "</table>";
+            console.log(html);
+            document.getElementById("shipsPanel").innerHTML = html;
+
+            
         },
     });
 };
