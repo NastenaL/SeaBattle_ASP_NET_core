@@ -53,7 +53,7 @@ function selectShip(id) {
             addedShips.push(mapModel.selectedShip);
             paintShip(convertedPoints);
 
-            var html = "<table>";
+            var html = "<table class='shipsTable'>";
                 html += "<tr>";
                 html += "<td>Id</td>";
                 html += "<td>Range</td>";
@@ -63,7 +63,16 @@ function selectShip(id) {
                 html += "<tr>";
                 html += "<td>" + addedShips[i].id + "</td>";
                 html += "<td>" + addedShips[i].range + "</td>";
-                html += "<td><button id=" + addedShips[i].id +">Select</button></td>";
+                html += "<td>"+
+                    "<div class='dropdown'>"+
+                       " <button onclick='myFunction()' class='dropbtn'>Select</button>" +
+                        "<div id='myDropdown' class='dropdown-content'>" +
+                            "<a href='#'>Move</a>" +
+                            "<a href='#'>Fire</a>" +
+                            "<a href='#'>Repair</a>" +
+                       " </div>" +
+                   "</div >" +
+               " </td > ";
                 html += "</tr>";
 
             }
@@ -75,6 +84,25 @@ function selectShip(id) {
         },
     });
 };
+
+function myFunction() {
+    document.getElementById("myDropdown").classList.toggle("show");
+}
+
+// Close the dropdown menu if the user clicks outside of it
+window.onclick = function (event) {
+    if (!event.target.matches('.dropbtn')) {
+
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+    }
+}
 
 function changeButtonVisibility() {
     var makeStep = document.getElementById('makeStep');
