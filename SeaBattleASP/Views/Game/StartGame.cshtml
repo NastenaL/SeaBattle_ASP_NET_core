@@ -40,13 +40,13 @@
             </div>
             <div class="modal-body" style="text-align:center;">
                 <table class="table">
-                    @foreach (Ship p in Model.Ships)
+                    @foreach (KeyValuePair<int, Ship> p in Model.Ships)
                     {
                         <tr>
-                            <td>@p.Id</td>
-                            <td>@p.Range</td>
-                            <td>@p.GetType()</td>
-                            <td><button id="@p.Id" onclick="return selectShip(@p.Id)">Select</button></td>
+                            <td>@p.Key</td>
+                            <td>@p.Value.Range</td>
+                            <td>@p.Value.GetType()</td>
+                            <td><button id="@p.Key" onclick="return selectShip(@p.Key)">Select</button></td>
                         </tr>
                     }
                 </table>

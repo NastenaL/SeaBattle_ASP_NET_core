@@ -57,14 +57,11 @@
             return shipDirection;
         }
 
-        public static List<Ship> CreateShips()
+        public static Dictionary<int, Ship> CreateShips()
         {
             var a = CreateShip(4, ShipType.AuxiliaryShip);
-        
             var b = CreateShip(3, ShipType.MilitaryShip);
-        
             var c = CreateShip(3, ShipType.MixShip);
-          
             var d = CreateShip(1, ShipType.AuxiliaryShip);
            
            List<Ship> ships = new List<Ship>
@@ -74,7 +71,13 @@
                 c,
                 d
            };
-            return ships;
+
+            Dictionary<int, Ship> defaultShips = new Dictionary<int, Ship>();
+            for(int i = 0; i < ships.Count; i++)
+            {
+                defaultShips.Add(i, ships[i]);
+            }
+            return defaultShips;
         } 
     }
 }

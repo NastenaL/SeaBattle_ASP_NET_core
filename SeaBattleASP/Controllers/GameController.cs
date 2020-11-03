@@ -54,19 +54,24 @@
         [HttpPost]
         public IActionResult AddShipToField(int id)
         {
-            var ship = Model.Ships.Find(i => i.Id == id);
-          
-            if(ship != null)
-            { 
-                ship.IsSelectedShip = true;
-                var shipCoordinates = GetCoordinatesForShip(ship);
+            foreach(KeyValuePair<int, Ship> k in Model.Ships)
+            {
+                if(k.Key == id)
+                {
+                    var ship = k.Value;
+                    if (ship != null)
+                    {
+                        ship.IsSelectedShip = true;
+                        var shipCoordinates = GetCoordinatesForShip(ship);
 
-                DbManager.SaveShipToDB(ship);
-                DbManager.SaveDeckCellAndPlayingFieldToDB(shipCoordinates, PlayingField);
+                        DbManager.SaveShipToDB(ship);
+                        DbManager.SaveDeckCellAndPlayingFieldToDB(shipCoordinates, PlayingField);
 
-                ShipManager.FillMapModel(shipCoordinates, Model);
+                        ShipManager.FillMapModel(shipCoordinates, Model);
+                    }
+                }
             }
-            
+
             return Json(Model);
         }
        

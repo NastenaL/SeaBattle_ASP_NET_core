@@ -12,7 +12,7 @@
         {
             Coord = new List<Cell>();
             Players = new List<Player>();
-            Ships = new List<Ship>();
+            Ships = new Dictionary<int, Ship>();
             width = Rules.FieldWidth;
             height = Rules.FieldHeight;
         }
@@ -21,6 +21,6 @@
 
         public List<Player> Players { get; set; }
 
-        public List<Ship> Ships { get; set; }
+        public Dictionary<int, Ship> Ships { get; set; }
     }
 }
