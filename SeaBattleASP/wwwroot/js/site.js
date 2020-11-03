@@ -79,7 +79,7 @@ function sendMessage(message) {
     $.ajax({
         type: 'POST',
         url: '/Game/MakeStep',
-        data: { type: message },
+        data: { message: message },
         success: function () {
             
         },

@@ -15,7 +15,7 @@
         private readonly Random random;
         readonly Array shipDirections = Enum.GetValues(typeof(ShipDirection));
 
-        public GameController(ApplicationContext context)
+        public GameController(ApplicationContext context, NotificationsMessageHandler notificationsMessageHandler)
         {
             random = new Random();
             DbManager.db = context;
@@ -28,7 +28,7 @@
             PlayingField = new PlayingField();
             PlayingField.CreateField();
 
-          //  this.NotificationsMessageHandler = notificationsMessageHandler;
+            this.NotificationsMessageHandler = notificationsMessageHandler;
         }
 
         #region Properties 
@@ -42,7 +42,7 @@
         #endregion
 
         [HttpPost]
-        public async void MakeStep([FromQueryAttribute]string message)
+        public async void MakeStep(string message)
         {
             if (NotificationsMessageHandler != null)
             {
