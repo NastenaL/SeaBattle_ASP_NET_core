@@ -27,7 +27,21 @@ function getCursorCoordinate(x,y) {
     });
 }
 
+function createGame(id) {
+    console.log(id);
 
+    var url = window.location.pathname;
+    var id1 = url.substring(url.lastIndexOf('/') + 1);
+    console.log(id1);
+    $.ajax({
+        type: 'POST',
+        url: '/Game/Index',
+        data: { player2Id: id, player1Id : id1},
+        success: function (response) {
+            window.location.href = response.redirectToUrl;
+        },
+    });
+}
 // функция заполняет поле элементами span
 // входной параметр - поля(левое или правое)
 function emptyCellsToField(field) {

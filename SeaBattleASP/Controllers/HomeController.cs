@@ -22,18 +22,15 @@
 
         [HttpPost]
         public IActionResult Index(string userName)
-        {
-            ViewData["PlayerName"] = userName;
+        { 
+            Player player = new Player();
             if(!string.IsNullOrEmpty(userName))
             {
-                Player player = new Player
-                {
-                    Name = userName
-                };
+                player.Name = userName;
               DbManager.SavePlayerToDB(player);
             }
 
-            return this.RedirectToAction("Index", "Game");
+            return this.RedirectToAction("Index", "Game", new {id = player.Id});
         }
 
         [HttpGet]

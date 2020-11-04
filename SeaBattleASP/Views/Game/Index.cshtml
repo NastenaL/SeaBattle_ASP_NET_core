@@ -4,7 +4,6 @@
     ViewData["Title"] = "Game Page";
 }
 
-<h2>@ViewData["PlayerName"].</h2>
 <table class="table">
     @foreach (Player p in Model.Players)
     {
@@ -12,10 +11,7 @@
             <td>@p.Id</td>
             <td>@p.Name</td>
             <td>
-                @using (Html.BeginForm("Index", "Game", FormMethod.Post))
-                {
-                    <button>PLAY</button>
-                }
+               <button onclick="return createGame(@p.Id)">PLAY</button>
             </td>
         </tr>
     }

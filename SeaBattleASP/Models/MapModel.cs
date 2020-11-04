@@ -24,5 +24,6 @@
         public Dictionary<int, Ship> Ships { get; set; }
 
         public Ship SelectedShip { get; set; }
+        public Game CurrentGame { get; set; }
     }
 }

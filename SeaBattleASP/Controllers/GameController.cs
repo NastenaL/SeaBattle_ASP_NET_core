@@ -116,19 +116,19 @@
         }
 
         [HttpPost]
-        public IActionResult Index(Player Player2)
+        public IActionResult Index(int player2Id, int player1Id)
         {
-            var name = ViewData["PlayerName"];
-
+            Model.Players = DbManager.db.Players.ToListAsync<Player>().Result;
             CurrantGame = new Game
             { 
-                Player1 = Model.Players.Find(p => p.Name == name.ToString()),
-                Player2 = Player2,
+                Player1 = Model.Players.Find(p => p.Id == player1Id),
+                Player2 = Model.Players.Find(p => p.Id == player2Id),
                 PlayingField = PlayingField
             };
 
+            Model.CurrentGame = CurrantGame;
             DbManager.SaveGameToDB(CurrantGame);
-            return this.RedirectToAction("StartGame", "Game");
+            return Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { id = CurrantGame.Id }) });
         }
 
         [HttpGet]
