@@ -45,9 +45,9 @@
         {
             List<DeckCell> selectedShip = new List<DeckCell>();
             
-            foreach(Deck deckCell in ship.Decks)
+            foreach(DeckCell deckCell in ship.DeckCells)
             {
-                selectedShip.Add(this.PlayingField.ShipsDeckCells.Find(s => s.Deck == deckCell));
+                selectedShip.Add(this.PlayingField.ShipsDeckCells.Find(s => s.Deck == deckCell.Deck));
             }
 
             var t = selectedShip;

@@ -78,9 +78,8 @@
                 db.Cells.Add(deckCell.Cell);
                 db.Decks.Add(deckCell.Deck);
                 db.DeckCells.Add(deckCell);
-                db.SaveChanges();
             }
-
+         
             db.PlayingField.Add(PlayingField);
             db.SaveChanges();
         }

@@ -9,6 +9,11 @@
 
     public abstract class Ship : IRepairable, IFireable
     {
+        public Ship()
+        {
+            DeckCells = new List<DeckCell>();
+        }
+
         public int Id { get; set; }
 
         public int Range { get; set; }
@@ -19,7 +24,7 @@
         public Player Player { get; set; }
 
         [NotMapped]
-        public List<Deck> Decks { get; set; }
+        public List<DeckCell> DeckCells { get; set; }
 
         public bool IsSelectedShip { get; set; }
 

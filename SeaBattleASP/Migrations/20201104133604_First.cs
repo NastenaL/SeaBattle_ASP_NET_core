@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SeaBattleASP.Migrations
 {
-    public partial class Init : Migration
+    public partial class First : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -21,6 +21,20 @@ namespace SeaBattleASP.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Cells", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Decks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    State = table.Column<int>(nullable: false),
+                    IsHead = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Decks", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -149,41 +163,6 @@ namespace SeaBattleASP.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Decks",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    State = table.Column<int>(nullable: false),
-                    IsHead = table.Column<bool>(nullable: false),
-                    AuxiliaryShipId = table.Column<int>(nullable: true),
-                    MilitaryShipId = table.Column<int>(nullable: true),
-                    MixShipId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Decks", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Decks_AuxiliaryShips_AuxiliaryShipId",
-                        column: x => x.AuxiliaryShipId,
-                        principalTable: "AuxiliaryShips",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Decks_MilitaryShips_MilitaryShipId",
-                        column: x => x.MilitaryShipId,
-                        principalTable: "MilitaryShips",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Decks_MixShips_MixShipId",
-                        column: x => x.MixShipId,
-                        principalTable: "MixShips",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "DeckCells",
                 columns: table => new
                 {
@@ -191,11 +170,20 @@ namespace SeaBattleASP.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     DeckId = table.Column<int>(nullable: true),
                     CellId = table.Column<int>(nullable: true),
+                    AuxiliaryShipId = table.Column<int>(nullable: true),
+                    MilitaryShipId = table.Column<int>(nullable: true),
+                    MixShipId = table.Column<int>(nullable: true),
                     PlayingFieldId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DeckCells", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DeckCells_AuxiliaryShips_AuxiliaryShipId",
+                        column: x => x.AuxiliaryShipId,
+                        principalTable: "AuxiliaryShips",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_DeckCells_Cells_CellId",
                         column: x => x.CellId,
@@ -206,6 +194,18 @@ namespace SeaBattleASP.Migrations
                         name: "FK_DeckCells_Decks_DeckId",
                         column: x => x.DeckId,
                         principalTable: "Decks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DeckCells_MilitaryShips_MilitaryShipId",
+                        column: x => x.MilitaryShipId,
+                        principalTable: "MilitaryShips",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DeckCells_MixShips_MixShipId",
+                        column: x => x.MixShipId,
+                        principalTable: "MixShips",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -222,6 +222,11 @@ namespace SeaBattleASP.Migrations
                 column: "PlayerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DeckCells_AuxiliaryShipId",
+                table: "DeckCells",
+                column: "AuxiliaryShipId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DeckCells_CellId",
                 table: "DeckCells",
                 column: "CellId");
@@ -232,24 +237,19 @@ namespace SeaBattleASP.Migrations
                 column: "DeckId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DeckCells_PlayingFieldId",
+                name: "IX_DeckCells_MilitaryShipId",
                 table: "DeckCells",
-                column: "PlayingFieldId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Decks_AuxiliaryShipId",
-                table: "Decks",
-                column: "AuxiliaryShipId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Decks_MilitaryShipId",
-                table: "Decks",
                 column: "MilitaryShipId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Decks_MixShipId",
-                table: "Decks",
+                name: "IX_DeckCells_MixShipId",
+                table: "DeckCells",
                 column: "MixShipId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DeckCells_PlayingFieldId",
+                table: "DeckCells",
+                column: "PlayingFieldId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Games_Player1Id",
@@ -286,22 +286,22 @@ namespace SeaBattleASP.Migrations
                 name: "Games");
 
             migrationBuilder.DropTable(
+                name: "AuxiliaryShips");
+
+            migrationBuilder.DropTable(
                 name: "Cells");
 
             migrationBuilder.DropTable(
                 name: "Decks");
 
             migrationBuilder.DropTable(
-                name: "PlayingField");
-
-            migrationBuilder.DropTable(
-                name: "AuxiliaryShips");
-
-            migrationBuilder.DropTable(
                 name: "MilitaryShips");
 
             migrationBuilder.DropTable(
                 name: "MixShips");
+
+            migrationBuilder.DropTable(
+                name: "PlayingField");
 
             migrationBuilder.DropTable(
                 name: "Players");

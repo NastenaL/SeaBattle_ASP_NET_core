@@ -26,15 +26,19 @@
                     break;
             };
             
-            List<Deck> decks = new List<Deck>();
+            List<DeckCell> decks = new List<DeckCell>();
 
             for (int i = 0; i < range; i++)
             {
-                decks.Add(new Deck(Enums.DeckState.Normal, decks.Count == 0? true:false));
+                DeckCell d = new DeckCell
+                {
+                    Deck = new Deck(Enums.DeckState.Normal, decks.Count == 0 ? true : false)
+                };
+                decks.Add(d);
             }
 
             ship.Range = range;
-            ship.Decks = decks;
+            ship.DeckCells = decks;
          
             ship.Direction = GenerateDirection();
             return ship;

@@ -64,6 +64,7 @@
                         ship.IsSelectedShip = true;
                         var shipCoordinates = GetCoordinatesForShip(ship);
 
+                        ship.DeckCells = shipCoordinates;
                         DbManager.SaveShipToDB(ship);
                         DbManager.SaveDeckCellAndPlayingFieldToDB(shipCoordinates, PlayingField);
 
@@ -95,11 +96,11 @@
             var initalPoint = ShipManager.GetRandomPoint(random);
             var direction = (ShipDirection)shipDirections.GetValue(random.Next(shipDirections.Length));
 
-            foreach (Deck deck in ship.Decks)
+            foreach (DeckCell deck in ship.DeckCells)
             {
                 initalPoint  = ShipManager.ShiftPoint(initalPoint, direction);
 
-                var currentDeckCell = DeckCell.Create(initalPoint, deck);
+                var currentDeckCell = DeckCell.Create(initalPoint, deck.Deck);
                 ShipDeckCells.Add(currentDeckCell);
 
                 var isShip = ShipManager.CheckShipWithOtherShips(initalPoint, PlayingField);

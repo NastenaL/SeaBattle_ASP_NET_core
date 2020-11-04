@@ -1,29 +1,32 @@
-﻿@{
+﻿@model SeaBattleASP.Models.MapModel
+
+@{
     ViewData["Title"] = "Setting Page";
 }
 
 <table class="table">
     <tr>
         <td>Width:</td>
-        <td>@ViewData["Width"]</td>
+        <td>@Model.width</td>
     </tr>
     <tr>
         <td>Height:</td>
-        <td>@ViewData["Height"]</td>
+        <td>@Model.height</td>
     </tr>
     <tr>
         <td>Type</td>
         <td>Range</td>
         <td>Decks</td>
     </tr>
-    @foreach (Ship p in Model)
+    @foreach (KeyValuePair<int, Ship> p in Model.Ships)
     {
         <tr>
-            <td>@p.GetType()</td>
-            <td>@p.Range</td>
-            @foreach (Deck d in p.Decks)
+            <td>@p.Key</td>
+            <td>@p.Value.GetType()</td>
+            <td>@p.Value.Range</td>
+            @foreach (DeckCell d in p.Value.DeckCells)
             {
-                <td>@d.State</td>
+                <td>@d.Deck.State</td>
             }
         </tr>
     }

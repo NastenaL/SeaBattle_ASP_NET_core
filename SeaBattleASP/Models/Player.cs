@@ -27,11 +27,15 @@
             List<Player> ingame = new List<Player>();
             foreach (Game g in games)
             {
-                var players = Model.Players.Where(i => i.Id != g.Player1.Id || i.Id != g.Player2.Id).ToList();
-                if (players.Count > 0)
+                if(g.Player1 != null && g.Player2 != null)
                 {
-                    ingame.AddRange(players);
+                    var players = Model.Players.Where(i => i.Id != g.Player1.Id || i.Id != g.Player2.Id).ToList();
+                    if (players.Count > 0)
+                    {
+                        ingame.AddRange(players);
+                    }
                 }
+                
             }
             return ingame;
         }

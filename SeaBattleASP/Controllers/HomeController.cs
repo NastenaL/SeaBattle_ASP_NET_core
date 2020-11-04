@@ -36,12 +36,14 @@
         [HttpGet]
         public IActionResult Setting()
         {
-            ViewData["Width"] = Rules.FieldWidth;
-            ViewData["Height"] = Rules.FieldHeight;
+            MapModel model = new MapModel
+            {
+                Ships = Rules.CreateShips(),
+                width = Rules.FieldWidth,
+                height = Rules.FieldHeight
+            };
 
-           
-            var defaultShips = Rules.CreateShips();
-            return View(defaultShips);
+            return View(model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
