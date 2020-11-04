@@ -9,6 +9,7 @@
     using SeaBattleASP.Models.Enums;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     public class GameController : Controller
     {
@@ -152,11 +153,10 @@
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Message = TempData["PlayerName"];
-            Model.Players = DbManager.db.Players.ToListAsync<Player>().Result;
+            Model.Players = PlayerManager.GetPlayersNotInGame(Model);
             return View(Model);
         }
-
+       
         [HttpPost]
         public IActionResult EndGame()
         {
