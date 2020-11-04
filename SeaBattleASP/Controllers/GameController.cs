@@ -9,7 +9,6 @@
     using SeaBattleASP.Models.Enums;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
 
     public class GameController : Controller
     {
@@ -69,7 +68,7 @@
                         DbManager.SaveDeckCellAndPlayingFieldToDB(shipCoordinates, PlayingField);
 
                         Model.SelectedShip = ship;
-                        ShipManager.FillMapModel(shipCoordinates, Model);
+                        MapModel.FillMapModelWithCoordinates(shipCoordinates, Model);
                     }
                 }
             }
@@ -100,7 +99,7 @@
             {
                 initalPoint  = ShipManager.ShiftPoint(initalPoint, direction);
 
-                var currentDeckCell = ShipManager.CreateDeckCell(initalPoint, deck);
+                var currentDeckCell = DeckCell.Create(initalPoint, deck);
                 ShipDeckCells.Add(currentDeckCell);
 
                 var isShip = ShipManager.CheckShipWithOtherShips(initalPoint, PlayingField);
@@ -120,15 +119,12 @@
         public IActionResult Index(int player2Id, int player1Id)
         {
             Model.Players = DbManager.db.Players.ToListAsync<Player>().Result;
-            CurrantGame = new Game
-            { 
-                Player1 = Model.Players.Find(p => p.Id == player1Id),
-                Player2 = Model.Players.Find(p => p.Id == player2Id),
-                PlayingField = PlayingField
-            };
-
-            Model.CurrentGame = CurrantGame;
-            DbManager.SaveGameToDB(CurrantGame);
+            if(player2Id != player1Id)
+            {
+                CurrantGame = Game.Create(Model.Players, player1Id, player2Id, PlayingField);
+                Model.CurrentGame = CurrantGame;
+                DbManager.SaveGameToDB(CurrantGame);
+            }
             return Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { id = CurrantGame.Id }) });
         }
 
@@ -153,7 +149,7 @@
         [HttpGet]
         public IActionResult Index()
         {
-            Model.Players = PlayerManager.GetPlayersNotInGame(Model);
+            Model.Players = Player.GetPlayersNotInGame(Model);
             return View(Model);
         }
        

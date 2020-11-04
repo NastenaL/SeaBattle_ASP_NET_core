@@ -18,7 +18,16 @@
 
         public bool IsPl1Turn { get; set; }
 
-
+        public static Game Create(List<Player> players, int player1Id, int player2Id, PlayingField playingField)
+        {
+            Game game = new Game
+            {
+                Player1 = players.Find(p => p.Id == player1Id),
+                Player2 = players.Find(p => p.Id == player2Id),
+                PlayingField = playingField
+            };
+            return game;
+        }
         public void StartGame()
         {
             this.State = GameState.Started;
