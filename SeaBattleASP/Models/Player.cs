@@ -14,7 +14,7 @@
         {
             Model.Players = DbManager.db.Players.ToListAsync<Player>().Result;
             var games = DbManager.db.Games.ToListAsync<Game>().Result;
-            List<Player> ingame = new List<Player>();
+            List<Player> ingame = Model.Players;
             if (games.Count > 0)
             {
                 ingame = CheckPlayersInNotGame(games, Model);

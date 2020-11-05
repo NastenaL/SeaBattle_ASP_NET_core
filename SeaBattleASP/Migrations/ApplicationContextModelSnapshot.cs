@@ -19,27 +19,6 @@ namespace SeaBattleASP.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("SeaBattleASP.Models.AuxiliaryShip", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("IsSelectedShip");
-
-                    b.Property<int?>("PlayerId");
-
-                    b.Property<int>("Range");
-
-                    b.Property<int>("ShipType");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PlayerId");
-
-                    b.ToTable("AuxiliaryShips");
-                });
-
             modelBuilder.Entity("SeaBattleASP.Models.Cell", b =>
                 {
                     b.Property<int>("Id")
@@ -120,48 +99,6 @@ namespace SeaBattleASP.Migrations
                     b.ToTable("Games");
                 });
 
-            modelBuilder.Entity("SeaBattleASP.Models.MilitaryShip", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("IsSelectedShip");
-
-                    b.Property<int?>("PlayerId");
-
-                    b.Property<int>("Range");
-
-                    b.Property<int>("ShipType");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PlayerId");
-
-                    b.ToTable("MilitaryShips");
-                });
-
-            modelBuilder.Entity("SeaBattleASP.Models.MixShip", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("IsSelectedShip");
-
-                    b.Property<int?>("PlayerId");
-
-                    b.Property<int>("Range");
-
-                    b.Property<int>("ShipType");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PlayerId");
-
-                    b.ToTable("MixShips");
-                });
-
             modelBuilder.Entity("SeaBattleASP.Models.Player", b =>
                 {
                     b.Property<int>("Id")
@@ -190,11 +127,75 @@ namespace SeaBattleASP.Migrations
                     b.ToTable("PlayingField");
                 });
 
+            modelBuilder.Entity("SeaBattleASP.Models.PlayingShip", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ShipId");
+
+                    b.Property<int>("ShipType");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShipId");
+
+                    b.ToTable("PlayingShips");
+                });
+
+            modelBuilder.Entity("SeaBattleASP.Models.Ship", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired();
+
+                    b.Property<bool>("IsSelectedShip");
+
+                    b.Property<int?>("PlayerId");
+
+                    b.Property<int>("Range");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlayerId");
+
+                    b.ToTable("Ship");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Ship");
+                });
+
             modelBuilder.Entity("SeaBattleASP.Models.AuxiliaryShip", b =>
                 {
-                    b.HasOne("SeaBattleASP.Models.Player", "Player")
-                        .WithMany()
-                        .HasForeignKey("PlayerId");
+                    b.HasBaseType("SeaBattleASP.Models.Ship");
+
+
+                    b.ToTable("AuxiliaryShip");
+
+                    b.HasDiscriminator().HasValue("AuxiliaryShip");
+                });
+
+            modelBuilder.Entity("SeaBattleASP.Models.MilitaryShip", b =>
+                {
+                    b.HasBaseType("SeaBattleASP.Models.Ship");
+
+
+                    b.ToTable("MilitaryShip");
+
+                    b.HasDiscriminator().HasValue("MilitaryShip");
+                });
+
+            modelBuilder.Entity("SeaBattleASP.Models.MixShip", b =>
+                {
+                    b.HasBaseType("SeaBattleASP.Models.Ship");
+
+
+                    b.ToTable("MixShip");
+
+                    b.HasDiscriminator().HasValue("MixShip");
                 });
 
             modelBuilder.Entity("SeaBattleASP.Models.DeckCell", b =>
@@ -223,14 +224,14 @@ namespace SeaBattleASP.Migrations
                         .HasForeignKey("PlayingFieldId");
                 });
 
-            modelBuilder.Entity("SeaBattleASP.Models.MilitaryShip", b =>
+            modelBuilder.Entity("SeaBattleASP.Models.PlayingShip", b =>
                 {
-                    b.HasOne("SeaBattleASP.Models.Player", "Player")
+                    b.HasOne("SeaBattleASP.Models.Ship", "Ship")
                         .WithMany()
-                        .HasForeignKey("PlayerId");
+                        .HasForeignKey("ShipId");
                 });
 
-            modelBuilder.Entity("SeaBattleASP.Models.MixShip", b =>
+            modelBuilder.Entity("SeaBattleASP.Models.Ship", b =>
                 {
                     b.HasOne("SeaBattleASP.Models.Player", "Player")
                         .WithMany()

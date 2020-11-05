@@ -2,9 +2,9 @@
 {
     using SeaBattleASP.Helpers;
     using SeaBattleASP.Models.Constants;
-    using SeaBattleASP.Models.Enums;
     using SeaBattleASP.Models.Interfaces;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Drawing;
 
@@ -15,6 +15,7 @@
             DeckCells = new List<DeckCell>();
         }
 
+        [Key]
         public int Id { get; set; }
 
         public int Range { get; set; }
@@ -23,9 +24,6 @@
         public Point Direction { get; set; }
 
         public Player Player { get; set; }
-
-        [NotMapped]
-        public ShipType ShipType { get; set; }
 
         [NotMapped]
         public List<DeckCell> DeckCells { get; set; }

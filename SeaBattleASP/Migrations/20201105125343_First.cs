@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SeaBattleASP.Migrations
 {
-    public partial class MyMigration : Migration
+    public partial class First : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -91,65 +91,21 @@ namespace SeaBattleASP.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AuxiliaryShips",
+                name: "Ship",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Range = table.Column<int>(nullable: false),
                     PlayerId = table.Column<int>(nullable: true),
-                    ShipType = table.Column<int>(nullable: false),
-                    IsSelectedShip = table.Column<bool>(nullable: false)
+                    IsSelectedShip = table.Column<bool>(nullable: false),
+                    Discriminator = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AuxiliaryShips", x => x.Id);
+                    table.PrimaryKey("PK_Ship", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AuxiliaryShips_Players_PlayerId",
-                        column: x => x.PlayerId,
-                        principalTable: "Players",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MilitaryShips",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Range = table.Column<int>(nullable: false),
-                    PlayerId = table.Column<int>(nullable: true),
-                    ShipType = table.Column<int>(nullable: false),
-                    IsSelectedShip = table.Column<bool>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MilitaryShips", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MilitaryShips_Players_PlayerId",
-                        column: x => x.PlayerId,
-                        principalTable: "Players",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MixShips",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Range = table.Column<int>(nullable: false),
-                    PlayerId = table.Column<int>(nullable: true),
-                    ShipType = table.Column<int>(nullable: false),
-                    IsSelectedShip = table.Column<bool>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MixShips", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MixShips_Players_PlayerId",
+                        name: "FK_Ship_Players_PlayerId",
                         column: x => x.PlayerId,
                         principalTable: "Players",
                         principalColumn: "Id",
@@ -191,10 +147,25 @@ namespace SeaBattleASP.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_AuxiliaryShips_PlayerId",
-                table: "AuxiliaryShips",
-                column: "PlayerId");
+            migrationBuilder.CreateTable(
+                name: "PlayingShips",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ShipId = table.Column<int>(nullable: true),
+                    ShipType = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PlayingShips", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PlayingShips_Ship_ShipId",
+                        column: x => x.ShipId,
+                        principalTable: "Ship",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeckCells_CellId",
@@ -222,21 +193,18 @@ namespace SeaBattleASP.Migrations
                 column: "PlayingFieldId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MilitaryShips_PlayerId",
-                table: "MilitaryShips",
-                column: "PlayerId");
+                name: "IX_PlayingShips_ShipId",
+                table: "PlayingShips",
+                column: "ShipId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MixShips_PlayerId",
-                table: "MixShips",
+                name: "IX_Ship_PlayerId",
+                table: "Ship",
                 column: "PlayerId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "AuxiliaryShips");
-
             migrationBuilder.DropTable(
                 name: "DeckCells");
 
@@ -244,10 +212,7 @@ namespace SeaBattleASP.Migrations
                 name: "Games");
 
             migrationBuilder.DropTable(
-                name: "MilitaryShips");
-
-            migrationBuilder.DropTable(
-                name: "MixShips");
+                name: "PlayingShips");
 
             migrationBuilder.DropTable(
                 name: "Cells");
@@ -257,6 +222,9 @@ namespace SeaBattleASP.Migrations
 
             migrationBuilder.DropTable(
                 name: "PlayingField");
+
+            migrationBuilder.DropTable(
+                name: "Ship");
 
             migrationBuilder.DropTable(
                 name: "Players");

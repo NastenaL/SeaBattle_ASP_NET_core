@@ -61,11 +61,20 @@
                     var ship = k.Value;
                     if (ship != null)
                     {
-                        ship.IsSelectedShip = true;
-                        var shipCoordinates = GetCoordinatesForShip(ship);
+                        ship.Player = Model.CurrantPlayer;
+
+                        var shipType = ship.GetType();
+                        var type = Enum.Parse(typeof(ShipType), shipType.Name);
+                        PlayingShip playingShip = new PlayingShip
+                        {
+                            Ship = ship,
+                            ShipType = (ShipType)type
+                        };
+
+                        var shipCoordinates = GetCoordinatesForShip(playingShip);
 
                         ship.DeckCells = shipCoordinates;
-                        DbManager.SaveShipToDB(ship);
+                        DbManager.SaveShipToDB(ship, playingShip);
                         DbManager.SaveDeckCellAndPlayingFieldToDB(shipCoordinates, PlayingField);
 
                         Model.SelectedShip = ship;
@@ -82,9 +91,9 @@
         public IActionResult SelectShip(int x, int y)
         {
             DeckCell test = new DeckCell();
-            foreach(Ship ship in PlayingField.Ships)
+            foreach(PlayingShip ship in PlayingField.PlayingShips)
             {
-                test = ship.DeckCells.Find(s => s.Cell.X == x && s.Cell.Y == y);
+                test = ship.Ship.DeckCells.Find(s => s.Cell.X == x && s.Cell.Y == y);
             }
            
             if(test == null)
@@ -94,14 +103,14 @@
             return Json(test);
         }
 
-        private List<DeckCell> GetCoordinatesForShip(Ship ship)
+        private List<DeckCell> GetCoordinatesForShip(PlayingShip ship)
         {
             List<DeckCell> ShipDeckCells = new List<DeckCell>();
 
             var initalPoint = ShipManager.GetRandomPoint(random);
             var direction = (ShipDirection)shipDirections.GetValue(random.Next(shipDirections.Length));
 
-            foreach (DeckCell deck in ship.DeckCells)
+            foreach (DeckCell deck in ship.Ship.DeckCells)
             {
                 initalPoint  = ShipManager.ShiftPoint(initalPoint, direction);
 
@@ -117,7 +126,7 @@
                     ShipDeckCells = GetCoordinatesForShip(ship);
                 }
             }
-            PlayingField.Ships.Add(ship);
+            PlayingField.PlayingShips.Add(ship);
             return ShipDeckCells;
         }
 
@@ -125,6 +134,7 @@
         public IActionResult Index(int player2Id, int player1Id)
         {
             Model.Players = DbManager.db.Players.ToListAsync<Player>().Result;
+            Model.CurrantPlayer = Model.Players.Find(s => s.Id == player1Id);
             if(player2Id != player1Id)
             {
                 CurrantGame = Game.Create(Model.Players, player1Id, player2Id, PlayingField);

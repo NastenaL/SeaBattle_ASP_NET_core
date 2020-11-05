@@ -29,6 +29,8 @@
         public Ship SelectedShip { get; set; }
 
         public Game CurrentGame { get; set; }
+
+        public Player CurrantPlayer { get; set; }
         #endregion
 
         public static void FillMapModelWithCoordinates(List<DeckCell> shipCoordinates, MapModel Model)

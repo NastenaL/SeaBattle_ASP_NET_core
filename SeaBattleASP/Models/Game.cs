@@ -50,7 +50,6 @@
          //       selectedShip.Add(this.PlayingField.Ships.Find(s => s.DeckCells == deckCell));
             }
 
-            var t = selectedShip;
             if (movementType == MovementType.Fire)
             {
                 ship.Fire(EnemyShipsDecks, selectedShip);

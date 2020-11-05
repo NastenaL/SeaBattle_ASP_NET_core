@@ -26,14 +26,14 @@
         {
             db.Games.Remove(CurrantGame);
 
-            var fields = db.PlayingField.ToListAsync<PlayingField>().Result;
+            var fields = db.PlayingFields.ToListAsync<PlayingField>().Result;
             var decks = db.Decks.ToListAsync<Deck>().Result;
             var cells = db.Cells.ToListAsync<Cell>().Result;
             var cellDecks = db.DeckCells.ToListAsync<DeckCell>().Result;
 
-            foreach (var cell in CurrantGame.PlayingField.Ships)
+            foreach (var cell in CurrantGame.PlayingField.PlayingShips)
             {
-                foreach(DeckCell deckCell in cell.DeckCells)
+                foreach(DeckCell deckCell in cell.Ship.DeckCells)
                 {
                     db.Decks.Remove(deckCell.Deck);
                     db.Cells.Remove(deckCell.Cell);
@@ -44,7 +44,7 @@
             var currentField = fields.Find(f => f == CurrantGame.PlayingField);
             if (currentField != null)
             {
-                db.PlayingField.Remove(currentField);
+                db.PlayingFields.Remove(currentField);
             }
 
             db.SaveChanges();
@@ -56,7 +56,7 @@
             db.SaveChanges();
         }
 
-        public static void SaveShipToDB(Ship ship)
+        public static void SaveShipToDB(Ship ship, PlayingShip playingShip)
         {
             var shipType = ship.GetType();
             var type = Enum.Parse(typeof(ShipType), shipType.Name);
@@ -73,6 +73,7 @@
                     break;
             };
 
+            db.PlayingShips.Add(playingShip);
             db.SaveChanges();
         }
 
@@ -85,7 +86,7 @@
                 db.DeckCells.Add(deckCell);
             }
          
-            db.PlayingField.Add(PlayingField);
+            db.PlayingFields.Add(PlayingField);
             db.SaveChanges();
         }
     }

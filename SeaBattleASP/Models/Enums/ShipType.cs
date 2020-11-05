@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace SeaBattleASP.Models.Enums
+﻿namespace SeaBattleASP.Models.Enums
 {
     public enum ShipType
     {
