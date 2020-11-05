@@ -22,31 +22,34 @@
             db.SaveChanges();
         }
 
-        public static void DeleteGameFromDb(Game CurrantGame)
+        private static void DeleteDecksAndCells(Game CurrantGame)
         {
-            db.Games.Remove(CurrantGame);
-
-            var fields = db.PlayingFields.ToListAsync<PlayingField>().Result;
-            var decks = db.Decks.ToListAsync<Deck>().Result;
-            var cells = db.Cells.ToListAsync<Cell>().Result;
-            var cellDecks = db.DeckCells.ToListAsync<DeckCell>().Result;
-
             foreach (var cell in CurrantGame.PlayingField.PlayingShips)
             {
-                foreach(DeckCell deckCell in cell.Ship.DeckCells)
+                foreach (DeckCell deckCell in cell.Ship.DeckCells)
                 {
                     db.Decks.Remove(deckCell.Deck);
                     db.Cells.Remove(deckCell.Cell);
                     db.DeckCells.Remove(deckCell);
                 }
             }
+        }
 
-            var currentField = fields.Find(f => f == CurrantGame.PlayingField);
+        private static void DeletePlayingField(Game game)
+        {
+            var fields = db.PlayingFields.ToListAsync<PlayingField>().Result;
+            var currentField = fields.Find(f => f == game.PlayingField);
             if (currentField != null)
             {
                 db.PlayingFields.Remove(currentField);
             }
+        }
 
+        public static void DeleteGameFromDb(Game game)
+        {
+            db.Games.Remove(game);
+            DeleteDecksAndCells(game);
+            DeletePlayingField(game);
             db.SaveChanges();
         }
 

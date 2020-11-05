@@ -50,7 +50,7 @@
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-
+            
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
@@ -68,10 +68,6 @@
             app.UseWebSockets();
             app.MapWebSocketManager("/ws", serviceProvider.GetService<NotificationsMessageHandler>());
             app.UseStaticFiles();
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapControllers();
-            //});
         }
     }
 }

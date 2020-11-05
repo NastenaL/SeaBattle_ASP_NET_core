@@ -45,6 +45,8 @@
         [HttpPost]
         public async void MakeStep(string message)
         {
+            ConnectionManager connectionManager = new ConnectionManager();
+            var connections = connectionManager.GetAll();
             if (NotificationsMessageHandler != null)
             {
                 await this.NotificationsMessageHandler.SendMessageToAllAsync(message);
@@ -83,12 +85,9 @@
             {
                 deckCell = ship.Ship.DeckCells.Find(s => s.Cell.X == x && s.Cell.Y == y);
             }
-           
-            if(deckCell == null)
-            {
-                return Json("Ship not found");
-            }
-            return Json(deckCell);
+
+            var result = deckCell == null ? Json("Ship not found") : Json(deckCell);
+            return result;
         }
 
         private List<DeckCell> GetCoordinatesForShip(PlayingShip playingShip)

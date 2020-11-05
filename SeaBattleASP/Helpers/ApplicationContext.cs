@@ -34,11 +34,6 @@
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<PlayingField>().ToTable("PlayingField");
-            //modelBuilder.Entity<Game>().ToTable("Game");
-            //modelBuilder.Entity<DeckCell>().ToTable("DeckCell");
-            //modelBuilder.Entity<MilitaryShip>().ToTable("Ship");
-            //modelBuilder.Entity<AuxiliaryShip>().ToTable("Ship");
-            //modelBuilder.Entity<MixShip>().ToTable("Ship");
 
             //modelBuilder.Entity<CourseAssignment>()
             //    .HasKey(c => new { c.CourseID, c.InstructorID });
