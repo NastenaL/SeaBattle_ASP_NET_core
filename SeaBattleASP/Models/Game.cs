@@ -47,7 +47,7 @@
             
             foreach(DeckCell deckCell in ship.DeckCells)
             {
-                selectedShip.Add(this.PlayingField.ShipsDeckCells.Find(s => s.Deck == deckCell.Deck));
+         //       selectedShip.Add(this.PlayingField.Ships.Find(s => s.DeckCells == deckCell));
             }
 
             var t = selectedShip;

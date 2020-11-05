@@ -12,8 +12,8 @@
 
         public static void SaveGameToDB(Game CurrantGame)
         {
-            DbManager.db.Games.Add(CurrantGame);
-            DbManager.db.SaveChanges();
+            db.Games.Add(CurrantGame);
+            db.SaveChanges();
         }
 
         public static void SavePlayerToDB(Player player)
@@ -24,33 +24,36 @@
 
         public static void DeleteGameFromDb(Game CurrantGame)
         {
-            DbManager.db.Games.Remove(CurrantGame);
+            db.Games.Remove(CurrantGame);
 
-            var fields = DbManager.db.PlayingField.ToListAsync<PlayingField>().Result;
-            var decks = DbManager.db.Decks.ToListAsync<Deck>().Result;
-            var cells = DbManager.db.Cells.ToListAsync<Cell>().Result;
-            var cellDecks = DbManager.db.DeckCells.ToListAsync<DeckCell>().Result;
+            var fields = db.PlayingField.ToListAsync<PlayingField>().Result;
+            var decks = db.Decks.ToListAsync<Deck>().Result;
+            var cells = db.Cells.ToListAsync<Cell>().Result;
+            var cellDecks = db.DeckCells.ToListAsync<DeckCell>().Result;
 
-            foreach (var cell in CurrantGame.PlayingField.ShipsDeckCells)
+            foreach (var cell in CurrantGame.PlayingField.Ships)
             {
-                DbManager.db.Decks.Remove(cell.Deck);
-                DbManager.db.Cells.Remove(cell.Cell);
-                DbManager.db.DeckCells.Remove(cell);
+                foreach(DeckCell deckCell in cell.DeckCells)
+                {
+                    db.Decks.Remove(deckCell.Deck);
+                    db.Cells.Remove(deckCell.Cell);
+                    db.DeckCells.Remove(deckCell);
+                }
             }
 
             var currentField = fields.Find(f => f == CurrantGame.PlayingField);
             if (currentField != null)
             {
-                DbManager.db.PlayingField.Remove(currentField);
+                db.PlayingField.Remove(currentField);
             }
 
-            DbManager.db.SaveChanges();
+            db.SaveChanges();
         }
 
         public static void UpdateGameInDb(Game CurrantGame)
         {
-            DbManager.db.Update(CurrantGame);
-            DbManager.db.SaveChanges();
+            db.Update(CurrantGame);
+            db.SaveChanges();
         }
 
         public static void SaveShipToDB(Ship ship)
@@ -69,6 +72,8 @@
                     db.MixShips.Add((MixShip)ship);
                     break;
             };
+
+            db.SaveChanges();
         }
 
         public static void SaveDeckCellAndPlayingFieldToDB(List<DeckCell> shipCoordinates, PlayingField PlayingField)

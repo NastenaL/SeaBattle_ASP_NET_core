@@ -1,9 +1,11 @@
-﻿namespace SeaBattleASP.Models.Enums
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SeaBattleASP.Models.Enums
 {
     public enum ShipType
     {
-        AuxiliaryShip, 
-        MilitaryShip, 
-        MixShip
+        AuxiliaryShip = 1, 
+        MilitaryShip = 2, 
+        MixShip = 3
     }
 }

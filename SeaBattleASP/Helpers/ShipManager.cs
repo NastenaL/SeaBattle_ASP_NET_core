@@ -13,17 +13,20 @@
         public static bool CheckShipWithOtherShips(Point point, PlayingField PlayingField)
         {
             bool error = false;
-            if (PlayingField.ShipsDeckCells.Count > 1)
+            if (PlayingField.Ships.Count > 1)
             {
-                foreach (var p in PlayingField.ShipsDeckCells.ToList())
+                foreach (var p in PlayingField.Ships.ToList())
                 {
-                    if (point.X == p.Cell.X && point.Y == p.Cell.Y) //Check coincidence cells
-                                                                    /* || ((point.X == po.Key.Coordinate.X + 1 && point.Y == po.Key.Coordinate.Y) ||//Check adjacent cells
-                                                                         (point.X == po.Key.Coordinate.X && point.Y == po.Key.Coordinate.Y + 1))) */
+                    foreach(DeckCell deckCell in p.DeckCells)
                     {
-                        error = true;
+                        if (point.X == deckCell.Cell.X && point.Y == deckCell.Cell.Y) //Check coincidence cells
+                                                                        /* || ((point.X == po.Key.Coordinate.X + 1 && point.Y == po.Key.Coordinate.Y) ||//Check adjacent cells
+                                                                             (point.X == po.Key.Coordinate.X && point.Y == po.Key.Coordinate.Y + 1))) */
+                        {
+                            error = true;
+                        }
                     }
-
+                    
                 }
             }
             return error;

@@ -81,12 +81,17 @@
         [HttpPost]
         public IActionResult SelectShip(int x, int y)
         {
-            var shipDeckCell = PlayingField.ShipsDeckCells.Find(s => s.Cell.X == x && s.Cell.Y == y);
-            if(shipDeckCell == null)
+            DeckCell test = new DeckCell();
+            foreach(Ship ship in PlayingField.Ships)
+            {
+                test = ship.DeckCells.Find(s => s.Cell.X == x && s.Cell.Y == y);
+            }
+           
+            if(test == null)
             {
                 return Json("Ship not found");
             }
-            return Json(shipDeckCell);
+            return Json(test);
         }
 
         private List<DeckCell> GetCoordinatesForShip(Ship ship)
@@ -112,7 +117,7 @@
                     ShipDeckCells = GetCoordinatesForShip(ship);
                 }
             }
-            PlayingField.ShipsDeckCells.AddRange(ShipDeckCells);
+            PlayingField.Ships.Add(ship);
             return ShipDeckCells;
         }
 

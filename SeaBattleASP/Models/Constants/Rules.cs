@@ -16,13 +16,22 @@
             switch (type)
             {
                 case ShipType.AuxiliaryShip:
-                    ship = new AuxiliaryShip();
+                    ship = new AuxiliaryShip
+                    {
+                        ShipType = ShipType.AuxiliaryShip
+                    };
                     break;
                 case ShipType.MilitaryShip:
-                    ship = new MilitaryShip();
+                    ship = new MilitaryShip
+                    {
+                        ShipType = ShipType.MilitaryShip
+                    };
                     break;
                 case ShipType.MixShip:
-                    ship = new MixShip();
+                    ship = new MixShip
+                    {
+                        ShipType = ShipType.MixShip
+                    };
                     break;
             };
             

@@ -2,6 +2,7 @@
 {
     using SeaBattleASP.Helpers;
     using SeaBattleASP.Models.Constants;
+    using SeaBattleASP.Models.Enums;
     using SeaBattleASP.Models.Interfaces;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations.Schema;
@@ -22,6 +23,9 @@
         public Point Direction { get; set; }
 
         public Player Player { get; set; }
+
+        [NotMapped]
+        public ShipType ShipType { get; set; }
 
         [NotMapped]
         public List<DeckCell> DeckCells { get; set; }

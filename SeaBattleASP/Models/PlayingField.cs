@@ -2,17 +2,19 @@
 {
     using SeaBattleASP.Models.Constants;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public class PlayingField
     {
         public PlayingField()
         {
-            ShipsDeckCells = new List<DeckCell>();
+            Ships = new List<Ship>();
         }
 
         public int Id { get; set; }
 
-        public List<DeckCell> ShipsDeckCells { get; set; }
+        [NotMapped]
+        public List<Ship> Ships { get; set; }
 
         public int Width { get; set; }
 
