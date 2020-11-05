@@ -30,6 +30,20 @@
 
         public bool IsSelectedShip { get; set; }
 
+        public static Ship GetShipById(int id, MapModel model)
+        {
+            Ship ship = null;
+
+            foreach (KeyValuePair<int, Ship> k in model.Ships)
+            {
+                if (k.Key == id)
+                {
+                    ship = k.Value;
+                }
+            }
+            return ship;
+        }
+
         public virtual void Fire(List<DeckCell> enemyShips, List<DeckCell> selectedShip)
         {
             var neighborsPoints = DeckCell.GetNeighboringPoints(selectedShip, this.Range);

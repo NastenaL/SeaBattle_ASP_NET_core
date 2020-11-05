@@ -9,6 +9,7 @@
     using SeaBattleASP.Models.Enums;
     using System;
     using System.Collections.Generic;
+    using System.Drawing;
 
     public class GameController : Controller
     {
@@ -50,37 +51,24 @@
             }
 
         }
-
+         
         [HttpPost]
         public IActionResult AddShipToField(int id)
         {
-            foreach(KeyValuePair<int, Ship> k in Model.Ships)
+            var ship = Ship.GetShipById(id, Model);
+            if (ship != null)
             {
-                if(k.Key == id)
-                {
-                    var ship = k.Value;
-                    if (ship != null)
-                    {
-                        ship.Player = Model.CurrantPlayer;
+                ship.Player = Model.CurrantPlayer;
 
-                        var shipType = ship.GetType();
-                        var type = Enum.Parse(typeof(ShipType), shipType.Name);
-                        PlayingShip playingShip = new PlayingShip
-                        {
-                            Ship = ship,
-                            ShipType = (ShipType)type
-                        };
+                PlayingShip playingShip = PlayingShip.Create(ship);
 
-                        var shipCoordinates = GetCoordinatesForShip(playingShip);
+                var shipDeckCells = GetCoordinatesForShip(playingShip);
+                ship.DeckCells = shipDeckCells;
 
-                        ship.DeckCells = shipCoordinates;
-                        DbManager.SaveShipToDB(ship, playingShip);
-                        DbManager.SaveDeckCellAndPlayingFieldToDB(shipCoordinates, PlayingField);
-
-                        Model.SelectedShip = ship;
-                        MapModel.FillMapModelWithCoordinates(shipCoordinates, Model);
-                    }
-                }
+                DbManager.SaveShipToDB(ship, playingShip);
+                DbManager.SaveDeckCellAndPlayingFieldToDB(shipDeckCells, PlayingField);
+                Model.SelectedShip = ship;
+                MapModel.FillMapModelWithCoordinates(shipDeckCells, Model);
             }
 
             return Json(Model);
@@ -90,43 +78,49 @@
         [HttpPost]
         public IActionResult SelectShip(int x, int y)
         {
-            DeckCell test = new DeckCell();
+            DeckCell deckCell = new DeckCell();
             foreach(PlayingShip ship in PlayingField.PlayingShips)
             {
-                test = ship.Ship.DeckCells.Find(s => s.Cell.X == x && s.Cell.Y == y);
+                deckCell = ship.Ship.DeckCells.Find(s => s.Cell.X == x && s.Cell.Y == y);
             }
            
-            if(test == null)
+            if(deckCell == null)
             {
                 return Json("Ship not found");
             }
-            return Json(test);
+            return Json(deckCell);
         }
 
-        private List<DeckCell> GetCoordinatesForShip(PlayingShip ship)
+        private List<DeckCell> GetCoordinatesForShip(PlayingShip playingShip)
         {
             List<DeckCell> ShipDeckCells = new List<DeckCell>();
 
             var initalPoint = ShipManager.GetRandomPoint(random);
             var direction = (ShipDirection)shipDirections.GetValue(random.Next(shipDirections.Length));
 
-            foreach (DeckCell deck in ship.Ship.DeckCells)
+            foreach (DeckCell deck in playingShip.Ship.DeckCells)
             {
                 initalPoint  = ShipManager.ShiftPoint(initalPoint, direction);
 
                 var currentDeckCell = DeckCell.Create(initalPoint, deck.Deck);
                 ShipDeckCells.Add(currentDeckCell);
 
-                var isShip = ShipManager.CheckShipWithOtherShips(initalPoint, PlayingField);
-                var isShipOutOfAbroad = ShipManager.CheckPointAbroad(initalPoint);
-
-                if(isShip || isShipOutOfAbroad)
-                {
-                    ShipDeckCells.Clear();
-                    ShipDeckCells = GetCoordinatesForShip(ship);
-                }
+                ShipDeckCells = CheckCoordinates(initalPoint, ShipDeckCells, playingShip);
             }
-            PlayingField.PlayingShips.Add(ship);
+            PlayingField.PlayingShips.Add(playingShip);
+            return ShipDeckCells;
+        }
+
+        private List<DeckCell> CheckCoordinates(Point initalPoint, List<DeckCell> ShipDeckCells, PlayingShip ship)
+        {
+            var isShip = ShipManager.CheckShipWithOtherShips(initalPoint, PlayingField);
+            var isShipOutOfAbroad = ShipManager.CheckPointAbroad(initalPoint);
+
+            if (isShip || isShipOutOfAbroad)
+            {
+                ShipDeckCells.Clear();
+                ShipDeckCells = GetCoordinatesForShip(ship);
+            }
             return ShipDeckCells;
         }
 
