@@ -14,12 +14,16 @@
         {
             Model.Players = DbManager.db.Players.ToListAsync<Player>().Result;
             var games = DbManager.db.Games.ToListAsync<Game>().Result;
-            List<Player> ingame = Model.Players;
+            List<Player> allplayers = Model.Players;
             if (games.Count > 0)
             {
-                ingame = CheckPlayersInNotGame(games, Model);
+                var busyPLayers = CheckPlayersInNotGame(games, Model);
+                foreach(var busyPlayer in busyPLayers.ToList())
+                {
+                    allplayers.Remove(busyPlayer);
+                }     
             }
-            return ingame;
+            return allplayers;
         }
 
         private static List<Player> CheckPlayersInNotGame(List<Game> games, MapModel Model)
@@ -29,10 +33,12 @@
             {
                 if(g.Player1 != null && g.Player2 != null)
                 {
-                    var players = Model.Players.Where(i => i.Id != g.Player1.Id || i.Id != g.Player2.Id).ToList();
-                    if (players.Count > 0)
+                    var players1 = Model.Players.Where(i => i.Id == g.Player1.Id).ToList();
+                    var players2 = Model.Players.Where(i => i.Id == g.Player2.Id).ToList();
+                    if(players1.Count > 0 && players2.Count > 0)
                     {
-                        ingame.AddRange(players);
+                        ingame.AddRange(players1);
+                        ingame.AddRange(players2);
                     }
                 }
                 
