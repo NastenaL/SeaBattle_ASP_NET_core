@@ -58,7 +58,7 @@
             db.SaveChanges();
         }
 
-        public static void SaveDeckCellAndPlayingFieldToDB(PlayingField PlayingField, Ship ship)
+        private static void SaveDeckCell(Ship ship)
         {
             foreach (DeckCell deckCell in ship.DeckCells)
             {
@@ -66,9 +66,14 @@
                 db.Decks.Add(deckCell.Deck);
                 db.DeckCells.Add(deckCell);
             }
+            db.SaveChanges();
+        }
 
+        private static void SaveShip(Ship ship)
+        {
             var shipType = ship.GetType();
             var type = Enum.Parse(typeof(ShipType), shipType.Name);
+
             switch ((ShipType)type)
             {
                 case ShipType.AuxiliaryShip:
@@ -83,9 +88,18 @@
             };
 
             db.SaveChanges();
+        }
 
+        public static void SavePlayingFieldToDB(PlayingField PlayingField)
+        {
             db.PlayingFields.Add(PlayingField);
             db.SaveChanges();
+        }
+
+        public static void SaveShipToDB(Ship ship)
+        {
+            SaveDeckCell(ship);
+            SaveShip(ship);
         }
     }
 }

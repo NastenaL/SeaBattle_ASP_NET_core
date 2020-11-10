@@ -80,7 +80,8 @@
                 var shipDeckCells = GetCoordinatesForShip(ship);
                 ship.DeckCells = shipDeckCells;
 
-                DbManager.SaveDeckCellAndPlayingFieldToDB(PlayingField, ship);
+                DbManager.SaveShipToDB(ship);
+                DbManager.SavePlayingFieldToDB(PlayingField);
                 Model.SelectedShip = ship;
                 MapModel.FillMapModelWithCoordinates(shipDeckCells, Model);
             }
