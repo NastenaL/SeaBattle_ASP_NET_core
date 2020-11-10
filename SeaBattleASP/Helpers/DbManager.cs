@@ -4,7 +4,6 @@
     using SeaBattleASP.Models;
     using SeaBattleASP.Models.Enums;
     using System;
-    using System.Collections.Generic;
 
     public static class DbManager
     {
@@ -24,9 +23,9 @@
 
         private static void DeleteDecksAndCells(Game CurrantGame)
         {
-            foreach (var cell in CurrantGame.PlayingField.PlayingShips)
+            foreach (var cell in CurrantGame.PlayingField.Ships)
             {
-                foreach (DeckCell deckCell in cell.Ship.DeckCells)
+                foreach (DeckCell deckCell in cell.DeckCells)
                 {
                     db.Decks.Remove(deckCell.Deck);
                     db.Cells.Remove(deckCell.Cell);
@@ -59,8 +58,15 @@
             db.SaveChanges();
         }
 
-        public static void SaveShipToDB(Ship ship, PlayingShip playingShip)
+        public static void SaveDeckCellAndPlayingFieldToDB(PlayingField PlayingField, Ship ship)
         {
+            foreach (DeckCell deckCell in ship.DeckCells)
+            {
+                db.Cells.Add(deckCell.Cell);
+                db.Decks.Add(deckCell.Deck);
+                db.DeckCells.Add(deckCell);
+            }
+
             var shipType = ship.GetType();
             var type = Enum.Parse(typeof(ShipType), shipType.Name);
             switch ((ShipType)type)
@@ -76,19 +82,8 @@
                     break;
             };
 
-            db.PlayingShips.Add(playingShip);
             db.SaveChanges();
-        }
 
-        public static void SaveDeckCellAndPlayingFieldToDB(List<DeckCell> shipCoordinates, PlayingField PlayingField)
-        {
-            foreach (DeckCell deckCell in shipCoordinates)
-            {
-                db.Cells.Add(deckCell.Cell);
-                db.Decks.Add(deckCell.Deck);
-                db.DeckCells.Add(deckCell);
-            }
-         
             db.PlayingFields.Add(PlayingField);
             db.SaveChanges();
         }

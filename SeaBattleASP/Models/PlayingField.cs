@@ -7,12 +7,12 @@
     {
         public PlayingField()
         {
-            PlayingShips = new List<PlayingShip>();
+            Ships = new List<Ship>();
         }
 
         public int Id { get; set; }
 
-        public List<PlayingShip> PlayingShips { get; set; }
+        public List<Ship> Ships { get; set; }
 
         public int Width { get; set; }
 

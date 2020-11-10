@@ -7,8 +7,6 @@
     {
         public DbSet<Player> Players { get; set; }
 
-        public DbSet<PlayingShip> PlayingShips { get; set; }
-
         public DbSet<Cell> Cells { get; set; }
 
         public DbSet<Deck> Decks { get; set; }

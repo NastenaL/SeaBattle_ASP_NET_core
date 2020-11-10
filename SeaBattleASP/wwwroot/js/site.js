@@ -98,12 +98,12 @@ function selectShip(id) {
     });
 };
 
-function makeMovement(id, type) {
-    console.log(id);
+function makeMovement(shipId, type) {
+    console.log(shipId);
     $.ajax({
         type: 'POST',
         url: '/Game/MakeStep',
-        data: { id: id, type: type },
+        data: { shipId: shipId, type: type },
         success: function () {
 
         },

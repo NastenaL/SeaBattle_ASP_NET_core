@@ -13,11 +13,11 @@
         public static bool CheckShipWithOtherShips(Point point, PlayingField PlayingField)
         {
             bool error = false;
-            if (PlayingField.PlayingShips.Count > 1)
+            if (PlayingField.Ships.Count > 1)
             {
-                foreach (var p in PlayingField.PlayingShips.ToList())
+                foreach (var p in PlayingField.Ships.ToList())
                 {
-                    foreach(DeckCell deckCell in p.Ship.DeckCells)
+                    foreach(DeckCell deckCell in p.DeckCells)
                     {
                         //if (point.X == deckCell.Cell.X && point.Y == deckCell.Cell.Y) //Check coincidence cells
                         //                                                /* || ((point.X == po.Key.Coordinate.X + 1 && point.Y == po.Key.Coordinate.Y) ||//Check adjacent cells

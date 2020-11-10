@@ -63,11 +63,15 @@ namespace SeaBattleASP.Migrations
 
                     b.Property<int?>("DeckId");
 
+                    b.Property<int?>("ShipId");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CellId");
 
                     b.HasIndex("DeckId");
+
+                    b.HasIndex("ShipId");
 
                     b.ToTable("DeckCells");
                 });
@@ -157,11 +161,15 @@ namespace SeaBattleASP.Migrations
 
                     b.Property<int?>("PlayerId");
 
+                    b.Property<int?>("PlayingFieldId");
+
                     b.Property<int>("Range");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PlayerId");
+
+                    b.HasIndex("PlayingFieldId");
 
                     b.ToTable("Ship");
 
@@ -207,6 +215,10 @@ namespace SeaBattleASP.Migrations
                     b.HasOne("SeaBattleASP.Models.Deck", "Deck")
                         .WithMany()
                         .HasForeignKey("DeckId");
+
+                    b.HasOne("SeaBattleASP.Models.Ship")
+                        .WithMany("DeckCells")
+                        .HasForeignKey("ShipId");
                 });
 
             modelBuilder.Entity("SeaBattleASP.Models.Game", b =>
@@ -236,6 +248,10 @@ namespace SeaBattleASP.Migrations
                     b.HasOne("SeaBattleASP.Models.Player", "Player")
                         .WithMany()
                         .HasForeignKey("PlayerId");
+
+                    b.HasOne("SeaBattleASP.Models.PlayingField")
+                        .WithMany("PlayingShips")
+                        .HasForeignKey("PlayingFieldId");
                 });
 #pragma warning restore 612, 618
         }

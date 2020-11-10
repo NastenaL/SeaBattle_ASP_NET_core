@@ -25,7 +25,6 @@
 
         public Player Player { get; set; }
 
-        [NotMapped]
         public List<DeckCell> DeckCells { get; set; }
 
         public bool IsSelectedShip { get; set; }

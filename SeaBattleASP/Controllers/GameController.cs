@@ -40,12 +40,18 @@
         #endregion
 
         [HttpPost]
-        public async Task MakeStep(int shipId, int Type)
+        public void MakeStep(int shipId, int Type)
         {
             MovementType type = (MovementType)Type;
-            var ships = DbManager.db.PlayingShips.ToListAsync<PlayingShip>().Result;
-            var ship = ships.FirstOrDefault(i => i.Ship.Id == shipId);
-            if(ship != null)
+            var auxiliaryShips = DbManager.db.AuxiliaryShips.ToListAsync<AuxiliaryShip>().Result;
+            var militaryShip = DbManager.db.MilitaryShips.ToListAsync<MilitaryShip>().Result;
+            var mixShip = DbManager.db.MixShips.ToListAsync<MixShip>().Result;
+            List<Ship> allShips = new List<Ship>();
+            allShips.AddRange(auxiliaryShips);
+            allShips.AddRange(militaryShip);
+            allShips.AddRange(mixShip);
+            var ship = allShips.Find(i => i.Id == shipId);
+            if (ship != null)
             {
                 //switch (type)
                 //{
@@ -62,7 +68,7 @@
             }
 
         }
-         
+
         [HttpPost]
         public IActionResult AddShipToField(int id)
         {
@@ -70,14 +76,11 @@
             if (ship != null)
             {
                 ship.Player = Model.CurrantPlayer;
-
-                PlayingShip playingShip = PlayingShip.Create(ship);
-
-                var shipDeckCells = GetCoordinatesForShip(playingShip);
+         
+                var shipDeckCells = GetCoordinatesForShip(ship);
                 ship.DeckCells = shipDeckCells;
 
-                DbManager.SaveShipToDB(ship, playingShip);
-                DbManager.SaveDeckCellAndPlayingFieldToDB(shipDeckCells, PlayingField);
+                DbManager.SaveDeckCellAndPlayingFieldToDB(PlayingField, ship);
                 Model.SelectedShip = ship;
                 MapModel.FillMapModelWithCoordinates(shipDeckCells, Model);
             }
@@ -90,23 +93,23 @@
         public IActionResult SelectShip(int x, int y)
         {
             DeckCell deckCell = new DeckCell();
-            foreach(PlayingShip ship in PlayingField.PlayingShips)
+            foreach(Ship ship in PlayingField.Ships)
             {
-                deckCell = ship.Ship.DeckCells.Find(s => s.Cell.X == x && s.Cell.Y == y);
+                deckCell = ship.DeckCells.Find(s => s.Cell.X == x && s.Cell.Y == y);
             }
 
             var result = deckCell == null ? Json("Ship not found") : Json(deckCell);
             return result;
         }
 
-        private List<DeckCell> GetCoordinatesForShip(PlayingShip playingShip)
+        private List<DeckCell> GetCoordinatesForShip(Ship playingShip)
         {
             List<DeckCell> ShipDeckCells = new List<DeckCell>();
 
             var initalPoint = ShipManager.GetRandomPoint(random);
             var direction = (ShipDirection)shipDirections.GetValue(random.Next(shipDirections.Length));
 
-            foreach (DeckCell deck in playingShip.Ship.DeckCells)
+            foreach (DeckCell deck in playingShip.DeckCells)
             {
                 initalPoint  = ShipManager.ShiftPoint(initalPoint, direction);
 
@@ -115,11 +118,11 @@
 
                 ShipDeckCells = CheckCoordinates(initalPoint, ShipDeckCells, playingShip);
             }
-            PlayingField.PlayingShips.Add(playingShip);
+            PlayingField.Ships.Add(playingShip);
             return ShipDeckCells;
         }
 
-        private List<DeckCell> CheckCoordinates(Point initalPoint, List<DeckCell> ShipDeckCells, PlayingShip ship)
+        private List<DeckCell> CheckCoordinates(Point initalPoint, List<DeckCell> ShipDeckCells, Ship ship)
         {
             var isShip = ShipManager.CheckShipWithOtherShips(initalPoint, PlayingField);
             var isShipOutOfAbroad = ShipManager.CheckPointAbroad(initalPoint);
