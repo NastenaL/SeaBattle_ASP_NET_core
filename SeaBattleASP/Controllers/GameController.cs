@@ -9,6 +9,7 @@
     using System;
     using System.Collections.Generic;
     using System.Drawing;
+    using System.Linq;
     using System.Threading.Tasks;
 
     public class GameController : Controller
@@ -39,11 +40,11 @@
         #endregion
 
         [HttpPost]
-        public async Task MakeStep(int message, int Type)
+        public async Task MakeStep(int shipId, int Type)
         {
             MovementType type = (MovementType)Type;
             var ships = DbManager.db.PlayingShips.ToListAsync<PlayingShip>().Result;
-            var ship = ships.Find(i => i.Ship.Id == message);
+            var ship = ships.FirstOrDefault(i => i.Ship.Id == shipId);
             if(ship != null)
             {
                 //switch (type)

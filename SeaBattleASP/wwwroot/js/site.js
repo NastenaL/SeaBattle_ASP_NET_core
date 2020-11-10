@@ -79,8 +79,8 @@ function selectShip(id) {
                 html += "<td>" + addedShips[i].range + "</td>";
                 html += "<td>"+
                     "<div class='dropdown'>"+
-                       " <button onclick='myFunction()' class='dropbtn'>Select</button>" +
-                        "<div id='myDropdown' class='dropdown-content'>" +
+                        "<button onclick='openOptions("+i+")' class='dropbtn'>Select</button>" +
+                        "<div id='myDropdown"+i+"' class='dropdown-content'>" +
                     "<a onclick='makeMovement(" + addedShips[i].id +",2)'>Move</a>" +
                     "<a onclick='makeMovement(" + addedShips[i].id +",0)'>Fire</a>" +
                     "<a onclick='makeMovement(" + addedShips[i].id +",1)'>Repair</a>" +
@@ -98,20 +98,20 @@ function selectShip(id) {
     });
 };
 
-function makeMovement(message, type) {
-
+function makeMovement(id, type) {
+    console.log(id);
     $.ajax({
         type: 'POST',
         url: '/Game/MakeStep',
-        data: { message: message, type: type },
+        data: { id: id, type: type },
         success: function () {
 
         },
     });
 }
 
-function myFunction() {
-    document.getElementById("myDropdown").classList.toggle("show");
+function openOptions(i) {
+    document.getElementById("myDropdown" + i).classList.toggle("show");
 }
 
 // Close the dropdown menu if the user clicks outside of it
