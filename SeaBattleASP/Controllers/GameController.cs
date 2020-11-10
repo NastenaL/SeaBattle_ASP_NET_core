@@ -3,20 +3,20 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using SeaBattleASP.Helpers;
-    using SeaBattleASP.Helpers.WebSocket;
     using SeaBattleASP.Models;
     using SeaBattleASP.Models.Constants;
     using SeaBattleASP.Models.Enums;
     using System;
     using System.Collections.Generic;
     using System.Drawing;
+    using System.Threading.Tasks;
 
     public class GameController : Controller
     {
         private readonly Random random;
         readonly Array shipDirections = Enum.GetValues(typeof(ShipDirection));
 
-        public GameController(ApplicationContext context, NotificationsMessageHandler notificationsMessageHandler)
+        public GameController(ApplicationContext context)
         {
             random = new Random();
             DbManager.db = context;
@@ -28,14 +28,10 @@
 
             PlayingField = new PlayingField();
             PlayingField.CreateField();
-
-            this.NotificationsMessageHandler = notificationsMessageHandler;
         }
 
         #region Properties 
         PlayingField PlayingField { get; set; }
-
-        private NotificationsMessageHandler NotificationsMessageHandler { get; set; }
        
         private Game CurrantGame { get; set; }
 
@@ -43,16 +39,22 @@
         #endregion
 
         [HttpPost]
-        public async void MakeStep(string message)
+        public async Task MakeStep(string message)
         {
-            ConnectionManager connectionManager = new ConnectionManager();
-            var connections = connectionManager.GetAll();
-            if (NotificationsMessageHandler != null)
-            {
-                await this.NotificationsMessageHandler.SendMessageToAllAsync(message);
-            }
-
+           
         }
+
+        //[HttpPost]
+        //public async void MakeStep(string message)
+        //{
+        //    ConnectionManager connectionManager = new ConnectionManager();
+        //    var connections = connectionManager.GetAll();
+        //    if (NotificationsMessageHandler != null)
+        //    {
+        //        await this.NotificationsMessageHandler.SendMessageToAllAsync(message);
+        //    }
+        
+        //}
          
         [HttpPost]
         public IActionResult AddShipToField(int id)

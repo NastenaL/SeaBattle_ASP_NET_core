@@ -8,7 +8,6 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using SeaBattleASP.Helpers;
-    using SeaBattleASP.Helpers.WebSocket;
 
     public class Startup
     {
@@ -33,8 +32,6 @@
             services.AddDbContext<ApplicationContext>(options =>
                 options.UseSqlServer(connection));
 
-            services.AddTransient<NotificationsMessageHandler>();
-            services.AddTransient<ConnectionManager>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -65,8 +62,6 @@
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             var serviceProvider = serviceScopeFactory.CreateScope().ServiceProvider;
 
-            app.UseWebSockets();
-            app.MapWebSocketManager("/ws", serviceProvider.GetService<NotificationsMessageHandler>());
             app.UseStaticFiles();
         }
     }
