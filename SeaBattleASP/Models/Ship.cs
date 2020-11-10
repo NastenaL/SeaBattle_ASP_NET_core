@@ -5,7 +5,6 @@
     using SeaBattleASP.Models.Interfaces;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
     using System.Drawing;
 
     public abstract class Ship : IRepairable, IFireable
@@ -20,8 +19,7 @@
 
         public int Range { get; set; }
 
-        [NotMapped]
-        public Point Direction { get; set; }
+        public bool IsXDirection { get; set; }
 
         public Player Player { get; set; }
 
@@ -58,48 +56,40 @@
 
         }
 
-        public List<DeckCell> Move(List<DeckCell> shipDecks)
+        public List<DeckCell> Move(Ship ship)
         {
             List<DeckCell> result = new List<DeckCell>();
-            var head = shipDecks.Find(s =>s.Deck.IsHead);
-            if(this.Direction.X != 0)
-            {
-               foreach(DeckCell shipDeck in shipDecks)
-                {
-                    DeckCell cell = new DeckCell
-                    {
-                        Cell = shipDeck.Cell,
-                        Deck = shipDeck.Deck
-                    };
-                    Point p = new Point
-                    {
-                        X = cell.Cell.X,
-                        Y = cell.Cell.Y
-                    };
+            var head = ship.DeckCells.Find(s =>s.Deck.IsHead);
+            foreach(DeckCell shipDeck in ship.DeckCells)
+             {
+                
+                 Point p = new Point
+                 {
+                     X = shipDeck.Cell.X,
+                     Y = shipDeck.Cell.Y
+                 };
 
-                    p.X = this.Direction.X != 0 ? p.X + this.Range : p.X;
-                    p.Y = this.Direction.Y != 0 ? p.Y + this.Range : p.Y;
+                 p.X = ship.IsXDirection? p.X + ship.Range : p.X;
+                 p.Y = !ship.IsXDirection? p.Y + ship.Range : p.Y;
 
-                    CheckNewCoordinate(p, result, shipDecks);
+                 CheckNewCoordinate(p, result, ship);
 
-                    cell.Cell.X = p.X;
-                    cell.Cell.Y = p.Y;
+                 shipDeck.Cell.X = p.X;
+                 shipDeck.Cell.Y = p.Y;
 
-                    result.Add(cell);
-                }
-            }
+                 result.Add(shipDeck);
+             }
             return result;
         }
 
-        private void CheckNewCoordinate(Point p, List<DeckCell> result, List<DeckCell> shipDecks)
+        private void CheckNewCoordinate(Point p, List<DeckCell> result, Ship ship)
         {
             if (p.X > Rules.FieldWidth-1 || p.Y > Rules.FieldHeight-1)
             {
-                var newDirection = p.X > Rules.FieldWidth? new Point() { X = 0, Y = 1 }: new Point() { X = 1, Y = 0 };
-                this.Direction = newDirection;
+                this.IsXDirection = p.X > Rules.FieldWidth;
 
                 result.Clear();
-                Move(shipDecks);
+                Move(ship);
             }
            
         }

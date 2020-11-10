@@ -40,28 +40,5 @@
         {
             this.State = GameState.Finished;
         }
-
-        public void MakeStep(Ship ship, MovementType movementType, List<DeckCell> EnemyShipsDecks)
-        {
-            List<DeckCell> selectedShip = new List<DeckCell>();
-            
-            foreach(DeckCell deckCell in ship.DeckCells)
-            {
-         //       selectedShip.Add(this.PlayingField.Ships.Find(s => s.DeckCells == deckCell));
-            }
-
-            if (movementType == MovementType.Fire)
-            {
-                ship.Fire(EnemyShipsDecks, selectedShip);
-            }
-            else if(movementType == MovementType.Repair)
-            {
-                ship.Repair(selectedShip);
-            }
-            else if(movementType == MovementType.Move)
-            {
-                ship.Move(selectedShip);
-            }
-        }
     }
 }

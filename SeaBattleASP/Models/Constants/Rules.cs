@@ -40,25 +40,16 @@
             ship.Range = range;
             ship.DeckCells = decks;
          
-            ship.Direction = GenerateDirection();
+            ship.IsXDirection = GenerateDirection();
             return ship;
         }
 
-        private static Point GenerateDirection()
+        private static bool GenerateDirection()
         {
-            Point shipDirection = new Point();
             Random random = new Random();
-            int x = random.Next(0, 1);
+            int direction = random.Next(100);
 
-            int y = x == 0 ? 1 : 0;
-            shipDirection.X = x;
-            shipDirection.Y = y;
-            if(shipDirection.X == 0 && shipDirection.Y == 0)
-            {
-                GenerateDirection();
-            }
-
-            return shipDirection;
+            return direction <= 49;
         }
 
         public static Dictionary<int, Ship> CreateShips()

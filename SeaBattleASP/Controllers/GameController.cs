@@ -39,10 +39,12 @@
         private MapModel Model { get; set; }
         #endregion
 
-        [HttpPost]
-        public void MakeStep(int shipId, int Type)
+        private List<Ship> GetAllShips()
         {
-            MovementType type = (MovementType)Type;
+            DbManager.db.Cells.ToListAsync<Cell>();
+            DbManager.db.Decks.ToListAsync<Deck>();
+            DbManager.db.DeckCells.ToListAsync<DeckCell>();
+         
             var auxiliaryShips = DbManager.db.AuxiliaryShips.ToListAsync<AuxiliaryShip>().Result;
             var militaryShip = DbManager.db.MilitaryShips.ToListAsync<MilitaryShip>().Result;
             var mixShip = DbManager.db.MixShips.ToListAsync<MixShip>().Result;
@@ -50,21 +52,29 @@
             allShips.AddRange(auxiliaryShips);
             allShips.AddRange(militaryShip);
             allShips.AddRange(mixShip);
+            return allShips;
+        }
+
+        [HttpPost]
+        public void MakeStep(int shipId, int Type)
+        {
+            MovementType type = (MovementType)Type;
+            List<Ship> allShips = GetAllShips();
             var ship = allShips.Find(i => i.Id == shipId);
             if (ship != null)
             {
-                //switch (type)
-                //{
-                //    case MovementType.Fire:
-                //        ship.Fire();
-                //        break;
-                //    case MovementType.Move:
-                //        ship.Move();
-                //        break;
-                //    case MovementType.Repair:
-                //        ship.Repair();
-                //        break;
-                //}
+                switch (type)
+                {
+                    case MovementType.Fire:
+                        //ship.Fire(ship.DeckCells);
+                        break;
+                    case MovementType.Move:
+                        ship.Move(ship);
+                        break;
+                    case MovementType.Repair:
+                        ship.Repair(ship.DeckCells);
+                        break;
+                }
             }
 
         }
