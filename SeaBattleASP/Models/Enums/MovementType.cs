@@ -2,8 +2,8 @@
 {
     public enum MovementType
     {
-        Fire,
-        Repair,
-        Move
+        Fire = 0,
+        Repair = 1,
+        Move = 2
     }
 }

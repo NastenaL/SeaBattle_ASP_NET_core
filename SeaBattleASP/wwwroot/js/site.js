@@ -81,9 +81,9 @@ function selectShip(id) {
                     "<div class='dropdown'>"+
                        " <button onclick='myFunction()' class='dropbtn'>Select</button>" +
                         "<div id='myDropdown' class='dropdown-content'>" +
-                            "<a href='#'>Move</a>" +
-                            "<a href='#'>Fire</a>" +
-                            "<a href='#'>Repair</a>" +
+                    "<a onclick='makeMovement(" + addedShips[i].id +",2)'>Move</a>" +
+                    "<a onclick='makeMovement(" + addedShips[i].id +",0)'>Fire</a>" +
+                    "<a onclick='makeMovement(" + addedShips[i].id +",1)'>Repair</a>" +
                        " </div>" +
                    "</div >" +
                " </td > ";
@@ -91,13 +91,24 @@ function selectShip(id) {
 
             }
             html += "</table>";
-            console.log(html);
             document.getElementById("shipsPanel").innerHTML = html;
 
             
         },
     });
 };
+
+function makeMovement(message, type) {
+
+    $.ajax({
+        type: 'POST',
+        url: '/Game/MakeStep',
+        data: { message: message, type: type },
+        success: function () {
+
+        },
+    });
+}
 
 function myFunction() {
     document.getElementById("myDropdown").classList.toggle("show");
@@ -137,19 +148,6 @@ function startGame() {
         },
     });
 };
-
-function sendMessage(message) {
-    console.log("Sending: " + message);
-
-    $.ajax({
-        type: 'POST',
-        url: '/Game/MakeStep',
-        data: { message: message },
-        success: function () {
-            
-        },
-    });
-}
 
 function getCellPoint(mapModel) {
     var convertedPoints = [];

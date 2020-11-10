@@ -39,22 +39,28 @@
         #endregion
 
         [HttpPost]
-        public async Task MakeStep(string message)
+        public async Task MakeStep(int message, int Type)
         {
-           
-        }
+            MovementType type = (MovementType)Type;
+            var ships = DbManager.db.PlayingShips.ToListAsync<PlayingShip>().Result;
+            var ship = ships.Find(i => i.Ship.Id == message);
+            if(ship != null)
+            {
+                //switch (type)
+                //{
+                //    case MovementType.Fire:
+                //        ship.Fire();
+                //        break;
+                //    case MovementType.Move:
+                //        ship.Move();
+                //        break;
+                //    case MovementType.Repair:
+                //        ship.Repair();
+                //        break;
+                //}
+            }
 
-        //[HttpPost]
-        //public async void MakeStep(string message)
-        //{
-        //    ConnectionManager connectionManager = new ConnectionManager();
-        //    var connections = connectionManager.GetAll();
-        //    if (NotificationsMessageHandler != null)
-        //    {
-        //        await this.NotificationsMessageHandler.SendMessageToAllAsync(message);
-        //    }
-        
-        //}
+        }
          
         [HttpPost]
         public IActionResult AddShipToField(int id)
