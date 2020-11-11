@@ -9,8 +9,6 @@
     using System;
     using System.Collections.Generic;
     using System.Drawing;
-    using System.Linq;
-    using System.Threading.Tasks;
 
     public class GameController : Controller
     {
@@ -73,16 +71,7 @@
                         if(shipDeckCells.Count > 0)
                         {
                             ship.DeckCells = shipDeckCells;
-                            foreach (DeckCell deckCell in ship.DeckCells.ToList())
-                            {
-                                DbManager.db.Cells.Update(deckCell.Cell);
-                                DbManager.db.Decks.Update(deckCell.Deck);
-                                DbManager.db.DeckCells.Update(deckCell);
-                                DbManager.db.SaveChanges();
-                            }
-
-                            DbManager.db.AuxiliaryShips.Update((AuxiliaryShip)ship);
-                            DbManager.db.SaveChanges();
+                            DbManager.UpdateShip(ship);
                         }
                        
                         break;

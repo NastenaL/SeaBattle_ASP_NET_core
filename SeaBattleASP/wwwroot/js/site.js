@@ -113,12 +113,26 @@ function makeMovement(shipId, type) {
                 convertedPoints[i].y = ship.deckCells[i].cell.y;
                 
             }
-
+            var index = addedShips.indexOf(ship);
+            if (index != -1) {
+                addedShips[index] = ship;
+            }
             emptyCellsToField('#leftField');
+
+            var convertedPoints2 = [];
+            for (var j = 0; j < addedShips.length; j++) {
+                
+                for (var i = 0; i < addedShips[j].deckCells.length; i++) {
+                    convertedPoints2[i] = {};
+                    convertedPoints2[i].x = addedShips[j].deckCells[i].cell.x;
+                    convertedPoints2[i].y = addedShips[j].deckCells[i].cell.y;
+                } 
+            }
+
             for (var i = 0; i < convertedPoints.length; i++) {
                 paintDeckShip(convertedPoints[i], '#leftField');
             }
-            console.log(convertedPoints);
+            console.log(convertedPoints2);
         },
     });
 }

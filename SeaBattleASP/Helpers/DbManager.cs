@@ -4,6 +4,7 @@
     using SeaBattleASP.Models;
     using SeaBattleASP.Models.Enums;
     using System;
+    using System.Linq;
 
     public static class DbManager
     {
@@ -67,6 +68,35 @@
                 db.DeckCells.Add(deckCell);
             }
             db.SaveChanges();
+        }
+
+        public static void UpdateShip(Ship ship)
+        {
+            foreach (DeckCell deckCell in ship.DeckCells.ToList())
+            {
+                DbManager.db.Cells.Update(deckCell.Cell);
+                DbManager.db.Decks.Update(deckCell.Deck);
+                DbManager.db.DeckCells.Update(deckCell);
+                DbManager.db.SaveChanges();
+            }
+
+            var shipType = ship.GetType();
+            var shipTypeEnum = Enum.Parse(typeof(ShipType), shipType.Name);
+
+            switch ((ShipType)shipTypeEnum)
+            {
+                case ShipType.AuxiliaryShip:
+                    DbManager.db.AuxiliaryShips.Update((AuxiliaryShip)ship);
+                    break;
+                case ShipType.MilitaryShip:
+                    DbManager.db.MilitaryShips.Update((MilitaryShip)ship);
+                    break;
+                case ShipType.MixShip:
+                    DbManager.db.MixShips.Update((MixShip)ship);
+                    break;
+            }
+
+            DbManager.db.SaveChanges();
         }
 
         private static void SaveShip(Ship ship)
