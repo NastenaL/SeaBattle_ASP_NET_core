@@ -81,9 +81,9 @@ function selectShip(id) {
                     "<div class='dropdown'>"+
                         "<button onclick='openOptions("+i+")' class='dropbtn'>Select</button>" +
                         "<div id='myDropdown"+i+"' class='dropdown-content'>" +
-                    "<a onclick='makeMovement(" + addedShips[i].id +",2)'>Move</a>" +
-                    "<a onclick='makeMovement(" + addedShips[i].id +",0)'>Fire</a>" +
-                    "<a onclick='makeMovement(" + addedShips[i].id +",1)'>Repair</a>" +
+                            "<a onclick='makeMovement(" + addedShips[i].id +",2)'>Move</a>" +
+                            "<a onclick='makeMovement(" + addedShips[i].id +",0)'>Fire</a>" +
+                            "<a onclick='makeMovement(" + addedShips[i].id +",1)'>Repair</a>" +
                        " </div>" +
                    "</div >" +
                " </td > ";
@@ -107,8 +107,16 @@ function convertCellsToPoints(ships) {
     }
     return convertedPoints;
 }
+
+var selectedShipId;
+var stepType;
+var user;
+
 function makeMovement(shipId, type) {
-    console.log(shipId);
+    selectedShipId = shipId;
+    stepType = type;
+    user;
+
     $.ajax({
         type: 'POST',
         url: '/Game/MakeStep',
@@ -201,3 +209,28 @@ addTextToPositioning('right');
 $("#btnAddShips").click(function () {
     $('#ModalPopUp').modal('show');
 })
+
+//SignalR
+var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+
+connection.on("ReceiveMessage", function (userId, ship, stepType) {
+    var seceltedShip = ship.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    var encodedMsg = "Player" + userId + "select ship " + seceltedShip + ", type " + stepType;
+    var li = document.createElement("li");
+    li.textContent = encodedMsg;
+    console.log("message", ship);
+    document.getElementById("messagesList").appendChild(li);
+});
+
+connection.start().catch(function (err) {
+    return console.error(err.toString());
+});
+
+document.getElementById("sendButton").addEventListener("click", function (event) {
+   
+    console.log("sendButton");
+    connection.invoke("SendMessage", user, selectedShipId, stepType).catch(function (err) {
+        return console.error(err.toString());
+    });
+    event.preventDefault();
+});
