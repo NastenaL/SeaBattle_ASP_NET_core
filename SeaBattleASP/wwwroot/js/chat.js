@@ -1,11 +1,11 @@
 ﻿var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
-connection.on("ReceiveMessage", function (user, message) {
-	var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-	var encodedMsg = user + " says " + msg;
+connection.on("ReceiveMessage", function (userId, ship, stepType) {
+    var msg = ship.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    var encodedMsg = userId + " ship " + msg + "type " + stepType;
 	var li = document.createElement("li");
     li.textContent = encodedMsg;
-    console.log("message", message);
+    console.log("message", ship);
 	document.getElementById("messagesList").appendChild(li);
 });
 
@@ -16,8 +16,9 @@ connection.start().catch(function (err) {
 document.getElementById("sendButton").addEventListener("click", function (event) {
 	var user = document.getElementById("userInput").value;
     var message = document.getElementById("messageInput").value;
+    var stepType = document.getElementById("stepTypeInput").value;
     console.log("sendButton");
-	connection.invoke("SendMessage", user, message).catch(function (err) {
+    connection.invoke("SendMessage", user, message, stepType).catch(function (err) {
 		return console.error(err.toString());
 	});
 	event.preventDefault();
