@@ -105,34 +105,30 @@ function makeMovement(shipId, type) {
         url: '/Game/MakeStep',
         data: { shipId: shipId, type: type },
         success: function (ship) {
-            console.log(ship);
-            var convertedPoints = [];
+            var newPoint = [];
             for (var i = 0; i < ship.deckCells.length; i++) {
-                convertedPoints[i] = {};
-                convertedPoints[i].x = ship.deckCells[i].cell.x;
-                convertedPoints[i].y = ship.deckCells[i].cell.y;
-                
-            }
-            var index = addedShips.indexOf(ship);
-            if (index != -1) {
-                addedShips[index] = ship;
-            }
-            emptyCellsToField('#leftField');
+                newPoint[i] = {};
+                newPoint[i].x = ship.deckCells[i].cell.x;
+                newPoint[i].y = ship.deckCells[i].cell.y;
 
-            var convertedPoints2 = [];
-            for (var j = 0; j < addedShips.length; j++) {
-                
-                for (var i = 0; i < addedShips[j].deckCells.length; i++) {
-                    convertedPoints2[i] = {};
-                    convertedPoints2[i].x = addedShips[j].deckCells[i].cell.x;
-                    convertedPoints2[i].y = addedShips[j].deckCells[i].cell.y;
-                } 
             }
+
+            var foundIndex = addedShips.findIndex(x => x.id == ship.id);
+            addedShips[foundIndex] = ship;
+            
+
+            var convertedPoints = [];
+            for (var i = 0; i < addedShips.length; i++) {
+                for (var j = 0; j < addedShips[i].deckCells.length; j++) {
+                    convertedPoints.push({ x: addedShips[i].deckCells[j].cell.x, y: addedShips[i].deckCells[j].cell.y });
+                }
+            }
+ 
+            emptyCellsToField('#leftField');
 
             for (var i = 0; i < convertedPoints.length; i++) {
                 paintDeckShip(convertedPoints[i], '#leftField');
             }
-            console.log(convertedPoints2);
         },
     });
 }
