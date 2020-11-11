@@ -56,7 +56,7 @@
         }
 
         [HttpPost]
-        public void MakeStep(int shipId, int Type)
+        public Ship MakeStep(int shipId, int Type)
         {
             MovementType type = (MovementType)Type;
             List<Ship> allShips = GetAllShips();
@@ -69,14 +69,29 @@
                         //ship.Fire(ship.DeckCells);
                         break;
                     case MovementType.Move:
-                        ship.Move(ship);
+                        var shipDeckCells = ship.Move(ship);
+                        if(shipDeckCells.Count > 0)
+                        {
+                            ship.DeckCells = shipDeckCells;
+                            foreach (DeckCell deckCell in ship.DeckCells.ToList())
+                            {
+                                DbManager.db.Cells.Update(deckCell.Cell);
+                                DbManager.db.Decks.Update(deckCell.Deck);
+                                DbManager.db.DeckCells.Update(deckCell);
+                                DbManager.db.SaveChanges();
+                            }
+
+                            DbManager.db.AuxiliaryShips.Update((AuxiliaryShip)ship);
+                            DbManager.db.SaveChanges();
+                        }
+                       
                         break;
                     case MovementType.Repair:
                         ship.Repair(ship.DeckCells);
                         break;
                 }
             }
-
+            return ship;
         }
 
         [HttpPost]

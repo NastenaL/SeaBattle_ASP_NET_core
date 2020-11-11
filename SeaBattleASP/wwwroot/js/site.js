@@ -104,8 +104,21 @@ function makeMovement(shipId, type) {
         type: 'POST',
         url: '/Game/MakeStep',
         data: { shipId: shipId, type: type },
-        success: function () {
+        success: function (ship) {
+            console.log(ship);
+            var convertedPoints = [];
+            for (var i = 0; i < ship.deckCells.length; i++) {
+                convertedPoints[i] = {};
+                convertedPoints[i].x = ship.deckCells[i].cell.x;
+                convertedPoints[i].y = ship.deckCells[i].cell.y;
+                
+            }
 
+            emptyCellsToField('#leftField');
+            for (var i = 0; i < convertedPoints.length; i++) {
+                paintDeckShip(convertedPoints[i], '#leftField');
+            }
+            console.log(convertedPoints);
         },
     });
 }
