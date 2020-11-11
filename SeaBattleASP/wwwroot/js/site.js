@@ -98,6 +98,15 @@ function selectShip(id) {
     });
 };
 
+function convertCellsToPoints(ships) {
+    var convertedPoints = [];
+    for (var i = 0; i < ships.length; i++) {
+        for (var j = 0; j < ships[i].deckCells.length; j++) {
+            convertedPoints.push({ x: ships[i].deckCells[j].cell.x, y: ships[i].deckCells[j].cell.y });
+        }
+    }
+    return convertedPoints;
+}
 function makeMovement(shipId, type) {
     console.log(shipId);
     $.ajax({
@@ -105,24 +114,11 @@ function makeMovement(shipId, type) {
         url: '/Game/MakeStep',
         data: { shipId: shipId, type: type },
         success: function (ship) {
-            var newPoint = [];
-            for (var i = 0; i < ship.deckCells.length; i++) {
-                newPoint[i] = {};
-                newPoint[i].x = ship.deckCells[i].cell.x;
-                newPoint[i].y = ship.deckCells[i].cell.y;
-
-            }
+           
 
             var foundIndex = addedShips.findIndex(x => x.id == ship.id);
             addedShips[foundIndex] = ship;
-            
-
-            var convertedPoints = [];
-            for (var i = 0; i < addedShips.length; i++) {
-                for (var j = 0; j < addedShips[i].deckCells.length; j++) {
-                    convertedPoints.push({ x: addedShips[i].deckCells[j].cell.x, y: addedShips[i].deckCells[j].cell.y });
-                }
-            }
+            var convertedPoints = convertCellsToPoints(addedShips);
  
             emptyCellsToField('#leftField');
 
