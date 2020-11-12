@@ -37,38 +37,24 @@
         private MapModel Model { get; set; }
         #endregion
 
-        private List<Ship> GetAllShips()
+        [HttpPost]
+        public void MakeFireStep(int shipId)
         {
-            DbManager.db.Cells.ToListAsync<Cell>();
-            DbManager.db.Decks.ToListAsync<Deck>();
-            DbManager.db.DeckCells.ToListAsync<DeckCell>();
-         
-            var auxiliaryShips = DbManager.db.AuxiliaryShips.ToListAsync<AuxiliaryShip>().Result;
-            var militaryShip = DbManager.db.MilitaryShips.ToListAsync<MilitaryShip>().Result;
-            var mixShip = DbManager.db.MixShips.ToListAsync<MixShip>().Result;
-            List<Ship> allShips = new List<Ship>();
-            allShips.AddRange(auxiliaryShips);
-            allShips.AddRange(militaryShip);
-            allShips.AddRange(mixShip);
-            return allShips;
+            var ship = Ship.GetShipByIdFromDB(shipId);
+           // ship.Fire();
         }
 
         [HttpPost]
-        public void MakeFireStep()
+        public void MakeRepairStep(int shipId)
         {
+            var ship = Ship.GetShipByIdFromDB(shipId);
+            //Ship.Repair(ship, );
         }
 
         [HttpPost]
-        public void MakeRepairStep()
+        public Ship MakeMoveStep(int shipId)
         {
-        }
-
-        [HttpPost]
-        public Ship MakeMoveStep(int shipId, int Type)
-        {
-            MovementType type = (MovementType)Type;
-            List<Ship> allShips = GetAllShips();
-            var ship = allShips.Find(i => i.Id == shipId);
+            var ship = Ship.GetShipByIdFromDB(shipId);
             if (ship != null)
             {
                 var shipDeckCells = ship.Move(ship);
@@ -84,7 +70,7 @@
         [HttpPost]
         public IActionResult AddShipToField(int id)
         {
-            var ship = Ship.GetShipById(id, Model);
+            var ship = Ship.GetShipByIdFromMapModel(id, Model);
             if (ship != null)
             {
                 ship.Player = Model.CurrantPlayer;

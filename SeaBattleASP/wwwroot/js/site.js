@@ -120,45 +120,46 @@ function makeMovement(shipId, type) {
     switch (type) {
         case 0:
             alert('Fire');
-            makeFire();
+            makeFire(shipId);
             break;
         case 1:
             alert('Repair');
-            makeRepair();
+            makeRepair(shipId);
             break;
         case 2:
             alert('Move');
-            makeMove(shipId, type);
+            makeMove(shipId);
             break;
     }
 }
 
-function makeRepair() {
+function makeRepair(shipId) {
     $.ajax({
         type: 'POST',
         url: '/Game/MakeRepairStep',
-
+        data: { shipId: shipId },
         success: function () {
 
         },
     });
 }
 
-function makeFire() {
+function makeFire(shipId) {
     $.ajax({
         type: 'POST',
         url: '/Game/MakeFireStep',
+        data: { shipId: shipId },
         success: function () {
           
         },
     });
 }
 
-function makeMove(shipId, type) {
+function makeMove(shipId) {
     $.ajax({
         type: 'POST',
         url: '/Game/MakeMoveStep',
-        data: { shipId: shipId, type: type },
+        data: { shipId: shipId},
         success: function (ship) {
             var foundIndex = addedShips.findIndex(x => x.id == ship.id);
             addedShips[foundIndex] = ship;

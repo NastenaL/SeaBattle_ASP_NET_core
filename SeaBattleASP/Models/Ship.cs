@@ -1,5 +1,6 @@
 ﻿namespace SeaBattleASP.Models
 {
+    using Microsoft.EntityFrameworkCore;
     using SeaBattleASP.Helpers;
     using SeaBattleASP.Models.Constants;
     using SeaBattleASP.Models.Interfaces;
@@ -28,7 +29,29 @@
 
         public bool IsSelectedShip { get; set; }
 
-        public static Ship GetShipById(int id, MapModel model)
+        public static Ship GetShipByIdFromDB(int shipId)
+        {
+            List<Ship> allShips = GetAllShips();
+            return allShips.Find(i => i.Id == shipId);
+        }
+
+        private static List<Ship> GetAllShips()
+        {
+            DbManager.db.Cells.ToListAsync<Cell>();
+            DbManager.db.Decks.ToListAsync<Deck>();
+            DbManager.db.DeckCells.ToListAsync<DeckCell>();
+
+            var auxiliaryShips = DbManager.db.AuxiliaryShips.ToListAsync<AuxiliaryShip>().Result;
+            var militaryShip = DbManager.db.MilitaryShips.ToListAsync<MilitaryShip>().Result;
+            var mixShip = DbManager.db.MixShips.ToListAsync<MixShip>().Result;
+            List<Ship> allShips = new List<Ship>();
+            allShips.AddRange(auxiliaryShips);
+            allShips.AddRange(militaryShip);
+            allShips.AddRange(mixShip);
+            return allShips;
+        }
+
+        public static Ship GetShipByIdFromMapModel(int id, MapModel model)
         {
             Ship ship = null;
 
