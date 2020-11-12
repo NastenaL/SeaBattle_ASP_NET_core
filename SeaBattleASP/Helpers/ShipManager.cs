@@ -10,23 +10,23 @@
 
     public static class ShipManager
     {
-        public static bool CheckShipWithOtherShips(Point point, PlayingField PlayingField)
+        public static bool CheckShipWithOtherShips(List<DeckCell> allPlayerDeckCells, Ship currantShip)
         {
             bool error = false;
-            if (PlayingField.Ships.Count > 1)
+            if(allPlayerDeckCells.Count > 0)
             {
-                foreach (var p in PlayingField.Ships.ToList())
+                List<DeckCell> commonCells = new List<DeckCell>();
+                foreach (DeckCell deckCell in currantShip.DeckCells)
                 {
-                    foreach(DeckCell deckCell in p.DeckCells)
+                    if(deckCell.Cell != null)
                     {
-                        //if (point.X == deckCell.Cell.X && point.Y == deckCell.Cell.Y) //Check coincidence cells
-                        //                                                /* || ((point.X == po.Key.Coordinate.X + 1 && point.Y == po.Key.Coordinate.Y) ||//Check adjacent cells
-                        //                                                     (point.X == po.Key.Coordinate.X && point.Y == po.Key.Coordinate.Y + 1))) */
-                        //{
-                        //    error = true;
-                        //}
+                        commonCells.AddRange(allPlayerDeckCells.Where(s => s.Cell.X == deckCell.Cell.X && s.Cell.Y == deckCell.Cell.Y).ToList());
                     }
-                    
+                  
+                }
+                if(commonCells.Count > 0)
+                {
+                    error = true;
                 }
             }
             return error;

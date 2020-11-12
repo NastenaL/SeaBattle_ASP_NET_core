@@ -76,7 +76,6 @@
         {
             var ship = Ship.GetShipByIdFromDB(shipId);
             var allShips = Ship.GetAllShips();
-            var test = CurrantGame;
             var allPlayerShips = allShips.Where(i => i.Player == ship.Player).ToList();
             ship.Repair(allPlayerShips);
         }
@@ -99,13 +98,14 @@
         #endregion
 
         [HttpPost]
-        public IActionResult AddShipToField(int id, int playerId)
+        public IActionResult AddShipToField(int id, int playerName)
         {
             var ship = Ship.GetShipByIdFromMapModel(id, Model);
             if (ship != null)
             {
                 Model.Players = DbManager.db.Players.ToListAsync<Player>().Result;
-                var player = Model.Players.Find(i => i.Id == playerId);
+                var player = Model.Players.Find(i => i.Id == playerName);
+              //  var player = Model.Players.Find(i => i.Name == playerName);
                 ship.Player = player;
          
                 var shipDeckCells = GetCoordinatesForShip(ship);
@@ -156,7 +156,14 @@
 
         private List<DeckCell> CheckCoordinates(Point initalPoint, List<DeckCell> ShipDeckCells, Ship ship)
         {
-            var isShip = ShipManager.CheckShipWithOtherShips(initalPoint, PlayingField);
+            var allShips = Ship.GetAllShips();
+            var allPlayerShips = allShips.Where(i => i.Player == ship.Player).ToList();
+            var allPlayerDeckCells = new List<DeckCell>();
+            foreach(Ship s in allPlayerShips)
+            {
+                allPlayerDeckCells.AddRange(s.DeckCells);
+            }
+            var isShip = ShipManager.CheckShipWithOtherShips(allPlayerDeckCells, ship);
             var isShipOutOfAbroad = ShipManager.CheckPointAbroad(initalPoint);
 
             if (isShip || isShipOutOfAbroad)

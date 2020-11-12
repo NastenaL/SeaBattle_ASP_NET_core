@@ -52,10 +52,10 @@ function emptyCellsToField(field) {
     }
 };
 
-function selectShip(id, playerId) {
+function selectShip(id) {
     var element = document.getElementById(id);
     element.style.display = 'none';
-
+    playerId = document.getElementById("userInput").value;
     $.ajax({
         type: 'POST',
         url: '/Game/AddShipToField',
