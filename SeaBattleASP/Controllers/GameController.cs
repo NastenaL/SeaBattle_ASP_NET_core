@@ -76,7 +76,7 @@
                        
                         break;
                     case MovementType.Repair:
-                        ship.Repair(ship.DeckCells);
+                        ship.Repair(ship, allShips);
                         break;
                 }
             }

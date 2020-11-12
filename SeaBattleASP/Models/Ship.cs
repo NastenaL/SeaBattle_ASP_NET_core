@@ -6,6 +6,7 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Drawing;
+    using System.Linq;
 
     public abstract class Ship : IRepairable, IFireable
     {
@@ -94,18 +95,27 @@
            
         }
 
-        public virtual void Repair(List<DeckCell> shipDecks)
+        public virtual void Repair(Ship ship, List<Ship> allShips)
         {
-            var neighborsPoints = DeckCell.GetNeighboringPoints(shipDecks, this.Range);
-            var hurtedDecks = ShipManager.GetHurtedShip(neighborsPoints, shipDecks);
-            if (hurtedDecks.Count > 0)
+            var neighborsPoints = DeckCell.GetNeighboringPoints(ship.DeckCells, this.Range);
+            if(ship.Player != null)
             {
-                foreach (DeckCell hurtedDeck in hurtedDecks)
+                var allPlayerShips = allShips.Where(i => i.Player == ship.Player).ToList();
+                List<DeckCell> allPlayerDeckCells = new List<DeckCell>();
+                foreach (Ship s in allPlayerShips)
                 {
-                    hurtedDeck.Deck.State = Enums.DeckState.Normal;
-                    //Update to DB
+                    allPlayerDeckCells.AddRange(s.DeckCells);
                 }
-            }
+
+                var hurtedDecks = ShipManager.GetHurtedShip(neighborsPoints, allPlayerDeckCells);
+                if (hurtedDecks.Count > 0)
+                {
+                    foreach (DeckCell hurtedDeck in hurtedDecks)
+                    {
+                        hurtedDeck.Deck.State = Enums.DeckState.Normal;
+                    }
+                }
+            }  
         }
     }
 }

@@ -110,20 +110,17 @@ function convertCellsToPoints(ships) {
 
 var selectedShipId;
 var stepType;
-var user;
+var user = document.getElementById("userInput").value;
 
 function makeMovement(shipId, type) {
     selectedShipId = shipId;
     stepType = type;
-    user;
 
     $.ajax({
         type: 'POST',
         url: '/Game/MakeStep',
         data: { shipId: shipId, type: type },
         success: function (ship) {
-           
-
             var foundIndex = addedShips.findIndex(x => x.id == ship.id);
             addedShips[foundIndex] = ship;
             var convertedPoints = convertCellsToPoints(addedShips);
