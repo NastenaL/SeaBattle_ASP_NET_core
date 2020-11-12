@@ -9,6 +9,7 @@
     using System;
     using System.Collections.Generic;
     using System.Drawing;
+    using System.Linq;
 
     public class GameController : Controller
     {
@@ -17,8 +18,8 @@
 
         public GameController(ApplicationContext context)
         {
-            random = new Random();
             DbManager.db = context;
+            random = new Random();
             CurrantGame = new Game();
             Model = new MapModel
             {
@@ -33,7 +34,6 @@
         PlayingField PlayingField { get; set; }
        
         private Game CurrantGame { get; set; }
-
         private MapModel Model { get; set; }
         #endregion
 
@@ -48,7 +48,10 @@
         public void MakeRepairStep(int shipId)
         {
             var ship = Ship.GetShipByIdFromDB(shipId);
-            //Ship.Repair(ship, );
+            var allShips = Ship.GetAllShips();
+            var test = CurrantGame;
+            var allPlayerShips = allShips.Where(i => i.Player == ship.Player).ToList();
+            ship.Repair(allPlayerShips);
         }
 
         [HttpPost]
@@ -68,12 +71,14 @@
         }
 
         [HttpPost]
-        public IActionResult AddShipToField(int id)
+        public IActionResult AddShipToField(int id, int playerId)
         {
             var ship = Ship.GetShipByIdFromMapModel(id, Model);
             if (ship != null)
             {
-                ship.Player = Model.CurrantPlayer;
+                Model.Players = DbManager.db.Players.ToListAsync<Player>().Result;
+                var player = Model.Players.Find(i => i.Id == playerId);
+                ship.Player = player;
          
                 var shipDeckCells = GetCoordinatesForShip(ship);
                 ship.DeckCells = shipDeckCells;
@@ -139,7 +144,7 @@
         {
             Model.Players = DbManager.db.Players.ToListAsync<Player>().Result;
             Model.CurrantPlayer = Model.Players.Find(s => s.Id == player1Id);
-            if(player2Id != player1Id)
+            if (player2Id != player1Id)
             {
                 CurrantGame = Game.Create(Model.Players, player1Id, player2Id, PlayingField);
                 Model.CurrentGame = CurrantGame;

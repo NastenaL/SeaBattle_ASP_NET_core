@@ -28,11 +28,9 @@ function getCursorCoordinate(x,y) {
 }
 
 function createGame(id) {
-    console.log(id);
-
     var url = window.location.pathname;
     var id1 = url.substring(url.lastIndexOf('/') + 1);
-    console.log(id1);
+ 
     $.ajax({
         type: 'POST',
         url: '/Game/Index',
@@ -42,6 +40,7 @@ function createGame(id) {
         },
     });
 }
+
 // функция заполняет поле элементами span
 // входной параметр - поля(левое или правое)
 function emptyCellsToField(field) {
@@ -53,14 +52,14 @@ function emptyCellsToField(field) {
     }
 };
 
-function selectShip(id) {
+function selectShip(id, playerId) {
     var element = document.getElementById(id);
     element.style.display = 'none';
 
     $.ajax({
         type: 'POST',
         url: '/Game/AddShipToField',
-        data: { id: id },
+        data: { id: id, playerId: playerId },
         success: function (mapModel) {
             var convertedPoints = getCellPoint(mapModel);
 
@@ -92,7 +91,6 @@ function selectShip(id) {
             }
             html += "</table>";
             document.getElementById("shipsPanel").innerHTML = html;
-
             
         },
     });

@@ -3,6 +3,6 @@
     using System.Collections.Generic;
     public interface IRepairable
     {
-        void Repair(Ship ship, List<Ship> allShips);
+        void Repair(List<Ship> allShips);
     }
 }

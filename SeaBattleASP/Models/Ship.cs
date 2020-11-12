@@ -35,7 +35,7 @@
             return allShips.Find(i => i.Id == shipId);
         }
 
-        private static List<Ship> GetAllShips()
+        public static List<Ship> GetAllShips()
         {
             DbManager.db.Cells.ToListAsync<Cell>();
             DbManager.db.Decks.ToListAsync<Deck>();
@@ -118,14 +118,13 @@
            
         }
 
-        public virtual void Repair(Ship ship, List<Ship> allShips)
+        public virtual void Repair(List<Ship> allShips)
         {
-            var neighborsPoints = DeckCell.GetNeighboringPoints(ship.DeckCells, this.Range);
-            if(ship.Player != null)
+            var neighborsPoints = DeckCell.GetNeighboringPoints(this.DeckCells, this.Range);
+            if(this.Player != null)
             {
-                var allPlayerShips = allShips.Where(i => i.Player == ship.Player).ToList();
                 List<DeckCell> allPlayerDeckCells = new List<DeckCell>();
-                foreach (Ship s in allPlayerShips)
+                foreach (Ship s in allShips)
                 {
                     allPlayerDeckCells.AddRange(s.DeckCells);
                 }
