@@ -61,12 +61,8 @@
             if(CurrantGame != null)
             {
                 var ship = Ship.GetShipByIdFromDB(shipId);
-               
-                var allDeckCells = DbManager.db.DeckCells.ToListAsync<DeckCell>().Result;
 
                 List<DeckCell> enemyDeckCells = GetEnemyShips();
-
-
 
                 if (enemyDeckCells.Count > 0)
                 {

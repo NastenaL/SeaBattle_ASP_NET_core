@@ -7,7 +7,6 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Drawing;
-    using System.Linq;
 
     public abstract class Ship : IRepairable, IFireable
     {
