@@ -40,8 +40,22 @@
         [HttpPost]
         public void MakeFireStep(int shipId)
         {
-            var ship = Ship.GetShipByIdFromDB(shipId);
-           // ship.Fire();
+            if(CurrantGame != null)
+            {
+                var ship = Ship.GetShipByIdFromDB(shipId);
+                List<DeckCell> enemyDeckCells = new List<DeckCell>();
+                var allDeckCells = DbManager.db.DeckCells.ToListAsync<DeckCell>().Result;
+                var allShips = Ship.GetAllShips();
+
+                var enemyShips = allShips.Where(i => i.Id == CurrantGame.Player2.Id).ToList();
+
+                foreach (Ship s in enemyShips)
+                {
+                    enemyDeckCells.AddRange(s.DeckCells);
+                }
+
+                ship.Fire(enemyDeckCells);
+            }
         }
 
         [HttpPost]

@@ -4,6 +4,6 @@
 
     public interface IFireable
     {
-        void Fire(List<DeckCell> enemyShips, List<DeckCell> selectedShip);
+        List<DeckCell> Fire(List<DeckCell> enemyShips);
     }
 }

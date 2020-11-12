@@ -65,8 +65,15 @@
             return ship;
         }
 
-        public virtual void Fire(List<DeckCell> enemyShips, List<DeckCell> selectedShip)
+        public virtual List<DeckCell> Fire(List<DeckCell> enemyShips)
         {
+            var allDeckCells= DbManager.db.DeckCells.ToListAsync<DeckCell>().Result;
+            List<DeckCell> selectedShip = new List<DeckCell>();
+            foreach(DeckCell deckCell in this.DeckCells)
+            {
+                selectedShip.Add(allDeckCells.Find(i => i.Id == deckCell.Id));
+            }
+            
             var neighborsPoints = DeckCell.GetNeighboringPoints(selectedShip, this.Range);
             var firedShipDecks = ShipManager.CheckEnemyShips(enemyShips, neighborsPoints);
             if (firedShipDecks.Count > 0)
@@ -74,10 +81,10 @@
                 foreach (DeckCell firedDeck in firedShipDecks)
                 {
                     firedDeck.Deck.State = Enums.DeckState.Normal;
-                    //Update to DB
                 }
-            }
 
+            }
+            return firedShipDecks;
         }
 
         public List<DeckCell> Move(Ship ship)

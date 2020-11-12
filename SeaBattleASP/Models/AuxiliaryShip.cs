@@ -5,7 +5,7 @@
 
     public class AuxiliaryShip : Ship
     {
-        public override void Fire(List<DeckCell> enemyShips, List<DeckCell> selectedShip)
+        public override List<DeckCell> Fire(List<DeckCell> enemyShips)
         {
             throw new NotImplementedException();
         }
