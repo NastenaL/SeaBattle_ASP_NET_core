@@ -37,6 +37,7 @@
         private MapModel Model { get; set; }
         #endregion
 
+        #region Step methods
         [HttpPost]
         public void MakeFireStep(int shipId)
         {
@@ -49,12 +50,18 @@
 
                 var enemyShips = allShips.Where(i => i.Id == CurrantGame.Player2.Id).ToList();
 
-                foreach (Ship s in enemyShips)
+                if(enemyShips.Count > 0)
                 {
-                    enemyDeckCells.AddRange(s.DeckCells);
+                    foreach (Ship s in enemyShips)
+                    {
+                        enemyDeckCells.AddRange(s.DeckCells);
+                    }
                 }
-
-                ship.Fire(enemyDeckCells);
+                
+                if(enemyDeckCells.Count > 0)
+                {
+                    ship.Fire(enemyDeckCells);
+                }
             }
         }
 
@@ -83,6 +90,7 @@
             }
             return ship;
         }
+        #endregion
 
         [HttpPost]
         public IActionResult AddShipToField(int id, int playerId)
