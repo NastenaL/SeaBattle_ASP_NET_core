@@ -54,30 +54,28 @@
         }
 
         [HttpPost]
-        public Ship MakeStep(int shipId, int Type)
+        public void MakeFireStep()
+        {
+        }
+
+        [HttpPost]
+        public void MakeRepairStep()
+        {
+        }
+
+        [HttpPost]
+        public Ship MakeMoveStep(int shipId, int Type)
         {
             MovementType type = (MovementType)Type;
             List<Ship> allShips = GetAllShips();
             var ship = allShips.Find(i => i.Id == shipId);
             if (ship != null)
             {
-                switch (type)
+                var shipDeckCells = ship.Move(ship);
+                if (shipDeckCells.Count > 0)
                 {
-                    case MovementType.Fire:
-                        //ship.Fire(ship.DeckCells);
-                        break;
-                    case MovementType.Move:
-                        var shipDeckCells = ship.Move(ship);
-                        if(shipDeckCells.Count > 0)
-                        {
-                            ship.DeckCells = shipDeckCells;
-                            DbManager.UpdateShip(ship);
-                        }
-                       
-                        break;
-                    case MovementType.Repair:
-                        ship.Repair(ship, allShips);
-                        break;
+                    ship.DeckCells = shipDeckCells;
+                    DbManager.UpdateShip(ship);
                 }
             }
             return ship;

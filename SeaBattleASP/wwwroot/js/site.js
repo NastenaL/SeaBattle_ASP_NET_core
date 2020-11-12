@@ -116,15 +116,54 @@ function makeMovement(shipId, type) {
     selectedShipId = shipId;
     stepType = type;
 
+    console.log(type);
+    switch (type) {
+        case 0:
+            alert('Fire');
+            makeFire();
+            break;
+        case 1:
+            alert('Repair');
+            makeRepair();
+            break;
+        case 2:
+            alert('Move');
+            makeMove(shipId, type);
+            break;
+    }
+}
+
+function makeRepair() {
     $.ajax({
         type: 'POST',
-        url: '/Game/MakeStep',
+        url: '/Game/MakeRepairStep',
+
+        success: function () {
+
+        },
+    });
+}
+
+function makeFire() {
+    $.ajax({
+        type: 'POST',
+        url: '/Game/MakeFireStep',
+        success: function () {
+          
+        },
+    });
+}
+
+function makeMove(shipId, type) {
+    $.ajax({
+        type: 'POST',
+        url: '/Game/MakeMoveStep',
         data: { shipId: shipId, type: type },
         success: function (ship) {
             var foundIndex = addedShips.findIndex(x => x.id == ship.id);
             addedShips[foundIndex] = ship;
             var convertedPoints = convertCellsToPoints(addedShips);
- 
+
             emptyCellsToField('#leftField');
 
             for (var i = 0; i < convertedPoints.length; i++) {
