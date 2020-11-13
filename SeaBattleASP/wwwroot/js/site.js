@@ -64,10 +64,14 @@ function createShipTable() {
 
         options += "<a onclick='makeMovement(" + addedShips[i].id + ",2)'>Move</a>";
 
-        if (addedShips[i].type === 'MixShip' || addedShips[i].type === 'MilitaryShip') {
+        var isMixShip = addedShips[i].type === 'MixShip';
+        var isMilitaryShip = addedShips[i].type === 'MilitaryShip'; 
+        var isAuxiliaryShip = addedShips[i].type === 'AuxiliaryShip';
+
+        if (isMixShip || isMilitaryShip) {
             options += "<a onclick='makeMovement(" + addedShips[i].id + ",0)'>Fire</a>";
         }
-        if (addedShips[i].type === 'MixShip' || addedShips[i].type === 'AuxiliaryShip') {
+        if (isMixShip || isAuxiliaryShip) {
             options += "<a onclick='makeMovement(" + addedShips[i].id + ",1)'>Repair</a>";
         }
 
@@ -104,7 +108,6 @@ function addShipToField(id) {
             paintShip(convertedPoints);
 
             var html = createShipTable();
-
             document.getElementById("shipsPanel").innerHTML = html;
             
         },
