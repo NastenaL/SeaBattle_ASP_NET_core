@@ -51,6 +51,43 @@ function emptyCellsToField(field) {
     }
 };
 
+function createShipTable() {
+    var html = "<table class='shipsTable'>";
+    html += "<tr>";
+    html += "<td>Id</td>";
+    html += "<td>Type</td>";
+    html += "<td>Range</td>";
+    html += "<td>Action</td>";
+    html += "</tr>";
+    for (var i = 0; i < addedShips.length; i++) {
+        let options = '';
+
+        options += "<a onclick='makeMovement(" + addedShips[i].id + ",2)'>Move</a>";
+
+        if (addedShips[i].type === 'MixShip' || addedShips[i].type === 'MilitaryShip') {
+            options += "<a onclick='makeMovement(" + addedShips[i].id + ",0)'>Fire</a>";
+        }
+        if (addedShips[i].type === 'MixShip' || addedShips[i].type === 'AuxiliaryShip') {
+            options += "<a onclick='makeMovement(" + addedShips[i].id + ",1)'>Repair</a>";
+        }
+
+        html += "<tr>";
+        html += "<td style='padding: 2px'>" + addedShips[i].id + "</td>";
+        html += "<td style='padding: 2px'>" + addedShips[i].type + "</td>";
+        html += "<td style='padding: 2px'>" + addedShips[i].range + "</td>";
+        html += "<td style='padding: 2px'>" +
+            "<div class='dropdown'>" +
+            "<button onclick='openOptions(" + i + ")' class='dropbtn'>Select</button>" +
+            "<div id='myDropdown" + i + "' class='dropdown-content'>" + options + " </div>" +
+            "</div >" +
+            " </td > ";
+        html += "</tr>";
+
+    }
+    html += "</table>";
+    return html;
+}
+
 function addShipToField(id) {
     var element = document.getElementById(id);
     element.style.display = 'none';
@@ -66,32 +103,8 @@ function addShipToField(id) {
             addedShips.push(mapModel.selectedShip);
             paintShip(convertedPoints);
 
-            var html = "<table class='shipsTable'>";
-                html += "<tr>";
-            html += "<td>Id</td>";
-            html += "<td>Type</td>";
-            html += "<td>Range</td>";
-            html += "<td>Action</td>";
-                html += "</tr>";
-            for (var i = 0; i < addedShips.length; i++) {      
-                html += "<tr>";
-                html += "<td style='padding: 2px'>" + addedShips[i].id + "</td>";
-                html += "<td style='padding: 2px'>" + addedShips[i].type + "</td>";
-                html += "<td style='padding: 2px'>" + addedShips[i].range + "</td>";
-                html += "<td style='padding: 2px'>"+
-                    "<div class='dropdown'>"+
-                        "<button onclick='openOptions("+i+")' class='dropbtn'>Select</button>" +
-                        "<div id='myDropdown"+i+"' class='dropdown-content'>" +
-                            "<a onclick='makeMovement(" + addedShips[i].id +",2)'>Move</a>" +
-                            "<a onclick='makeMovement(" + addedShips[i].id +",0)'>Fire</a>" +
-                            "<a onclick='makeMovement(" + addedShips[i].id +",1)'>Repair</a>" +
-                       " </div>" +
-                   "</div >" +
-               " </td > ";
-                html += "</tr>";
+            var html = createShipTable();
 
-            }
-            html += "</table>";
             document.getElementById("shipsPanel").innerHTML = html;
             
         },
