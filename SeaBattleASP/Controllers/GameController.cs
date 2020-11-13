@@ -39,19 +39,26 @@
 
         #region Step methods
         [HttpPost]
-        public void MakeFireStep(int shipId)
+        public IActionResult MakeFireStep(int shipId)
         {
             if(CurrantGame != null)
             {
                 var ship = Ship.GetShipByIdFromDB(shipId);
 
-                List<DeckCell> enemyDeckCells = GetEnemyShips();
+                List<DeckCell> enemyDeckCells = GetEnemyShipsDeckCells();
 
                 if (enemyDeckCells.Count > 0)
                 {
-                    ship.Fire(enemyDeckCells);
+                    var hurtedShipDecks = ship.Fire(enemyDeckCells);
+
+                    if(hurtedShipDecks.Count > 0)
+                    {
+                        Model.HurtedShips = hurtedShipDecks;
+                        DbManager.UpdateShip(hurtedShipDecks);
+                    }
                 }
             }
+            return Json(Model);
         }
 
         [HttpPost]
@@ -80,7 +87,7 @@
         }
         #endregion
 
-        private List<DeckCell> GetEnemyShips()
+        private List<DeckCell> GetEnemyShipsDeckCells()
         {
             List<DeckCell> enemyDeckCells = new List<DeckCell>();
             var allShips = Ship.GetAllShips();
@@ -108,7 +115,6 @@
                 Model.Players = DbManager.db.Players.ToListAsync<Player>().Result;
                 var player = Model.Players.Find(i => i.Id == playerId);
                 ship.Player = player;
-         
                 var shipDeckCells = GetCoordinatesForShip(ship);
                 ship.DeckCells = shipDeckCells;
 

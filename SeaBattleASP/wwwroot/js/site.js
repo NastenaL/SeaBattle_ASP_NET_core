@@ -68,15 +68,17 @@ function addShipToField(id) {
 
             var html = "<table class='shipsTable'>";
                 html += "<tr>";
-                html += "<td>Id</td>";
-                html += "<td>Range</td>";
-                html += "<td>Action</td>";
+            html += "<td>Id</td>";
+            html += "<td>Type</td>";
+            html += "<td>Range</td>";
+            html += "<td>Action</td>";
                 html += "</tr>";
-            for (var i = 0; i < addedShips.length; i++) {
+            for (var i = 0; i < addedShips.length; i++) {      
                 html += "<tr>";
-                html += "<td>" + addedShips[i].id + "</td>";
-                html += "<td>" + addedShips[i].range + "</td>";
-                html += "<td>"+
+                html += "<td style='padding: 2px'>" + addedShips[i].id + "</td>";
+                html += "<td style='padding: 2px'>" + addedShips[i].type + "</td>";
+                html += "<td style='padding: 2px'>" + addedShips[i].range + "</td>";
+                html += "<td style='padding: 2px'>"+
                     "<div class='dropdown'>"+
                         "<button onclick='openOptions("+i+")' class='dropbtn'>Select</button>" +
                         "<div id='myDropdown"+i+"' class='dropdown-content'>" +
@@ -144,8 +146,8 @@ function makeFire(shipId) {
         type: 'POST',
         url: '/Game/MakeFireStep',
         data: { shipId: shipId },
-        success: function () {
-          
+        success: function (model) {
+            console.log(model);
         },
     });
 }

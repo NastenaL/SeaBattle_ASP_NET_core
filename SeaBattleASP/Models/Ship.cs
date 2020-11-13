@@ -6,6 +6,7 @@
     using SeaBattleASP.Models.Interfaces;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
     using System.Drawing;
     using System.Linq;
 
@@ -14,8 +15,10 @@
         public Ship()
         {
             DeckCells = new List<DeckCell>();
+            Type = GetShipType();
         }
 
+        #region Properties
         [Key]
         public int Id { get; set; }
 
@@ -25,9 +28,18 @@
 
         public Player Player { get; set; }
 
+        [NotMapped]
+        public string Type { get; set; }
+
         public List<DeckCell> DeckCells { get; set; }
 
         public bool IsSelectedShip { get; set; }
+        #endregion
+
+        private string GetShipType()
+        {
+            return this.GetType().Name;
+        }
 
         public static Ship GetShipByIdFromDB(int shipId)
         {
