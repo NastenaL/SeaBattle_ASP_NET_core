@@ -135,8 +135,8 @@ function makeRepair(shipId) {
         type: 'POST',
         url: '/Game/MakeRepairStep',
         data: { shipId: shipId },
-        success: function () {
-
+        success: function (model) {
+            console.log(model);
         },
     });
 }

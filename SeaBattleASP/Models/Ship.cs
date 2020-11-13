@@ -166,8 +166,9 @@
             
         }
 
-        public virtual void Repair(List<Ship> allShips)
+        public virtual List<DeckCell> Repair(List<Ship> allShips)
         {
+            List<DeckCell> hurtedDecks = new List<DeckCell>();
             var neighborsPoints = DeckCell.GetNeighboringPoints(this.DeckCells, this.Range);
             if(this.Player != null)
             {
@@ -177,7 +178,7 @@
                     allPlayerDeckCells.AddRange(s.DeckCells);
                 }
 
-                var hurtedDecks = ShipManager.GetHurtedShip(neighborsPoints, allPlayerDeckCells);
+                hurtedDecks = ShipManager.GetHurtedShip(neighborsPoints, allPlayerDeckCells);
                 if (hurtedDecks.Count > 0)
                 {
                     foreach (DeckCell hurtedDeck in hurtedDecks)
@@ -185,7 +186,8 @@
                         hurtedDeck.Deck.State = Enums.DeckState.Normal;
                     }
                 }
-            }  
+            }
+            return hurtedDecks;
         }
     }
 }

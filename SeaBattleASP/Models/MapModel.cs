@@ -16,6 +16,7 @@
             Players = new List<Player>();
             Ships = new Dictionary<int, Ship>();
             HurtedShips = new List<DeckCell>();
+            RepairedShips = new List<DeckCell>();
             width = Rules.FieldWidth;
             height = Rules.FieldHeight;
         }
@@ -24,6 +25,8 @@
         public List<Cell> Coord { get; set; }
 
         public List<Player> Players { get; set; }
+
+        public List<DeckCell> RepairedShips { get; set; }
 
         public List<DeckCell> HurtedShips { get; set; }
 

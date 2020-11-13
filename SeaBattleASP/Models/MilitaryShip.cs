@@ -5,7 +5,7 @@
 
     public class MilitaryShip : Ship
     {
-        public override void Repair(List<Ship> allShips)
+        public override List<DeckCell> Repair(List<Ship> allShips)
         {
             throw new NotImplementedException();
         }

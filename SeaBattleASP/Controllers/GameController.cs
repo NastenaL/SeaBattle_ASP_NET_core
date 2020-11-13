@@ -62,12 +62,16 @@
         }
 
         [HttpPost]
-        public void MakeRepairStep(int shipId)
+        public IActionResult MakeRepairStep(int shipId)
         {
             var ship = Ship.GetShipByIdFromDB(shipId);
+
             var allShips = Ship.GetAllShips();
             var allPlayerShips = allShips.Where(i => i.Player == ship.Player).ToList();
-            ship.Repair(allPlayerShips);
+
+            Model.RepairedShips = ship.Repair(allPlayerShips);
+
+            return Json(Model);
         }
 
         [HttpPost]
