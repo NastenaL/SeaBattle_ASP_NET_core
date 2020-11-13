@@ -7,6 +7,7 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Drawing;
+    using System.Linq;
 
     public abstract class Ship : IRepairable, IFireable
     {
@@ -93,7 +94,7 @@
             var head = this.DeckCells.Find(s =>s.Deck.IsHead);
             if(this.DeckCells.Count > 0)
             {
-                foreach (DeckCell shipDeck in this.DeckCells)
+                foreach (DeckCell shipDeck in this.DeckCells.ToList())
                 {
                     Point p = new Point
                     {
@@ -101,8 +102,28 @@
                         Y = shipDeck.Cell.Y
                     };
 
-                    p.X = this.IsXDirection ? p.X + this.Range : p.X;
-                    p.Y = !this.IsXDirection ? p.Y + this.Range : p.Y;
+                    if(this.IsXDirection)
+                    {
+                        if(p.X + this.Range > Rules.FieldWidth)
+                        {
+                            p.X -= this.Range;
+                        }
+                        else
+                        {
+                            p.X += this.Range;
+                        }
+                    }
+                    else
+                    {
+                        if (p.Y + this.Range > Rules.FieldHeight)
+                        {
+                            p.Y -= this.Range;
+                        }
+                        else
+                        {
+                            p.Y += this.Range;
+                        }
+                    }
 
                     shipDeck.Cell.X = p.X;
                     shipDeck.Cell.Y = p.Y;
@@ -121,7 +142,7 @@
             {
                 foreach (DeckCell deckCell in result)
                 {
-                    bool isAbroad = deckCell.Cell.X > Rules.FieldWidth - 1 || deckCell.Cell.Y > Rules.FieldHeight - 1;
+                    bool isAbroad = deckCell.Cell.X > Rules.FieldWidth || deckCell.Cell.Y > Rules.FieldHeight;
                     if (isAbroad)
                     {
                         this.IsXDirection = !this.IsXDirection;

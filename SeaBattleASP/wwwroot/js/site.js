@@ -26,11 +26,10 @@ function getCursorCoordinate(x,y) {
         },
     });
 }
-var test;
+
 function createGame(id) {
     var url = window.location.pathname;
     var id1 = url.substring(url.lastIndexOf('/') + 1);
-    test = id1;
     $.ajax({
         type: 'POST',
         url: '/Game/Index',
