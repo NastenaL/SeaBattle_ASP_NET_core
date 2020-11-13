@@ -26,11 +26,11 @@ function getCursorCoordinate(x,y) {
         },
     });
 }
-
+var test;
 function createGame(id) {
     var url = window.location.pathname;
     var id1 = url.substring(url.lastIndexOf('/') + 1);
- 
+    test = id1;
     $.ajax({
         type: 'POST',
         url: '/Game/Index',
@@ -52,10 +52,11 @@ function emptyCellsToField(field) {
     }
 };
 
-function selectShip(id) {
+function addShipToField(id) {
     var element = document.getElementById(id);
     element.style.display = 'none';
     playerId = document.getElementById("userInput").value;
+
     $.ajax({
         type: 'POST',
         url: '/Game/AddShipToField',
@@ -108,7 +109,7 @@ function convertCellsToPoints(ships) {
 
 var selectedShipId;
 var stepType;
-var user = document.getElementById("userInput").value;
+var user;
 
 function makeMovement(shipId, type) {
     selectedShipId = shipId;
@@ -117,15 +118,12 @@ function makeMovement(shipId, type) {
     console.log(type);
     switch (type) {
         case 0:
-            alert('Fire');
             makeFire(shipId);
             break;
         case 1:
-            alert('Repair');
             makeRepair(shipId);
             break;
         case 2:
-            alert('Move');
             makeMove(shipId);
             break;
     }

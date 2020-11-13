@@ -26,7 +26,7 @@
             </div>
         </div><div id="rightTextLeft"></div>
     </div>
-    <div id="shipsPanel">
+    <div style="width:auto" id="shipsPanel">
         <h5>Ships:</h5>
     </div>
 </section>
@@ -63,7 +63,7 @@
                             <td>@p.Key</td>
                             <td>@p.Value.Range</td>
                             <td>@p.Value.GetType()</td>
-                            <td><button id="@p.Key" onclick="return selectShip(@p.Key)">Select</button></td>
+                            <td><button id="@p.Key" onclick="return addShipToField(@p.Key)">Select</button></td>
                         </tr>
                     }
                 </table>

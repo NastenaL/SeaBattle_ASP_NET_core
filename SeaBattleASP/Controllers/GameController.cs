@@ -86,7 +86,7 @@
             var ship = Ship.GetShipByIdFromDB(shipId);
             if (ship != null)
             {
-                var shipDeckCells = ship.Move(ship);
+                var shipDeckCells = ship.Move();
                 if (shipDeckCells.Count > 0)
                 {
                     ship.DeckCells = shipDeckCells;
@@ -98,14 +98,13 @@
         #endregion
 
         [HttpPost]
-        public IActionResult AddShipToField(int id, int playerName)
+        public IActionResult AddShipToField(int id, int playerId)
         {
             var ship = Ship.GetShipByIdFromMapModel(id, Model);
             if (ship != null)
             {
                 Model.Players = DbManager.db.Players.ToListAsync<Player>().Result;
-                var player = Model.Players.Find(i => i.Id == playerName);
-              //  var player = Model.Players.Find(i => i.Name == playerName);
+                var player = Model.Players.Find(i => i.Id == playerId);
                 ship.Player = player;
          
                 var shipDeckCells = GetCoordinatesForShip(ship);

@@ -86,42 +86,50 @@
             return firedShipDecks;
         }
 
-        public List<DeckCell> Move(Ship ship)
+        public List<DeckCell> Move()
         {
             List<DeckCell> result = new List<DeckCell>();
-            var head = ship.DeckCells.Find(s =>s.Deck.IsHead);
-            foreach(DeckCell shipDeck in ship.DeckCells)
-             {
-                
-                 Point p = new Point
-                 {
-                     X = shipDeck.Cell.X,
-                     Y = shipDeck.Cell.Y
-                 };
+            result.Clear();
+            var head = this.DeckCells.Find(s =>s.Deck.IsHead);
+            if(this.DeckCells.Count > 0)
+            {
+                foreach (DeckCell shipDeck in this.DeckCells)
+                {
+                    Point p = new Point
+                    {
+                        X = shipDeck.Cell.X,
+                        Y = shipDeck.Cell.Y
+                    };
 
-                 p.X = ship.IsXDirection? p.X + ship.Range : p.X;
-                 p.Y = !ship.IsXDirection? p.Y + ship.Range : p.Y;
+                    p.X = this.IsXDirection ? p.X + this.Range : p.X;
+                    p.Y = !this.IsXDirection ? p.Y + this.Range : p.Y;
 
-                 CheckNewCoordinate(p, result, ship);
+                    shipDeck.Cell.X = p.X;
+                    shipDeck.Cell.Y = p.Y;
 
-                 shipDeck.Cell.X = p.X;
-                 shipDeck.Cell.Y = p.Y;
-
-                 result.Add(shipDeck);
-             }
+                    result.Add(shipDeck);
+                }
+            }
+            
+            CheckNewCoordinate(result);
             return result;
         }
 
-        private void CheckNewCoordinate(Point p, List<DeckCell> result, Ship ship)
+        private void CheckNewCoordinate(List<DeckCell> result)
         {
-            if (p.X > Rules.FieldWidth-1 || p.Y > Rules.FieldHeight-1)
+            if(result.Count > 0)
             {
-                this.IsXDirection = p.X > Rules.FieldWidth;
-
-                result.Clear();
-                Move(ship);
+                foreach (DeckCell deckCell in result)
+                {
+                    bool isAbroad = deckCell.Cell.X > Rules.FieldWidth - 1 || deckCell.Cell.Y > Rules.FieldHeight - 1;
+                    if (isAbroad)
+                    {
+                        this.IsXDirection = !this.IsXDirection;
+                        this.Move();
+                    }
+                }
             }
-           
+            
         }
 
         public virtual void Repair(List<Ship> allShips)
