@@ -37,23 +37,6 @@
         private MapModel Model { get; set; }
         #endregion
 
-        private List<DeckCell> GetEnemyShips()
-        {
-            List<DeckCell> enemyDeckCells = new List<DeckCell>();
-            var allShips = Ship.GetAllShips();
-            var enemyShips = allShips.Where(i => i.Id == CurrantGame.Player2.Id).ToList();
-
-            if (enemyShips.Count > 0)
-            {
-                foreach (Ship s in enemyShips)
-                {
-                    enemyDeckCells.AddRange(s.DeckCells);
-                }
-            }
-
-            return enemyDeckCells;
-        }
-
         #region Step methods
         [HttpPost]
         public void MakeFireStep(int shipId)
@@ -96,6 +79,25 @@
             return ship;
         }
         #endregion
+
+        private List<DeckCell> GetEnemyShips()
+        {
+            List<DeckCell> enemyDeckCells = new List<DeckCell>();
+            var allShips = Ship.GetAllShips();
+            if (CurrantGame.Player2 != null)
+            {
+                var enemyShips = allShips.Where(i => i.Id == CurrantGame.Player2.Id).ToList();
+
+                if (enemyShips.Count > 0)
+                {
+                    foreach (Ship s in enemyShips)
+                    {
+                        enemyDeckCells.AddRange(s.DeckCells);
+                    }
+                }
+            }
+            return enemyDeckCells;
+        }
 
         [HttpPost]
         public IActionResult AddShipToField(int id, int playerId)

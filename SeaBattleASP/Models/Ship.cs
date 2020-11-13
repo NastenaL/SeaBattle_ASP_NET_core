@@ -80,7 +80,8 @@
             {
                 foreach (DeckCell firedDeck in firedShipDecks)
                 {
-                    firedDeck.Deck.State = Enums.DeckState.Normal;
+                    firedDeck.Deck.State = Enums.DeckState.Hurted;
+                    firedDeck.Cell.Color = Enums.CellColor.Yellow;
                 }
 
             }
