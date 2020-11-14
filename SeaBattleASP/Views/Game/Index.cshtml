@@ -4,7 +4,7 @@
     ViewData["Title"] = "Game Page";
 }
 
-<button onclick="return createSingleGame()">Create Game</button>
+<button style="margin:10px;" onclick="return createSingleGame()">Create Game</button>
 
 <table style="margin: 5px;" class="table">
     <tr>
@@ -21,18 +21,5 @@
             <button onclick="return joinToGame(@game.Id)">Join</button>
         </td>
     </tr>
-    }
-</table>
-
-<table class="table">
-    @foreach (Player p in Model.Players)
-    {
-        <tr>
-            <td>@p.Id</td>
-            <td>@p.Name</td>
-            <td>
-               <button onclick="return createGame(@p.Id)">PLAY</button>
-            </td>
-        </tr>
     }
 </table>

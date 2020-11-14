@@ -41,19 +41,6 @@ function createSingleGame() {
     });
 }
 
-function createGame(id) {
-    var url = window.location.pathname;
-    var id1 = url.substring(url.lastIndexOf('/') + 1);
-    $.ajax({
-        type: 'POST',
-        url: '/Game/Index',
-        data: { player2Id: id, player1Id : id1},
-        success: function (response) {
-            window.location.href = response.redirectToUrl;
-        },
-    });
-}
-
 // функция заполняет поле элементами span
 // входной параметр - поля(левое или правое)
 function emptyCellsToField(field) {

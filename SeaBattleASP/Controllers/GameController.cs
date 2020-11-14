@@ -185,20 +185,6 @@
             return ShipDeckCells;
         }
 
-        [HttpPost]
-        public IActionResult Index(int player2Id, int player1Id)
-        {
-            Model.Players = DbManager.db.Players.ToListAsync<Player>().Result;
-            Model.CurrantPlayer = Model.Players.Find(s => s.Id == player1Id);
-            if (player2Id != player1Id)
-            {
-                CurrantGame = Game.Create(Model.Players, player1Id, player2Id, PlayingField);
-                Model.CurrentGame = CurrantGame;
-                DbManager.SaveGameToDB(CurrantGame);
-            }
-            return Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { id = CurrantGame.Id }) });
-        }
-
         [HttpGet]
         public IActionResult StartGame()
         {
