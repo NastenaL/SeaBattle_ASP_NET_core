@@ -221,9 +221,30 @@
         public IActionResult Index()
         {
             Model.Players = Player.GetPlayersNotInGame(Model);
+            var games =DbManager.db.Games.ToListAsync<Game>().Result;
+            Model.Games = games.Where(g => g.Player2 == null).ToList();
             return View(Model);
         }
        
+        [HttpPost]
+        public IActionResult CreateGame(int player1Id)
+        {
+            var allPLayers = DbManager.db.Players.ToListAsync<Player>().Result;
+            var player1 = allPLayers.Find(g => g.Id == player1Id);
+            if(player1 != null)
+            {
+                Game game = new Game
+                {
+                    Player1 = player1,
+                    State = GameState.Initialized
+                };
+
+                DbManager.SaveGameToDB(game);
+            }
+
+            return Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { id = player1Id }) });
+        }
+
         [HttpPost]
         public IActionResult EndGame()
         {

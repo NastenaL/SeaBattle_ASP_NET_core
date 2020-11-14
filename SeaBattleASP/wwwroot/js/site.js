@@ -27,6 +27,20 @@ function getCursorCoordinate(x,y) {
     });
 }
 
+function createSingleGame() {
+    var url = window.location.pathname;
+    var pl1Id = url.substring(url.lastIndexOf('/') + 1);
+
+    $.ajax({
+        type: 'POST',
+        url: '/Game/CreateGame',
+        data: { player1Id: pl1Id },
+        success: function (response) {
+            window.location.href = response.redirectToUrl;
+        },
+    });
+}
+
 function createGame(id) {
     var url = window.location.pathname;
     var id1 = url.substring(url.lastIndexOf('/') + 1);
@@ -259,6 +273,18 @@ addTextToPositioning('right');
 $("#btnAddShips").click(function () {
     $('#ModalPopUp').modal('show');
 })
+
+function joinToGame(gameId) {
+
+    console.log(gameId);
+    //$.ajax({
+    //    type: 'POST',
+    //    url: '/Game/JoinToGame',
+    //    success: function () {
+
+    //    },
+    //});
+}
 
 //SignalR
 var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();

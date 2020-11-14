@@ -17,12 +17,15 @@
             Ships = new Dictionary<int, Ship>();
             HurtedShips = new List<DeckCell>();
             RepairedShips = new List<DeckCell>();
+            Games = new List<Game>();
             width = Rules.FieldWidth;
             height = Rules.FieldHeight;
         }
 
         #region Property
         public List<Cell> Coord { get; set; }
+
+        public List<Game> Games { get; set; }
 
         public List<Player> Players { get; set; }
 
