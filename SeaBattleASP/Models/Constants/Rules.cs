@@ -54,10 +54,10 @@
 
         public static Dictionary<int, Ship> CreateShips()
         {
-            var a = CreateShip(4, ShipType.AuxiliaryShip);
+            var a = CreateShip(2, ShipType.AuxiliaryShip);
             var b = CreateShip(3, ShipType.MilitaryShip);
             var c = CreateShip(3, ShipType.MixShip);
-            var d = CreateShip(1, ShipType.AuxiliaryShip);
+            var d = CreateShip(2, ShipType.AuxiliaryShip);
            
            List<Ship> ships = new List<Ship>
            {

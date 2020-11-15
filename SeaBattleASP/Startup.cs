@@ -31,7 +31,10 @@
 
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationContext>(options =>
-                options.UseSqlServer(connection));
+                        options.UseSqlServer(connection),
+             ServiceLifetime.Transient);
+            // services.AddDbContext<ApplicationContext>(options =>
+            //    options.UseSqlServer(connection));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSignalR();

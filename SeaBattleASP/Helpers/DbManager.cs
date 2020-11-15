@@ -6,6 +6,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     public static class DbManager
     {
@@ -71,14 +72,31 @@
             db.SaveChanges();
         }
 
-        private static void SaveDeckCell(Ship ship)
+        private static void SaveDeckCellToDb(Ship ship)
         {
-            foreach (DeckCell deckCell in ship.DeckCells)
+            foreach (DeckCell deckCell in ship.DeckCells.ToList())
             {
-                db.Cells.Add(deckCell.Cell);
-                db.Decks.Add(deckCell.Deck);
-                db.DeckCells.Add(deckCell);
+                SaveCell(deckCell.Cell);
+                SaveDeck(deckCell.Deck);
+                SaveDeckCell(deckCell);
             }
+        }
+
+        private static void SaveCell(Cell cell)
+        {
+            db.Cells.Add(cell);
+            db.SaveChanges();
+        }
+
+        private static void SaveDeck(Deck deck)
+        {
+            db.Decks.Add(deck);
+            db.SaveChanges();
+        }
+
+        private static void SaveDeckCell(DeckCell deckCell)
+        {
+            db.DeckCells.Add(deckCell);
             db.SaveChanges();
         }
 
@@ -113,23 +131,23 @@
 
         private static void SaveShip(Ship ship)
         {
-            var shipType = ship.GetType();
-            var type = Enum.Parse(typeof(ShipType), shipType.Name);
+                var shipType = ship.GetType();
+                var type = Enum.Parse(typeof(ShipType), shipType.Name);
 
-            switch ((ShipType)type)
-            {
-                case ShipType.AuxiliaryShip:
-                    db.AuxiliaryShips.Add((AuxiliaryShip)ship);
-                    break;
-                case ShipType.MilitaryShip:
-                    db.MilitaryShips.Add((MilitaryShip)ship);
-                    break;
-                case ShipType.MixShip:
-                    db.MixShips.Add((MixShip)ship);
-                    break;
-            };
+                switch ((ShipType)type)
+                {
+                    case ShipType.AuxiliaryShip:
+                        db.AuxiliaryShips.Add((AuxiliaryShip)ship);
+                        break;
+                    case ShipType.MilitaryShip:
+                        db.MilitaryShips.Add((MilitaryShip)ship);
+                        break;
+                    case ShipType.MixShip:
+                        db.MixShips.Add((MixShip)ship);
+                        break;
+                };
 
-            db.SaveChanges();
+                db.SaveChanges();
         }
 
         public static void SavePlayingFieldToDB(PlayingField PlayingField)
@@ -140,7 +158,7 @@
 
         public static void SaveShipToDB(Ship ship)
         {
-            SaveDeckCell(ship);
+            SaveDeckCellToDb(ship);
             SaveShip(ship);
         }
     }
