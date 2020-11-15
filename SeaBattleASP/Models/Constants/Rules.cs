@@ -32,7 +32,7 @@
             {
                 DeckCell d = new DeckCell
                 {
-                    Deck = new Deck(Enums.DeckState.Normal, decks.Count == 0 ? true : false)
+                    Deck = new Deck(Enums.DeckState.Normal, decks.Count == 0)
                 };
                 decks.Add(d);
             }

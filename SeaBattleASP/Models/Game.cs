@@ -33,7 +33,7 @@
             this.State = GameState.Started;
 
             Random gen = new Random();
-            this.IsPl1Turn = gen.Next(100) < 50 ? true : false;
+            this.IsPl1Turn = gen.Next(100) < 50;
         }
 
         public void EndGame()

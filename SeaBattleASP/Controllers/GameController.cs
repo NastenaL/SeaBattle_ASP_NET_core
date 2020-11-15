@@ -229,7 +229,7 @@
                 DbManager.SaveGameToDB(game);
             }
 
-            return Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { gameId = game.Id, player1Id = player1Id }) });
+            return Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { gameId = game.Id, player1Id }) });
         }
 
         [HttpPost]
@@ -256,7 +256,7 @@
        
             }
 
-            return Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { gameId = game.Id, player2Id = player2Id }) });
+            return Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { gameId = game.Id, player2Id }) });
         }
 
         [HttpPost]
