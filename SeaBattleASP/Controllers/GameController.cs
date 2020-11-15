@@ -232,6 +232,27 @@
         }
 
         [HttpPost]
+        public IActionResult JoinToGame(int gameId, int player2Id)
+        {
+            var allGames = DbManager.db.Games.ToListAsync<Game>().Result;
+            
+            var game = allGames.Find(g => g.Id == gameId);
+            if(game != null)
+            {
+                var allPlayers = DbManager.db.Players.ToListAsync<Player>().Result;
+                var secondPlayer = allPlayers.Find(p => p.Id == player2Id);
+                if(secondPlayer != null)
+                {
+                    game.Player2 = secondPlayer;
+                    DbManager.UpdateGameInDb(game);
+                }
+       
+            }
+
+            return View();
+        }
+
+        [HttpPost]
         public IActionResult EndGame()
         {
             if(CurrantGame != null)

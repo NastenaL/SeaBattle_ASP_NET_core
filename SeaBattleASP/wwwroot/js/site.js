@@ -262,15 +262,16 @@ $("#btnAddShips").click(function () {
 })
 
 function joinToGame(gameId) {
+    var url = window.location.pathname;
+    var player2Id = url.substring(url.lastIndexOf('/') + 1);
+    $.ajax({
+        type: 'POST',
+        data: { gameId: gameId, player2Id: player2Id },
+        url: '/Game/JoinToGame',
+        success: function () {
 
-    console.log(gameId);
-    //$.ajax({
-    //    type: 'POST',
-    //    url: '/Game/JoinToGame',
-    //    success: function () {
-
-    //    },
-    //});
+        },
+    });
 }
 
 //SignalR
