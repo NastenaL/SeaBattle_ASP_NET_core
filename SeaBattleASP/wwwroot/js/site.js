@@ -261,6 +261,14 @@ $("#btnAddShips").click(function () {
     $('#ModalPopUp').modal('show');
 })
 
+function validateUserName() {
+    if (document.getElementById("userName").value === "") {
+        document.getElementById('register').disabled = true;
+    } else {
+        document.getElementById('register').disabled = false;
+    }
+}
+
 function joinToGame(gameId) {
     var url = window.location.pathname;
     var player2Id = url.substring(url.lastIndexOf('/') + 1);

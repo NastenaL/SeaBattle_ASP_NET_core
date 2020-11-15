@@ -9,11 +9,11 @@
     <div asp-validation-summary="ModelOnly"></div>
     <div>
         <label>Name</label><br />
-        <input type="text" name="userName" />
+        <input id="userName" type="text" onkeyup="validateUserName()" name="userName" />
 
     </div>
 
     <div>
-        <input type="submit" value="Register" />
+        <input id="register" disabled="disabled"  type="submit" style="margin-top: 5px;" value="Register"/>
     </div>
 </form>
