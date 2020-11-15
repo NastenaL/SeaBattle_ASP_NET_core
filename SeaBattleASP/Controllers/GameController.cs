@@ -244,6 +244,12 @@
                 var secondPlayer = allPlayers.Find(p => p.Id == player2Id);
                 if(secondPlayer != null)
                 {
+                    var playingField = new PlayingField();
+                    playingField.CreateField();
+
+                    DbManager.SavePlayingFieldToDB(playingField);
+
+                    game.PlayingField = playingField;
                     game.Player2 = secondPlayer;
                     DbManager.UpdateGameInDb(game);
                 }
