@@ -215,11 +215,12 @@
         [HttpPost]
         public IActionResult CreateGame(int player1Id)
         {
+            Game game = new Game();
             var allPLayers = DbManager.db.Players.ToListAsync<Player>().Result;
             var player1 = allPLayers.Find(g => g.Id == player1Id);
             if(player1 != null)
             {
-                Game game = new Game
+                game = new Game
                 {
                     Player1 = player1,
                     State = GameState.Initialized
@@ -228,7 +229,7 @@
                 DbManager.SaveGameToDB(game);
             }
 
-            return Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { id = player1Id }) });
+            return Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { gameId = game.Id, player1Id = player1Id }) });
         }
 
         [HttpPost]
@@ -249,7 +250,7 @@
        
             }
 
-            return View();
+            return Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { gameId = game.Id, player2Id = player2Id }) });
         }
 
         [HttpPost]

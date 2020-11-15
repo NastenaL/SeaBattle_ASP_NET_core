@@ -268,8 +268,8 @@ function joinToGame(gameId) {
         type: 'POST',
         data: { gameId: gameId, player2Id: player2Id },
         url: '/Game/JoinToGame',
-        success: function () {
-
+        success: function (response) {
+            window.location.href = response.redirectToUrl;
         },
     });
 }
