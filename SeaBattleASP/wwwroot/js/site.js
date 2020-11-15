@@ -29,12 +29,12 @@ function getCursorCoordinate(x,y) {
 
 function createSingleGame() {
     var url = window.location.pathname;
-    var pl1Id = url.substring(url.lastIndexOf('/') + 1);
+    var playerId = url.substring(url.lastIndexOf('/') + 1);
 
     $.ajax({
         type: 'POST',
         url: '/Game/CreateGame',
-        data: { player1Id: pl1Id },
+        data: { playerId: playerId },
         success: function (response) {
             window.location.href = response.redirectToUrl;
         },
@@ -93,15 +93,26 @@ function createShipTable() {
     return html;
 }
 
-function addShipToField(id) {
-    var element = document.getElementById(id);
-    element.style.display = 'none';
-    playerId = document.getElementById("userInput").value;
+var getUrlParams = function (url) {
+    var params = {};
+    (url + '?').split('?')[1].split('&').forEach(
+        function (pair) {
+            pair = (pair + '=').split('=').map(decodeURIComponent);
+            if (pair[0].length) {
+                params[pair[0]] = pair[1];
+            }
+        });
 
+    return params;
+};
+
+function addShipToField(id) {
+    var parameters = getUrlParams(window.location.href);
+    var playerId = parameters.playerId;
     $.ajax({
         type: 'POST',
         url: '/Game/AddShipToField',
-        data: { id: id, playerId: playerId },
+        data: { id: id, playerId: playerId},
         success: function (mapModel) {
             var convertedPoints = getCellPoint(mapModel);
 
@@ -271,10 +282,10 @@ function validateUserName() {
 
 function joinToGame(gameId) {
     var url = window.location.pathname;
-    var player2Id = url.substring(url.lastIndexOf('/') + 1);
+    var playerId = url.substring(url.lastIndexOf('/') + 1);
     $.ajax({
         type: 'POST',
-        data: { gameId: gameId, player2Id: player2Id },
+        data: { gameId: gameId, playerId: playerId },
         url: '/Game/JoinToGame',
         success: function (response) {
             window.location.href = response.redirectToUrl;

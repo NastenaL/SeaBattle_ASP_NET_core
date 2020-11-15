@@ -213,27 +213,27 @@
         }
        
         [HttpPost]
-        public IActionResult CreateGame(int player1Id)
+        public IActionResult CreateGame(int playerId)
         {
             Game game = new Game();
             var allPLayers = DbManager.db.Players.ToListAsync<Player>().Result;
-            var player1 = allPLayers.Find(g => g.Id == player1Id);
-            if(player1 != null)
+            var firstPlayer = allPLayers.Find(g => g.Id == playerId);
+            if(firstPlayer != null)
             {
                 game = new Game
                 {
-                    Player1 = player1,
+                    Player1 = firstPlayer,
                     State = GameState.Initialized
                 };
 
                 DbManager.SaveGameToDB(game);
             }
 
-            return Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { gameId = game.Id, player1Id }) });
+            return Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { gameId = game.Id, playerId }) });
         }
 
         [HttpPost]
-        public IActionResult JoinToGame(int gameId, int player2Id)
+        public IActionResult JoinToGame(int gameId, int playerId)
         {
             var allGames = DbManager.db.Games.ToListAsync<Game>().Result;
             
@@ -241,7 +241,7 @@
             if(game != null)
             {
                 var allPlayers = DbManager.db.Players.ToListAsync<Player>().Result;
-                var secondPlayer = allPlayers.Find(p => p.Id == player2Id);
+                var secondPlayer = allPlayers.Find(p => p.Id == playerId);
                 if(secondPlayer != null)
                 {
                     var playingField = new PlayingField();
@@ -256,7 +256,7 @@
        
             }
 
-            return Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { gameId = game.Id, player2Id }) });
+            return Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { gameId = game.Id, playerId }) });
         }
 
         [HttpPost]
