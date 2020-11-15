@@ -32,9 +32,6 @@
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<PlayingField>().ToTable("PlayingField");
-
-            //modelBuilder.Entity<CourseAssignment>()
-            //    .HasKey(c => new { c.CourseID, c.InstructorID });
         }
     }
 }

@@ -6,7 +6,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Threading.Tasks;
 
     public static class DbManager
     {
@@ -51,10 +50,10 @@
         {
             for (int i = 0; i < hurtedShipDecks.Count; i++)//Save to DB
             {
-                DbManager.db.Decks.Update(hurtedShipDecks[i].Deck);
-                DbManager.db.Cells.Update(hurtedShipDecks[i].Cell);
-                DbManager.db.DeckCells.Update(hurtedShipDecks[i]);
-                DbManager.db.SaveChanges();
+                db.Decks.Update(hurtedShipDecks[i].Deck);
+                db.Cells.Update(hurtedShipDecks[i].Cell);
+                db.DeckCells.Update(hurtedShipDecks[i]);
+                db.SaveChanges();
             }
         }
 
@@ -104,10 +103,10 @@
         {
             foreach (DeckCell deckCell in ship.DeckCells.ToList())
             {
-                DbManager.db.Cells.Update(deckCell.Cell);
-                DbManager.db.Decks.Update(deckCell.Deck);
-                DbManager.db.DeckCells.Update(deckCell);
-                DbManager.db.SaveChanges();
+                db.Cells.Update(deckCell.Cell);
+                db.Decks.Update(deckCell.Deck);
+                db.DeckCells.Update(deckCell);
+                db.SaveChanges();
             }
 
             var shipType = ship.GetType();
@@ -116,17 +115,17 @@
             switch ((ShipType)shipTypeEnum)
             {
                 case ShipType.AuxiliaryShip:
-                    DbManager.db.AuxiliaryShips.Update((AuxiliaryShip)ship);
+                    db.AuxiliaryShips.Update((AuxiliaryShip)ship);
                     break;
                 case ShipType.MilitaryShip:
-                    DbManager.db.MilitaryShips.Update((MilitaryShip)ship);
+                    db.MilitaryShips.Update((MilitaryShip)ship);
                     break;
                 case ShipType.MixShip:
-                    DbManager.db.MixShips.Update((MixShip)ship);
+                    db.MixShips.Update((MixShip)ship);
                     break;
             }
 
-            DbManager.db.SaveChanges();
+            db.SaveChanges();
         }
 
         private static void SaveShip(Ship ship)
