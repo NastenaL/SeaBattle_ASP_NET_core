@@ -232,11 +232,16 @@ function changeButtonVisibility() {
 function startGame() {
     changeButtonVisibility();
 
+    var parameters = getUrlParams(window.location.href);
+    var gameId = parameters.gameId;
+   
     $.ajax({
         type: 'POST',
+        data: { gameId: gameId },
         url: '/Game/StartGame',
-        success: function () {
-            
+        success: function (model) {
+            alert("The game is started");
+            console.log(model);
         },
     });
 };

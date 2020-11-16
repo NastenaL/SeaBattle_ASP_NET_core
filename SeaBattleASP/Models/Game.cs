@@ -1,5 +1,7 @@
 ﻿namespace SeaBattleASP.Models
 {
+    using Microsoft.EntityFrameworkCore;
+    using SeaBattleASP.Helpers;
     using SeaBattleASP.Models.Enums;
     using System;
     using System.Collections.Generic;
@@ -28,12 +30,18 @@
             };
             return game;
         }
-        public void StartGame()
+        public bool StartGame()
         {
             this.State = GameState.Started;
 
             Random gen = new Random();
             this.IsPl1Turn = gen.Next(100) < 50;
+            return this.IsPl1Turn;
+        }
+
+        public static List<Game> GetAllGames()
+        {
+            return DbManager.db.Games.ToListAsync<Game>().Result;
         }
 
         public void EndGame()

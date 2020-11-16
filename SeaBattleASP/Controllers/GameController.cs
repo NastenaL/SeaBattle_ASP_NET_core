@@ -170,24 +170,26 @@
         {
             return View(Model);
         }
-
         [HttpPost]
-        public IActionResult StartGame(string action)
+        public IActionResult StartGame(int gameId)
         {
-            if (CurrantGame != null)
+            var allGames = Game.GetAllGames();
+            var game = allGames.Find(g => g.Id == gameId);
+            if (game != null)
             {
-                CurrantGame.StartGame();
-                DbManager.UpdateGameInDb(CurrantGame);
+                var Pl1Turn  = game.StartGame();
+                DbManager.UpdateGameInDb(game);
+                Model.CurrentGame = game;
             }
 
-            return View();
+            return Json(Model);
         }
 
         [HttpGet]
         public IActionResult Index()
         {
             Model.Players = Player.GetPlayersNotInGame(Model);
-            var games =DbManager.db.Games.ToListAsync<Game>().Result;
+            var games = Game.GetAllGames();
             Model.Games = games.Where(g => g.Player2 == null).ToList();
             return View(Model);
         }
@@ -215,7 +217,7 @@
         [HttpPost]
         public IActionResult JoinToGame(int gameId, int playerId)
         {
-            var allGames = DbManager.db.Games.ToListAsync<Game>().Result;
+            var allGames = Game.GetAllGames();
             
             var game = allGames.Find(g => g.Id == gameId);
             if(game != null)
