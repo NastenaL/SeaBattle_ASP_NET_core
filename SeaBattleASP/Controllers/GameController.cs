@@ -20,7 +20,7 @@
         {
             DbManager.db = context;
             random = new Random();
-            CurrantGame = new Game();
+            CurrentGame = new Game();
             Model = new MapModel
             {
                 Ships = Rules.CreateShips()
@@ -33,7 +33,7 @@
         #region Properties 
         PlayingField PlayingField { get; set; }
        
-        private Game CurrantGame { get; set; }
+        private Game CurrentGame { get; set; }
         private MapModel Model { get; set; }
         #endregion
 
@@ -41,11 +41,11 @@
         [HttpPost]
         public IActionResult MakeFireStep(int shipId)
         {
-            if(CurrantGame != null)
+            if(CurrentGame != null)
             {
                 var ship = Ship.GetShipByIdFromDB(shipId);
 
-                List<DeckCell> enemyDeckCells = ShipManager.GetEnemyShipsDeckCells(CurrantGame);
+                List<DeckCell> enemyDeckCells = ShipManager.GetEnemyShipsDeckCells(CurrentGame);
 
                 if (enemyDeckCells.Count > 0)
                 {
@@ -97,8 +97,6 @@
             var ship = Ship.GetShipByIdFromMapModel(id, Model);
             if (ship != null)
             {
-               
-
                 Model.Players = Player.GetAllPlayers();
                 var player = Model.Players.Find(i => i.Id == playerId);
                 ship.Player = player;
@@ -110,13 +108,7 @@
                 var games = Game.GetAllGames();
                 var game = games.Find(g => g.Id == gameId);
                 game.PlayingField.Ships.Add(ship);
-
-               // DbManager.SaveShipToDB(ship);
-
                 DbManager.UpdateGameInDb(game);
-               // DbManager.db.PlayingFields.Update(game.PlayingField);
-                //DbManager.db.SaveChanges();
-
 
                 Model.SelectedShip = ship;
                 Model.CurrentGame = game;
@@ -194,17 +186,18 @@
             var ships = Ship.GetAllShips();
             var players = Player.GetAllPlayers();
             var allPlayingF = PlayingField.GetAllPlayingFields();
-            var allGames = Game.GetAllGames();
+            var games = Game.GetAllGames();
 
-            var game = allGames.Find(g => g.Id == gameId);
+            var game = games.Find(g => g.Id == gameId);
+            var allShipsInCurrentGame = allPlayingF.Find(g => g.Id == game.PlayingField.Id);
             if(game != null)
             {
                 bool isAllPlayersInGame = game.Player1 != null && game.Player2 != null;
-                bool isEnoughShips = game.PlayingField.Ships.Count == Model.Ships.Count;
+                bool isEnoughShips = allShipsInCurrentGame.Ships.Count == Model.Ships.Count * 2;
 
                 if (!isEnoughShips)
                 {
-                    Model.Message = "Not enough ships";
+                    Model.Message = "Not enough ships. You or second player select not all ships";
                 }
                 else if (!isAllPlayersInGame)
                 {
@@ -212,7 +205,17 @@
                 }
                 else
                 {
+                    Model.Message = "The game is start. First step is ";
                     var Pl1Turn = game.StartGame();
+
+                    if(Pl1Turn)
+                    {
+                        Model.Message += game.Player1.Name;
+                    }
+                    else
+                    {
+                        Model.Message += game.Player2.Name;
+                    }
                     DbManager.UpdateGameInDb(game);
                     Model.CurrentGame = game;
                 }
@@ -281,10 +284,10 @@
         [HttpPost]
         public IActionResult EndGame()
         {
-            if(CurrantGame != null)
+            if(CurrentGame != null)
             {
-                CurrantGame.EndGame();
-                DbManager.DeleteGameFromDb(CurrantGame);
+                CurrentGame.EndGame();
+                DbManager.DeleteGameFromDb(CurrentGame);
             }
             return View();
         } 

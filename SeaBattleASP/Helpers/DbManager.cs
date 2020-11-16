@@ -11,9 +11,9 @@
     {
         public static ApplicationContext db;
 
-        public static void SaveGameToDB(Game CurrantGame)
+        public static void SaveGameToDB(Game CurrentGame)
         {
-            db.Games.Add(CurrantGame);
+            db.Games.Add(CurrentGame);
             db.SaveChanges();
         }
 
@@ -23,9 +23,9 @@
             db.SaveChanges();
         }
 
-        private static void DeleteDecksAndCells(Game CurrantGame)
+        private static void DeleteDecksAndCells(Game game)
         {
-            foreach (var cell in CurrantGame.PlayingField.Ships)
+            foreach (var cell in game.PlayingField.Ships)
             {
                 foreach (DeckCell deckCell in cell.DeckCells)
                 {
@@ -65,9 +65,9 @@
             db.SaveChanges();
         }
 
-        public static void UpdateGameInDb(Game CurrantGame)
+        public static void UpdateGameInDb(Game game)
         {
-            db.Update(CurrantGame);
+            db.Update(game);
             db.SaveChanges();
         }
 

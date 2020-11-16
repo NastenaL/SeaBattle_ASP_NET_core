@@ -1,6 +1,7 @@
 ﻿var topText = ['а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'к', 'л', 'м', 'н', 'о','п','р','с'];
 var leftText = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17'];
 var addedShips = new Array();
+var message;
 
 // функция нанесения надписей слева и справа от полей
 // входной параметр - иднетификтор контрола(left или right)
@@ -240,6 +241,7 @@ function startGame() {
         url: '/Game/StartGame',
         success: function (model) {
             alert(model.message);
+            message = model.message;
             if (model.currentGame.player1 != null && model.currentGame.player2 != null) {
                 changeButtonVisibility();
             }
@@ -315,6 +317,13 @@ connection.on("ReceiveMessage", function (userId, ship, stepType) {
     document.getElementById("messagesList").appendChild(li);
 });
 
+connection.on("ReceiveMessage", function (message) {
+    var encodedMsg = "Message" + message;
+    var li = document.createElement("li");
+    li.textContent = encodedMsg;
+    document.getElementById("messagesList").appendChild(li);
+});
+
 connection.start().catch(function (err) {
     return console.error(err.toString());
 });
@@ -323,6 +332,15 @@ document.getElementById("sendButton").addEventListener("click", function (event)
    
     console.log("sendButton");
     connection.invoke("SendMessage", user, selectedShipId, stepType).catch(function (err) {
+        return console.error(err.toString());
+    });
+    event.preventDefault();
+});
+
+document.getElementById("startGame").addEventListener("click", function (event) {
+
+    console.log("startGame");
+    connection.invoke("SendShortMessage", message).catch(function (err) {
         return console.error(err.toString());
     });
     event.preventDefault();

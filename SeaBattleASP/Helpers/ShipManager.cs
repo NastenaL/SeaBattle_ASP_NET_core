@@ -10,13 +10,13 @@
 
     public static class ShipManager
     {
-        public static List<DeckCell> GetEnemyShipsDeckCells(Game CurrantGame)
+        public static List<DeckCell> GetEnemyShipsDeckCells(Game game)
         {
             List<DeckCell> enemyDeckCells = new List<DeckCell>();
             var allShips = Ship.GetAllShips();
-            if (CurrantGame.Player2 != null)
+            if (game.Player2 != null)
             {
-                var enemyShips = allShips.Where(i => i.Id == CurrantGame.Player2.Id).ToList();
+                var enemyShips = allShips.Where(i => i.Id == game.Player2.Id).ToList();
 
                 if (enemyShips.Count > 0)
                 {
@@ -30,13 +30,13 @@
         }
        
 
-        public static bool CheckShipWithOtherShips(List<DeckCell> allPlayerDeckCells, Ship currantShip)
+        public static bool CheckShipWithOtherShips(List<DeckCell> allPlayerDeckCells, Ship ship)
         {
             bool error = false;
             if(allPlayerDeckCells.Count > 0)
             {
                 List<DeckCell> commonCells = new List<DeckCell>();
-                foreach (DeckCell deckCell in currantShip.DeckCells)
+                foreach (DeckCell deckCell in ship.DeckCells)
                 {
                     if(deckCell.Cell != null)
                     {

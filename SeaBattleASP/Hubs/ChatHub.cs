@@ -9,5 +9,10 @@
         {
             await Clients.All.SendAsync("ReceiveMessage", userId, shipId, stepType);
         }
+        public async Task SendShortMessage(string message)
+        {
+            await Clients.All.SendAsync("ReceiveMessage", message);
+        }
+
     }
 }

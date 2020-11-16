@@ -40,8 +40,6 @@
         public Game CurrentGame { get; set; }
 
         public string Message { get; set; }
-
-        public Player CurrantPlayer { get; set; }
         #endregion
 
         public static void FillMapModelWithCoordinates(List<DeckCell> shipCoordinates, MapModel Model)
