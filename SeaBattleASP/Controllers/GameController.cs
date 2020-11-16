@@ -19,20 +19,14 @@
         {
             DbManager.db = context;
             random = new Random();
-            CurrentGame = new Game();
+
             Model = new MapModel
             {
                 Ships = Rules.CreateShips()
             };
-
-            PlayingField = new PlayingField();
-            PlayingField.CreateField();
         }
 
         #region Properties 
-        PlayingField PlayingField { get; set; }
-       
-        private Game CurrentGame { get; set; }
         private MapModel Model { get; set; }
         #endregion
 
@@ -40,11 +34,11 @@
         [HttpPost]
         public IActionResult MakeFireStep(int shipId)
         {
-            if(CurrentGame != null)
+            if(Model.CurrentGame != null)
             {
                 var ship = Ship.GetShipByIdFromDB(shipId);
 
-                List<DeckCell> enemyDeckCells = ShipManager.GetEnemyShipsDeckCells(CurrentGame);
+                List<DeckCell> enemyDeckCells = ShipManager.GetEnemyShipsDeckCells(Model.CurrentGame);
 
                 if (enemyDeckCells.Count > 0)
                 {
@@ -122,7 +116,7 @@
         public IActionResult SelectShip(int x, int y)
         {
             DeckCell deckCell = new DeckCell();
-            foreach(Ship ship in PlayingField.Ships)
+            foreach(Ship ship in Model.CurrentGame.PlayingField.Ships)
             {
                 deckCell = ship.DeckCells.Find(s => s.Cell.X == x && s.Cell.Y == y);
             }
@@ -131,23 +125,22 @@
             return result;
         }
 
-        private List<DeckCell> GetCoordinatesForShip(Ship playingShip)
+        private List<DeckCell> GetCoordinatesForShip(Ship ship)
         {
             List<DeckCell> ShipDeckCells = new List<DeckCell>();
 
             var initalPoint = ShipManager.GetRandomPoint(random);
             var direction = (ShipDirection)shipDirections.GetValue(random.Next(shipDirections.Length));
 
-            foreach (DeckCell deck in playingShip.DeckCells)
+            foreach (DeckCell deck in ship.DeckCells)
             {
                 initalPoint = ShipManager.ShiftPoint(initalPoint, direction);
 
                 var currentDeckCell = DeckCell.Create(initalPoint, deck.Deck);
                 ShipDeckCells.Add(currentDeckCell);
 
-                ShipDeckCells = CheckCoordinates(initalPoint, ShipDeckCells, playingShip);
+                ShipDeckCells = CheckCoordinates(initalPoint, ShipDeckCells, ship);
             }
-            PlayingField.Ships.Add(playingShip);
             return ShipDeckCells;
         }
 
@@ -283,10 +276,10 @@
         [HttpPost]
         public IActionResult EndGame()
         {
-            if(CurrentGame != null)
+            if(Model.CurrentGame != null)
             {
-                CurrentGame.EndGame();
-                DbManager.DeleteGameFromDb(CurrentGame);
+                Model.CurrentGame.EndGame();
+                DbManager.DeleteGameFromDb(Model.CurrentGame);
             }
             return View();
         } 
