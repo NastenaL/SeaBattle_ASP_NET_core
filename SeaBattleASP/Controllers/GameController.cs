@@ -45,7 +45,7 @@
             {
                 var ship = Ship.GetShipByIdFromDB(shipId);
 
-                List<DeckCell> enemyDeckCells = GetEnemyShipsDeckCells();
+                List<DeckCell> enemyDeckCells = ShipManager.GetEnemyShipsDeckCells(CurrantGame);
 
                 if (enemyDeckCells.Count > 0)
                 {
@@ -91,25 +91,6 @@
         }
         #endregion
 
-        private List<DeckCell> GetEnemyShipsDeckCells()
-        {
-            List<DeckCell> enemyDeckCells = new List<DeckCell>();
-            var allShips = Ship.GetAllShips();
-            if (CurrantGame.Player2 != null)
-            {
-                var enemyShips = allShips.Where(i => i.Id == CurrantGame.Player2.Id).ToList();
-
-                if (enemyShips.Count > 0)
-                {
-                    foreach (Ship s in enemyShips)
-                    {
-                        enemyDeckCells.AddRange(s.DeckCells);
-                    }
-                }
-            }
-            return enemyDeckCells;
-        }
-
         [HttpPost]
         public IActionResult AddShipToField(int id, int playerId)
         {
@@ -123,7 +104,6 @@
                 ship.DeckCells = shipDeckCells;
 
                 DbManager.SaveShipToDB(ship);
-                DbManager.SavePlayingFieldToDB(PlayingField);
                 Model.SelectedShip = ship;
                 MapModel.FillMapModelWithCoordinates(shipDeckCells, Model);
             }
@@ -154,7 +134,7 @@
 
             foreach (DeckCell deck in playingShip.DeckCells)
             {
-                initalPoint  = ShipManager.ShiftPoint(initalPoint, direction);
+                initalPoint = ShipManager.ShiftPoint(initalPoint, direction);
 
                 var currentDeckCell = DeckCell.Create(initalPoint, deck.Deck);
                 ShipDeckCells.Add(currentDeckCell);
@@ -170,7 +150,7 @@
             var allShips = Ship.GetAllShips();
             var allPlayerShips = allShips.Where(i => i.Player == ship.Player).ToList();
             var allPlayerDeckCells = new List<DeckCell>();
-            foreach(Ship s in allPlayerShips)
+            foreach (Ship s in allPlayerShips)
             {
                 allPlayerDeckCells.AddRange(s.DeckCells);
             }
@@ -194,12 +174,12 @@
         [HttpPost]
         public IActionResult StartGame(string action)
         {
-            if(CurrantGame != null)
+            if (CurrantGame != null)
             {
                 CurrantGame.StartGame();
                 DbManager.UpdateGameInDb(CurrantGame);
             }
-            
+
             return View();
         }
 

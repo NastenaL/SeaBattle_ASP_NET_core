@@ -10,6 +10,26 @@
 
     public static class ShipManager
     {
+        public static List<DeckCell> GetEnemyShipsDeckCells(Game CurrantGame)
+        {
+            List<DeckCell> enemyDeckCells = new List<DeckCell>();
+            var allShips = Ship.GetAllShips();
+            if (CurrantGame.Player2 != null)
+            {
+                var enemyShips = allShips.Where(i => i.Id == CurrantGame.Player2.Id).ToList();
+
+                if (enemyShips.Count > 0)
+                {
+                    foreach (Ship s in enemyShips)
+                    {
+                        enemyDeckCells.AddRange(s.DeckCells);
+                    }
+                }
+            }
+            return enemyDeckCells;
+        }
+       
+
         public static bool CheckShipWithOtherShips(List<DeckCell> allPlayerDeckCells, Ship currantShip)
         {
             bool error = false;

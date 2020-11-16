@@ -107,6 +107,9 @@ var getUrlParams = function (url) {
 };
 
 function addShipToField(id) {
+    var element = document.getElementById(id);
+    element.style.display = 'none';
+
     var parameters = getUrlParams(window.location.href);
     var playerId = parameters.playerId;
     $.ajax({
