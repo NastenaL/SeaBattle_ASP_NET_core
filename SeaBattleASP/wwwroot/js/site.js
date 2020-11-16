@@ -246,7 +246,11 @@ function startGame() {
         success: function (model) {
             alert(model.message);
             message = model.message;
-            if (model.currentGame.player1 != null && model.currentGame.player2 != null) {
+            var isPlayersInGame = model.currentGame.player1 != null && model.currentGame.player2 != null;
+            var isPl1Step = model.currentGame.isPl1Turn && model.currentGame.player1.id == parameters.playerId;
+            var isPl2Step = !model.currentGame.isPl1Turn && model.currentGame.player2.id == parameters.playerId; 
+
+            if (isPlayersInGame && (isPl1Step || isPl2Step) ) {
                 changeButtonVisibility();
             }
             console.log(model);
