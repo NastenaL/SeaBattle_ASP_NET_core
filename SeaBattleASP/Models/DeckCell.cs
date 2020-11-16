@@ -9,10 +9,15 @@
 
     public class DeckCell
     {
+        #region Properties
         public int Id { get; set; }
-        public Deck Deck { get; set; }
-        public Cell Cell { get; set; }
 
+        public Deck Deck { get; set; }
+
+        public Cell Cell { get; set; }
+        #endregion
+
+        #region Methods
         public static DeckCell Create(Point point, Deck deck)
         {
             DeckCell currentDeckCell = new DeckCell
@@ -68,5 +73,6 @@
 
             return new HashSet<Point>(NeighboringCoordinates).ToList();
         }
+        #endregion
     }
 }

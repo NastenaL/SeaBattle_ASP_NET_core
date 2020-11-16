@@ -1,7 +1,6 @@
 ﻿namespace SeaBattleASP.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
     using SeaBattleASP.Helpers;
     using SeaBattleASP.Models;
     using SeaBattleASP.Models.Constants;
@@ -103,13 +102,13 @@
                 var shipDeckCells = GetCoordinatesForShip(ship);
                 ship.DeckCells = shipDeckCells;
 
-               
                 var playerFields = PlayingField.GetAllPlayingFields();
                 var games = Game.GetAllGames();
                 var game = games.Find(g => g.Id == gameId);
                 game.PlayingField.Ships.Add(ship);
-                DbManager.UpdateGameInDb(game);
 
+               // DbManager.db.PlayingFields.Update(game.PlayingField);
+                DbManager.UpdateGameInDb(game);
                 Model.SelectedShip = ship;
                 Model.CurrentGame = game;
                 MapModel.FillMapModelWithCoordinates(shipDeckCells, Model);

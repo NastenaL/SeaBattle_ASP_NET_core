@@ -11,9 +11,9 @@
     {
         public static ApplicationContext db;
 
-        public static void SaveGameToDB(Game CurrentGame)
+        public static void SaveGameToDB(Game game)
         {
-            db.Games.Add(CurrentGame);
+            db.Games.Add(game);
             db.SaveChanges();
         }
 
@@ -130,23 +130,23 @@
 
         private static void SaveShip(Ship ship)
         {
-                var shipType = ship.GetType();
-                var type = Enum.Parse(typeof(ShipType), shipType.Name);
+            var shipType = ship.GetType();
+            var type = Enum.Parse(typeof(ShipType), shipType.Name);
 
-                switch ((ShipType)type)
-                {
-                    case ShipType.AuxiliaryShip:
-                        db.AuxiliaryShips.Add((AuxiliaryShip)ship);
-                        break;
-                    case ShipType.MilitaryShip:
-                        db.MilitaryShips.Add((MilitaryShip)ship);
-                        break;
-                    case ShipType.MixShip:
-                        db.MixShips.Add((MixShip)ship);
-                        break;
-                };
+            switch ((ShipType)type)
+            {
+                case ShipType.AuxiliaryShip:
+                    db.AuxiliaryShips.Add((AuxiliaryShip)ship);
+                    break;
+                case ShipType.MilitaryShip:
+                    db.MilitaryShips.Add((MilitaryShip)ship);
+                    break;
+                case ShipType.MixShip:
+                    db.MixShips.Add((MixShip)ship);
+                    break;
+            };
 
-                db.SaveChanges();
+            db.SaveChanges();
         }
 
         public static void SavePlayingFieldToDB(PlayingField PlayingField)

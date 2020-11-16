@@ -83,7 +83,7 @@ function createShipTable() {
         html += "<td style='padding: 2px'>" + addedShips[i].range + "</td>";
         html += "<td style='padding: 2px'>" +
             "<div class='dropdown'>" +
-            "<button onclick='openOptions(" + i + ")' class='dropbtn'>Select</button>" +
+            "<button style='display: none' id='step"+i+"' onclick='openOptions(" + i + ")' class='dropbtn'>Select</button>" +
             "<div id='myDropdown" + i + "' class='dropdown-content'>" + options + " </div>" +
             "</div >" +
             " </td > ";
@@ -227,6 +227,10 @@ function changeButtonVisibility() {
     var makeStep = document.getElementById('makeStep');
     makeStep.style.display = 'inline';
 
+    for (var i = 0; i < addedShips.length; i++) {
+        var makeStep = document.getElementById('step'+i);
+        makeStep.style.display = 'inline';
+    }
     var startGame = document.getElementById('startGame');
     startGame.style.display = 'none';
 }
