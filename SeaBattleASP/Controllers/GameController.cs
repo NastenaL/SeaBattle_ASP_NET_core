@@ -92,19 +92,34 @@
         #endregion
 
         [HttpPost]
-        public IActionResult AddShipToField(int id, int playerId)
+        public IActionResult AddShipToField(int id, int playerId, int gameId)
         {
             var ship = Ship.GetShipByIdFromMapModel(id, Model);
             if (ship != null)
             {
+               
+
                 Model.Players = Player.GetAllPlayers();
                 var player = Model.Players.Find(i => i.Id == playerId);
                 ship.Player = player;
                 var shipDeckCells = GetCoordinatesForShip(ship);
                 ship.DeckCells = shipDeckCells;
 
-                DbManager.SaveShipToDB(ship);
+               
+                var playerFields = PlayingField.GetAllPlayingFields();
+                var games = Game.GetAllGames();
+                var game = games.Find(g => g.Id == gameId);
+                game.PlayingField.Ships.Add(ship);
+
+               // DbManager.SaveShipToDB(ship);
+
+                DbManager.UpdateGameInDb(game);
+               // DbManager.db.PlayingFields.Update(game.PlayingField);
+                //DbManager.db.SaveChanges();
+
+
                 Model.SelectedShip = ship;
+                Model.CurrentGame = game;
                 MapModel.FillMapModelWithCoordinates(shipDeckCells, Model);
             }
 
@@ -170,16 +185,37 @@
         {
             return View(Model);
         }
+
         [HttpPost]
         public IActionResult StartGame(int gameId)
         {
+            var cells = Cell.GetAllCells();
+            var deckCells = DeckCell.GetAllDeckCells();
+            var ships = Ship.GetAllShips();
+            var players = Player.GetAllPlayers();
+            var allPlayingF = PlayingField.GetAllPlayingFields();
             var allGames = Game.GetAllGames();
+
             var game = allGames.Find(g => g.Id == gameId);
-            if (game != null)
+            if(game != null)
             {
-                var Pl1Turn  = game.StartGame();
-                DbManager.UpdateGameInDb(game);
-                Model.CurrentGame = game;
+                bool isAllPlayersInGame = game.Player1 != null && game.Player2 != null;
+                bool isEnoughShips = game.PlayingField.Ships.Count == Model.Ships.Count;
+
+                if (!isEnoughShips)
+                {
+                    Model.Message = "Not enough ships";
+                }
+                else if (!isAllPlayersInGame)
+                {
+                    Model.Message = "Wait for second player";
+                }
+                else
+                {
+                    var Pl1Turn = game.StartGame();
+                    DbManager.UpdateGameInDb(game);
+                    Model.CurrentGame = game;
+                }
             }
 
             return Json(Model);
@@ -202,12 +238,17 @@
             var firstPlayer = allPLayers.Find(g => g.Id == playerId);
             if(firstPlayer != null)
             {
+                var playingField = new PlayingField();
+                playingField.CreateField();
+
                 game = new Game
                 {
                     Player1 = firstPlayer,
-                    State = GameState.Initialized
+                    State = GameState.Initialized,
+                    PlayingField = playingField
                 };
 
+                DbManager.SavePlayingFieldToDB(playingField);
                 DbManager.SaveGameToDB(game);
             }
 
@@ -226,14 +267,10 @@
                 var secondPlayer = allPlayers.Find(p => p.Id == playerId);
                 if(secondPlayer != null)
                 {
-                    var playingField = new PlayingField();
-                    playingField.CreateField();
-
-                    DbManager.SavePlayingFieldToDB(playingField);
-
-                    game.PlayingField = playingField;
                     game.Player2 = secondPlayer;
+                    
                     DbManager.UpdateGameInDb(game);
+                    var allGames2 = Game.GetAllGames();
                 }
        
             }

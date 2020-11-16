@@ -1,5 +1,7 @@
 ﻿namespace SeaBattleASP.Models
 {
+    using Microsoft.EntityFrameworkCore;
+    using SeaBattleASP.Helpers;
     using SeaBattleASP.Models.Constants;
     using System.Collections.Generic;
 
@@ -23,6 +25,11 @@
             this.Width = Rules.FieldWidth;
             this.Heigth = Rules.FieldHeight;
             return this;
+        }
+
+        public static List<PlayingField> GetAllPlayingFields()
+        {
+            return DbManager.db.PlayingFields.ToListAsync<PlayingField>().Result;
         }
     }
 }

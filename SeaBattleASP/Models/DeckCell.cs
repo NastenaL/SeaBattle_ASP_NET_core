@@ -1,5 +1,7 @@
 ﻿namespace SeaBattleASP.Models
 {
+    using Microsoft.EntityFrameworkCore;
+    using SeaBattleASP.Helpers;
     using SeaBattleASP.Models.Enums;
     using System.Collections.Generic;
     using System.Drawing;
@@ -19,6 +21,11 @@
                 Deck = deck
             };
             return currentDeckCell;
+        }
+
+        public static List<DeckCell> GetAllDeckCells()
+        {
+            return DbManager.db.DeckCells.ToListAsync<DeckCell>().Result;
         }
 
         private static Point CreateNewPoint(DeckCell deckCell)

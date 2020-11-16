@@ -112,10 +112,11 @@ function addShipToField(id) {
 
     var parameters = getUrlParams(window.location.href);
     var playerId = parameters.playerId;
+    var gameId = parameters.gameId;
     $.ajax({
         type: 'POST',
         url: '/Game/AddShipToField',
-        data: { id: id, playerId: playerId},
+        data: { id: id, playerId: playerId, gameId: gameId },
         success: function (mapModel) {
             var convertedPoints = getCellPoint(mapModel);
 
@@ -230,8 +231,6 @@ function changeButtonVisibility() {
 }
 
 function startGame() {
-    changeButtonVisibility();
-
     var parameters = getUrlParams(window.location.href);
     var gameId = parameters.gameId;
    
@@ -240,7 +239,10 @@ function startGame() {
         data: { gameId: gameId },
         url: '/Game/StartGame',
         success: function (model) {
-            alert("The game is started");
+            alert(model.message);
+            if (model.currentGame.player1 != null && model.currentGame.player2 != null) {
+                changeButtonVisibility();
+            }
             console.log(model);
         },
     });
