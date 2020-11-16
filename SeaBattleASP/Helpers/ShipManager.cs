@@ -30,13 +30,13 @@
         }
        
 
-        public static bool CheckShipWithOtherShips(List<DeckCell> allPlayerDeckCells, Ship ship)
+        public static bool CheckShipWithOtherShips(List<DeckCell> allPlayerDeckCells, List<DeckCell> ShipDeckCells)
         {
             bool error = false;
             if(allPlayerDeckCells.Count > 0)
             {
                 List<DeckCell> commonCells = new List<DeckCell>();
-                foreach (DeckCell deckCell in ship.DeckCells)
+                foreach (DeckCell deckCell in ShipDeckCells)
                 {
                     if(deckCell.Cell != null)
                     {

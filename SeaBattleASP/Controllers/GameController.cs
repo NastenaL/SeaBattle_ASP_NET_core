@@ -138,7 +138,6 @@
 
                 var currentDeckCell = DeckCell.Create(initalPoint, deck.Deck);
                 ShipDeckCells.Add(currentDeckCell);
-
                 ShipDeckCells = CheckCoordinates(initalPoint, ShipDeckCells, ship);
             }
             return ShipDeckCells;
@@ -146,21 +145,28 @@
 
         private List<DeckCell> CheckCoordinates(Point initalPoint, List<DeckCell> ShipDeckCells, Ship ship)
         {
+            var decks = Deck.GetAllDecks();
+            var cells = Cell.GetAllCells();
+            var deckCells = DeckCell.GetAllDeckCells();
             var allShips = Ship.GetAllShips();
             var allPlayerShips = allShips.Where(i => i.Player == ship.Player).ToList();
-            var allPlayerDeckCells = new List<DeckCell>();
-            foreach (Ship s in allPlayerShips)
+            if(allPlayerShips.Count > 0)
             {
-                allPlayerDeckCells.AddRange(s.DeckCells);
-            }
-            var isShip = ShipManager.CheckShipWithOtherShips(allPlayerDeckCells, ship);
-            var isShipOutOfAbroad = ShipManager.CheckPointAbroad(initalPoint);
+                var allPlayerDeckCells = new List<DeckCell>();
+                foreach (Ship s in allPlayerShips)
+                {
+                    allPlayerDeckCells.AddRange(s.DeckCells);
+                }
+                var isShip = ShipManager.CheckShipWithOtherShips(allPlayerDeckCells, ShipDeckCells);
+                var isShipOutOfAbroad = ShipManager.CheckPointAbroad(initalPoint);
 
-            if (isShip || isShipOutOfAbroad)
-            {
-                ShipDeckCells.Clear();
-                ShipDeckCells = GetCoordinatesForShip(ship);
+                if (isShip || isShipOutOfAbroad)
+                {
+                    ShipDeckCells.Clear();
+                    ShipDeckCells = GetCoordinatesForShip(ship);
+                }
             }
+         
             return ShipDeckCells;
         }
 
