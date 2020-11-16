@@ -26,6 +26,11 @@
             return allplayers;
         }
 
+        public static List<Player> GetAllPlayers()
+        {
+            return DbManager.db.Players.ToListAsync<Player>().Result;
+        }
+
         private static List<Player> CheckPlayersInNotGame(List<Game> games, MapModel Model)
         {
             List<Player> ingame = new List<Player>();

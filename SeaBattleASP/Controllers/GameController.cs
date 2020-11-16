@@ -97,7 +97,7 @@
             var ship = Ship.GetShipByIdFromMapModel(id, Model);
             if (ship != null)
             {
-                Model.Players = DbManager.db.Players.ToListAsync<Player>().Result;
+                Model.Players = Player.GetAllPlayers();
                 var player = Model.Players.Find(i => i.Id == playerId);
                 ship.Player = player;
                 var shipDeckCells = GetCoordinatesForShip(ship);
@@ -198,7 +198,7 @@
         public IActionResult CreateGame(int playerId)
         {
             Game game = new Game();
-            var allPLayers = DbManager.db.Players.ToListAsync<Player>().Result;
+            var allPLayers = Player.GetAllPlayers();
             var firstPlayer = allPLayers.Find(g => g.Id == playerId);
             if(firstPlayer != null)
             {
@@ -222,7 +222,7 @@
             var game = allGames.Find(g => g.Id == gameId);
             if(game != null)
             {
-                var allPlayers = DbManager.db.Players.ToListAsync<Player>().Result;
+                var allPlayers = Player.GetAllPlayers();
                 var secondPlayer = allPlayers.Find(p => p.Id == playerId);
                 if(secondPlayer != null)
                 {
