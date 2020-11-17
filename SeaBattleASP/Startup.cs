@@ -65,6 +65,7 @@
             app.UseSignalR(routes =>
             {
                 routes.MapHub<ChatHub>("/chatHub");
+                routes.MapHub<StateGameHub>("/stateGameHub");
             });
 
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();

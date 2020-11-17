@@ -109,7 +109,7 @@ function createShipTable() {
         html += "<td style='padding: 2px'>" + addedShips[i].range + "</td>";
         html += "<td style='padding: 2px'>" +
             "<div class='dropdown'>" +
-            "<button style='display: none' id='step" + i + "' onclick='openOptions(" + i + ")' class='dropbtn'>Select</button>" +
+            "<button id='step" + i + "' onclick='openOptions(" + i + ")' class='dropbtn'>Select</button>" +
             "<div id='myDropdown" + i + "' class='dropdown-content'>" + options + " </div>" +
             "</div >" +
             " </td > ";
@@ -368,8 +368,12 @@ function joinToGame(gameId) {
 
 //SignalR
 var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+var connection2 = new signalR.HubConnectionBuilder().withUrl("/stateGameHub").build();
 
 connection.on("ReceiveMessage", function (userId, ship, stepType) {
+    var parameters = getUrlParams(window.location.href);
+    userId = parameters.playerId;
+
     var seceltedShip = ship.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     var encodedMsg = "Player" + userId + "select ship " + seceltedShip + ", type " + stepType;
     var li = document.createElement("li");
@@ -378,11 +382,16 @@ connection.on("ReceiveMessage", function (userId, ship, stepType) {
     document.getElementById("messagesList").appendChild(li);
 });
 
-connection.on("ReceiveMessage", function (message) {
-    var encodedMsg = "Message" + message;
+connection2.on("ReceiveMessage", function (message) {
+
+    var encodedMsg = "Message: " + message;
     var li = document.createElement("li");
     li.textContent = encodedMsg;
     document.getElementById("messagesList").appendChild(li);
+});
+
+connection2.start().catch(function (err) {
+    return console.error(err.toString());
 });
 
 connection.start().catch(function (err) {
@@ -400,8 +409,7 @@ document.getElementById("sendButton").addEventListener("click", function (event)
 
 document.getElementById("startGame").addEventListener("click", function (event) {
 
-    console.log("startGame");
-    connection.invoke("SendShortMessage", message).catch(function (err) {
+    connection2.invoke("SendMessage", message).catch(function (err) {
         return console.error(err.toString());
     });
     event.preventDefault();
