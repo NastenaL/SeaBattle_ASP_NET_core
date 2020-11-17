@@ -1,4 +1,4 @@
-﻿var topText = ['а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'к', 'л', 'м', 'н', 'о','п','р','с'];
+﻿var topText = ['а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с'];
 var leftText = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17'];
 var addedShips = new Array();
 var message;
@@ -14,16 +14,16 @@ function addTextToPositioning(id) {
     }
 }
 
-function getCursorCoordinate(x,y) {
+function getCursorCoordinate(x, y) {
     console.log("x = ", x);
     console.log("y = ", y);
 
     $.ajax({
         type: 'POST',
         url: '/Game/SelectShip',
-        data: { x: x, y:y },
+        data: { x: x, y: y },
         success: function (result) {
-           
+
         },
     });
 }
@@ -48,8 +48,8 @@ function emptyCellsToField(field) {
     $(field).empty();
     for (var i = 0; i < width; i++) {
         for (var j = 0; j < height; j++) {
-            $(field).append('<span onclick="return getCursorCoordinate('+i+','+j+')" class="cell cellColor" id=cell' + i + j + '  oncontextmenu="blocker(' + i + j + ');return false" ></span>');
-        }     
+            $(field).append('<span onclick="return getCursorCoordinate(' + i + ',' + j + ')" class="cell cellColor" id=cell' + i + j + '  oncontextmenu="blocker(' + i + j + ');return false" ></span>');
+        }
     }
 };
 
@@ -63,7 +63,7 @@ function selectShipForShift(shipId) {
 
 function shiftShip(direction) {
     var b = document.getElementById('left');
-    
+
     $.ajax({
         type: 'POST',
         url: '/Game/ShiftShip',
@@ -89,7 +89,7 @@ function createShipTable() {
         options += "<a onclick='makeMovement(" + addedShips[i].id + ",2)'>Move</a>";
 
         var isMixShip = addedShips[i].type === 'MixShip';
-        var isMilitaryShip = addedShips[i].type === 'MilitaryShip'; 
+        var isMilitaryShip = addedShips[i].type === 'MilitaryShip';
         var isAuxiliaryShip = addedShips[i].type === 'AuxiliaryShip';
 
         if (isMixShip || isMilitaryShip) {
@@ -100,13 +100,13 @@ function createShipTable() {
         }
 
         html += "<tr>";
-        html += "<td style='padding: 2px'><input name='selectShip' onchange='selectShipForShift(" + addedShips[i].id +");' type='radio' value='" + addedShips[i].isSelectedShip + "'/></td>";
+        html += "<td style='padding: 2px'><input name='selectShip' onchange='selectShipForShift(" + addedShips[i].id + ");' type='radio' value='" + addedShips[i].isSelectedShip + "'/></td>";
         html += "<td style='padding: 2px'>" + addedShips[i].id + "</td>";
         html += "<td style='padding: 2px'>" + addedShips[i].type + "</td>";
         html += "<td style='padding: 2px'>" + addedShips[i].range + "</td>";
         html += "<td style='padding: 2px'>" +
             "<div class='dropdown'>" +
-            "<button style='display: none' id='step"+i+"' onclick='openOptions(" + i + ")' class='dropbtn'>Select</button>" +
+            "<button style='display: none' id='step" + i + "' onclick='openOptions(" + i + ")' class='dropbtn'>Select</button>" +
             "<div id='myDropdown" + i + "' class='dropdown-content'>" + options + " </div>" +
             "</div >" +
             " </td > ";
@@ -147,13 +147,15 @@ function addShipToField(id) {
         data: { id: id, playerId: playerId, gameId: gameId },
         success: function (mapModel) {
             var convertedPoints = getCellPoint(mapModel);
-
+          
             addedShips.push(mapModel.selectedShip);
-            paintShip(convertedPoints, 'usualShipColor');
+            for (var i = 0; i < addedShips.length; i++) {
+                paintShip(addedShips[i].deckCells, 'usualShipColor');
+            }
 
             var html = createShipTable();
             document.getElementById("shipsPanel").innerHTML = html;
-            
+
         },
     });
 };
@@ -216,7 +218,7 @@ function makeMove(shipId) {
     $.ajax({
         type: 'POST',
         url: '/Game/MakeMoveStep',
-        data: { shipId: shipId},
+        data: { shipId: shipId },
         success: function (ship) {
             repaintShip(ship);
         },
@@ -226,13 +228,16 @@ function makeMove(shipId) {
 function repaintShip(ship) {
     var foundIndex = addedShips.findIndex(x => x.id == ship.id);
     addedShips[foundIndex] = ship;
-    var convertedPoints = convertCellsToPoints(addedShips);
 
     emptyCellsToField('#leftField');
 
-    for (var i = 0; i < convertedPoints.length; i++) {
-        paintDeckShip(convertedPoints[i], '#leftField', 'usualShipColor');
+    for (var i = 0; i < addedShips.length; i++) {
+        paintShip(addedShips[i].deckCells, 'usualShipColor');
     }
+
+    //for (var i = 0; i < ship.deckCells.length; i++) {
+    //    paintDeckShip(ship.deckCells[i], '#leftField', 'usualShipColor');
+    //}
 }
 
 function openOptions(i) {
@@ -259,7 +264,7 @@ function changeButtonVisibility() {
     makeStep.style.display = 'inline';
 
     for (var i = 0; i < addedShips.length; i++) {
-        var makeStep = document.getElementById('step'+i);
+        var makeStep = document.getElementById('step' + i);
         makeStep.style.display = 'inline';
     }
     var startGame = document.getElementById('startGame');
@@ -279,7 +284,7 @@ function checkWhoseStep() {
 function startGame() {
     var parameters = getUrlParams(window.location.href);
     var gameId = parameters.gameId;
-   
+
     $.ajax({
         type: 'POST',
         data: { gameId: gameId },
@@ -302,17 +307,17 @@ function getCellPoint(mapModel) {
     return convertedPoints;
 }
 
-function paintShip(convertedPoints, shipColor) {
-    var len = convertedPoints.length;
+function paintShip(deckCells, shipColor) {
+    var len = deckCells.length;
     for (var i = 0; i < len; i++) {
-        paintDeckShip(convertedPoints[i], '#leftField', shipColor);
+        paintDeckShip(deckCells[i], '#leftField', shipColor);
     }
 }
 
-function paintDeckShip(point, field, shipColor) {
-    
-    $(field + ' #cell' + point.x + point.y).removeClass(shipColor+' cellColor').addClass(shipColor);
-    $(field + ' #cell' + point.x + point.y).addClass('ship');
+function paintDeckShip(deckcell, field, shipColor) {
+
+    $(field + ' #cell' + deckcell.cell.x + deckcell.cell.y).removeClass(shipColor + ' cellColor').addClass(shipColor);
+    $(field + ' #cell' + deckcell.cell.x + deckcell.cell.y).addClass('ship');
 };
 
 emptyCellsToField('#leftField');
@@ -371,7 +376,7 @@ connection.start().catch(function (err) {
 });
 
 document.getElementById("sendButton").addEventListener("click", function (event) {
-   
+
     console.log("sendButton");
     connection.invoke("SendMessage", user, selectedShipId, stepType).catch(function (err) {
         return console.error(err.toString());
