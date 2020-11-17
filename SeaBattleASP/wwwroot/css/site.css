@@ -156,12 +156,42 @@ width:auto;
     display: none;
 }
 
-.shipColor {
+.usualShipColor {
     content: '';
     display: block;
     position: relative;
     width: 30px;
     height: 30px;
     background-color: #000000;
+    margin: 0;
+}
+
+.shipFiredColor {
+    content: '';
+    display: block;
+    position: relative;
+    width: 30px;
+    height: 30px;
+    background-color: brown;
+    margin: 0;
+}
+
+.shipFiredColor {
+    content: '';
+    display: block;
+    position: relative;
+    width: 30px;
+    height: 30px;
+    background-color: brown;
+    margin: 0;
+}
+
+.drownedFiredColor {
+    content: '';
+    display: block;
+    position: relative;
+    width: 30px;
+    height: 30px;
+    background-color: darkblue;
     margin: 0;
 }

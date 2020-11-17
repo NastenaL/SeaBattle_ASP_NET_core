@@ -77,7 +77,7 @@ function shiftShip(direction) {
             emptyCellsToField('#leftField');
 
             for (var i = 0; i < convertedPoints.length; i++) {
-                paintDeckShip(convertedPoints[i], '#leftField');
+                paintDeckShip(convertedPoints[i], '#leftField', 'usualShipColor');
             }
         },
     });
@@ -139,6 +139,10 @@ var getUrlParams = function (url) {
     return params;
 };
 
+function changeColor(ship) {
+
+}
+
 function addShipToField(id) {
     var element = document.getElementById(id);
     element.style.display = 'none';
@@ -154,7 +158,7 @@ function addShipToField(id) {
             var convertedPoints = getCellPoint(mapModel);
 
             addedShips.push(mapModel.selectedShip);
-            paintShip(convertedPoints);
+            paintShip(convertedPoints, 'drownedFiredColor');
 
             var html = createShipTable();
             document.getElementById("shipsPanel").innerHTML = html;
@@ -230,7 +234,7 @@ function makeMove(shipId) {
             emptyCellsToField('#leftField');
 
             for (var i = 0; i < convertedPoints.length; i++) {
-                paintDeckShip(convertedPoints[i], '#leftField');
+                paintDeckShip(convertedPoints[i], '#leftField', 'usualShipColor');
             }
         },
     });
@@ -303,16 +307,16 @@ function getCellPoint(mapModel) {
     return convertedPoints;
 }
 
-function paintShip(convertedPoints) {
+function paintShip(convertedPoints, shipColor) {
     var len = convertedPoints.length;
     for (var i = 0; i < len; i++) {
-        paintDeckShip(convertedPoints[i], '#leftField');
+        paintDeckShip(convertedPoints[i], '#leftField', shipColor);
     }
 }
 
-function paintDeckShip(point, field) {
+function paintDeckShip(point, field, shipColor) {
     
-    $(field + ' #cell' + point.x + point.y).removeClass('shipColor cellColor').addClass('shipColor');
+    $(field + ' #cell' + point.x + point.y).removeClass(shipColor+' cellColor').addClass(shipColor);
     $(field + ' #cell' + point.x + point.y).addClass('ship');
 };
 
