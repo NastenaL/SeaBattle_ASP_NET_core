@@ -156,6 +156,8 @@ function addShipToField(id) {
             var html = createShipTable();
             document.getElementById("shipsPanel").innerHTML = html;
 
+            var directionPanel = document.getElementById('directionPanel');
+            directionPanel.style.display = 'inline';
         },
     });
 };
@@ -234,10 +236,6 @@ function repaintShip(ship) {
     for (var i = 0; i < addedShips.length; i++) {
         paintShip(addedShips[i].deckCells, 'usualShipColor');
     }
-
-    //for (var i = 0; i < ship.deckCells.length; i++) {
-    //    paintDeckShip(ship.deckCells[i], '#leftField', 'usualShipColor');
-    //}
 }
 
 function openOptions(i) {
@@ -291,6 +289,10 @@ function startGame() {
         url: '/Game/StartGame',
         success: function (model) {
             alert(model.message);
+
+            var directionPanel = document.getElementById('directionPanel');
+            directionPanel.style.display = 'none';
+
             message = model.message;
             checkWhoseStep();
         },
