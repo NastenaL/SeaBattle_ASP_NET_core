@@ -22,6 +22,11 @@
         #endregion
 
         #region Method
+        public static List<Game> GetAll()
+        {
+            return DbManager.GetGames();
+        }
+
         public bool StartGame()
         {
             this.State = GameState.Started;
@@ -29,11 +34,6 @@
             Random gen = new Random();
             this.IsPl1Turn = gen.Next(100) < 50;
             return this.IsPl1Turn;
-        }
-
-        public static List<Game> GetAll()
-        {
-            return DbManager.GetGames();
         }
 
         public void EndGame()

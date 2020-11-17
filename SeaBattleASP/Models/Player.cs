@@ -7,21 +7,23 @@
     public class Player
     {
         public int Id { get; set; }
+
         public string Name { get; set; }
 
-        public static List<Player> GetPlayersNotInGame(MapModel Model)
+        public static List<Player> GetPlayersNotInGame(MapModel mapModel)
         {
-            Model.Players = DbManager.GetPlayers();
+            mapModel.Players = DbManager.GetPlayers();
             var games = DbManager.GetGames();
-            List<Player> allplayers = Model.Players;
+            List<Player> allplayers = mapModel.Players;
             if (games.Count > 0)
             {
-                var busyPLayers = CheckPlayersInNotGame(games, Model);
-                foreach(var busyPlayer in busyPLayers.ToList())
+                var busyPLayers = CheckPlayersInNotGame(games, mapModel);
+                foreach (var busyPlayer in busyPLayers.ToList())
                 {
                     allplayers.Remove(busyPlayer);
-                }     
+                }    
             }
+
             return allplayers;
         }
 
@@ -30,23 +32,23 @@
             return DbManager.GetPlayers();
         }
 
-        private static List<Player> CheckPlayersInNotGame(List<Game> games, MapModel Model)
+        private static List<Player> CheckPlayersInNotGame(List<Game> games, MapModel mapModel)
         {
             List<Player> ingame = new List<Player>();
             foreach (Game g in games)
             {
                 if (g.Player1 != null && g.Player2 != null)
                 {
-                    var players1 = Model.Players.Where(i => i.Id == g.Player1.Id).ToList();
-                    var players2 = Model.Players.Where(i => i.Id == g.Player2.Id).ToList();
+                    var players1 = mapModel.Players.Where(i => i.Id == g.Player1.Id).ToList();
+                    var players2 = mapModel.Players.Where(i => i.Id == g.Player2.Id).ToList();
                     if (players1.Count > 0 && players2.Count > 0)
                     {
                         ingame.AddRange(players1);
                         ingame.AddRange(players2);
                     }
-                }
-                
+                }  
             }
+
             return ingame;
         }
     }

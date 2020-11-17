@@ -1,15 +1,16 @@
 ﻿namespace SeaBattleASP.Models.Constants
 {
-    using System.Collections.Generic;
     using System;
+    using System.Collections.Generic;
     using SeaBattleASP.Models.Enums;
 
     public static class Rules
     {
-        public static int FieldHeight = 10;
-        public static int FieldWidth = 10;
+        public static int FieldHeight { get; } = 10;
 
-        public static  Ship CreateShip(int range, ShipType type)
+        public static int FieldWidth { get; } = 10;
+
+        public static Ship CreateShip(int range, ShipType type)
         {
             Ship ship = null;
             switch (type)
@@ -23,7 +24,7 @@
                 case ShipType.MixShip:
                     ship = new MixShip();
                     break;
-            };
+            }
             
             List<DeckCell> decks = new List<DeckCell>();
 
@@ -43,14 +44,6 @@
             return ship;
         }
 
-        private static bool GenerateDirection()
-        {
-            Random random = new Random();
-            int direction = random.Next(100);
-
-            return direction <= 49;
-        }
-
         public static Dictionary<int, Ship> CreateShips()
         {
             var a = CreateShip(2, ShipType.AuxiliaryShip);
@@ -67,11 +60,20 @@
            };
 
             Dictionary<int, Ship> defaultShips = new Dictionary<int, Ship>();
-            for(int i = 0; i < ships.Count; i++)
+            for (int i = 0; i < ships.Count; i++)
             {
                 defaultShips.Add(i, ships[i]);
             }
+
             return defaultShips;
-        } 
+        }
+
+        private static bool GenerateDirection()
+        {
+            Random random = new Random();
+            int direction = random.Next(100);
+
+            return direction <= 49;
+        }
     }
 }

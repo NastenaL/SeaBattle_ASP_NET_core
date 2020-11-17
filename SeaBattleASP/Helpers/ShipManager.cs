@@ -26,29 +26,30 @@
                     }
                 }
             }
+
             return enemyDeckCells;
         }
-       
 
-        public static bool CheckShipWithOtherShips(List<DeckCell> allPlayerDeckCells, List<DeckCell> ShipDeckCells)
+        public static bool CheckShipWithOtherShips(List<DeckCell> allPlayerDeckCells, List<DeckCell> shipDeckCells)
         {
             bool error = false;
             if (allPlayerDeckCells.Count > 0)
             {
                 List<DeckCell> commonCells = new List<DeckCell>();
-                foreach (DeckCell deckCell in ShipDeckCells)
+                foreach (DeckCell deckCell in shipDeckCells)
                 {
                     if (deckCell.Cell != null)
                     {
                         commonCells.AddRange(allPlayerDeckCells.Where(s => s.Cell.X == deckCell.Cell.X && s.Cell.Y == deckCell.Cell.Y).ToList());
                     }
-                  
                 }
+
                 if (commonCells.Count > 0)
                 {
                     error = true;
                 }
             }
+
             return error;
         }
 
@@ -83,8 +84,8 @@
                 {
                     hurtedShips.Add(hurtedDeck);
                 }
-
             }
+
             return hurtedShips;
         }
 
@@ -99,8 +100,8 @@
                 {
                     result.Add(firedDeck);
                 }
-
             }
+
             return result;
         }
 

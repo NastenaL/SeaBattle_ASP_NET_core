@@ -5,11 +5,6 @@
 
     public class MapModel
     {
-        #region Fields
-        public int width;
-        public int height;
-        #endregion
-
         public MapModel()
         {
             this.Coord = new List<Cell>();
@@ -18,11 +13,15 @@
             this.HurtedShips = new List<DeckCell>();
             this.RepairedShips = new List<DeckCell>();
             this.Games = new List<Game>();
-            this.width = Rules.FieldWidth;
-            this.height = Rules.FieldHeight;
+            this.Width = Rules.FieldWidth;
+            this.Height = Rules.FieldHeight;
         }
 
         #region Property
+        public int Width { get; set; }
+
+        public int Height { get; set; }
+
         public List<Cell> Coord { get; set; }
 
         public List<Game> Games { get; set; }
@@ -42,11 +41,11 @@
         public string Message { get; set; }
         #endregion
 
-        public static void FillMapModelWithCoordinates(List<DeckCell> shipCoordinates, MapModel Model)
+        public static void FillMapModelWithCoordinates(List<DeckCell> shipCoordinates, MapModel model)
         {
             foreach (var shipDeckCell in shipCoordinates)
             {
-                Model.Coord.Add(shipDeckCell.Cell);
+                model.Coord.Add(shipDeckCell.Cell);
             }
         }
     }

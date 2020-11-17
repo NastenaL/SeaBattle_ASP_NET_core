@@ -35,11 +35,7 @@
         public bool IsSelectedShip { get; set; }
         #endregion
 
-        public string GetShipType()
-        {
-            return this.GetType().Name;
-        }
-
+        #region Methods
         public static Ship GetShipByIdFromDB(int shipId)
         {
             List<Ship> allShips = GetAll();
@@ -55,21 +51,27 @@
         {
             Ship ship = null;
 
-            foreach (KeyValuePair<int, Ship> k in model.Ships)
+            foreach (KeyValuePair<int, Ship> indexedShip in model.Ships)
             {
-                if (k.Key == id)
+                if (indexedShip.Key == id)
                 {
-                    ship = k.Value;
+                    ship = indexedShip.Value;
                 }
             }
+
             return ship;
+        }
+
+        public string GetShipType()
+        {
+            return this.GetType().Name;
         }
 
         public virtual List<DeckCell> Fire(List<DeckCell> enemyShips)
         {
-            var allDeckCells= DeckCell.GetAll();
+            var allDeckCells = DeckCell.GetAll();
             List<DeckCell> selectedShip = new List<DeckCell>();
-            foreach(DeckCell deckCell in this.DeckCells)
+            foreach (DeckCell deckCell in this.DeckCells)
             {
                 selectedShip.Add(allDeckCells.Find(i => i.Id == deckCell.Id));
             }
@@ -83,8 +85,8 @@
                     firedDeck.Deck.State = Enums.DeckState.Hurted;
                     firedDeck.Cell.Color = Enums.CellColor.Yellow;
                 }
-
             }
+
             return firedShipDecks;
         }
 
@@ -92,7 +94,7 @@
         {
             List<DeckCell> result = new List<DeckCell>();
             result.Clear();
-            var head = this.DeckCells.Find(s =>s.Deck.IsHead);
+            var head = this.DeckCells.Find(s => s.Deck.IsHead);
             if (this.DeckCells.Count > 0)
             {
                 foreach (DeckCell shipDeck in this.DeckCells.ToList())
@@ -137,23 +139,6 @@
             return result;
         }
 
-        private void CheckNewCoordinate(List<DeckCell> result)
-        {
-            if (result.Count > 0)
-            {
-                foreach (DeckCell deckCell in result)
-                {
-                    bool isAbroad = deckCell.Cell.X > Rules.FieldWidth || deckCell.Cell.Y > Rules.FieldHeight;
-                    if (isAbroad)
-                    {
-                        this.IsXDirection = !this.IsXDirection;
-                        this.Move();
-                    }
-                }
-            }
-            
-        }
-
         public virtual List<DeckCell> Repair(List<Ship> allShips)
         {
             List<DeckCell> hurtedDecks = new List<DeckCell>();
@@ -175,7 +160,26 @@
                     }
                 }
             }
+
             return hurtedDecks;
         }
+
+        private void CheckNewCoordinate(List<DeckCell> result)
+        {
+            if (result.Count > 0)
+            {
+                foreach (DeckCell deckCell in result)
+                {
+                    bool isAbroad = deckCell.Cell.X > Rules.FieldWidth || deckCell.Cell.Y > Rules.FieldHeight;
+                    if (isAbroad)
+                    {
+                        this.IsXDirection = !this.IsXDirection;
+                        this.Move();
+                    }
+                }
+            }
+        }
+
+        #endregion
     }
 }

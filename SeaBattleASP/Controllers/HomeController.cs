@@ -8,10 +8,9 @@
 
     public class HomeController : Controller
     {
-
         public HomeController(ApplicationContext context)
         {
-            DbManager.db = context;
+            DbManager.Db = context;
         }
 
         [HttpGet]
@@ -30,7 +29,7 @@
               DbManager.AddPlayer(player);
             }
 
-            return this.RedirectToAction("Index", "Game", new {id = player.Id});
+            return this.RedirectToAction("Index", "Game", new { id = player.Id });
         }
 
         [HttpGet]
@@ -39,8 +38,8 @@
             MapModel model = new MapModel
             {
                 Ships = Rules.CreateShips(),
-                width = Rules.FieldWidth,
-                height = Rules.FieldHeight
+                Width = Rules.FieldWidth,
+                Height = Rules.FieldHeight
             };
 
             return this.View(model);

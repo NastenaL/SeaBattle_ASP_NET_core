@@ -1,5 +1,3 @@
-using System;
-
 namespace SeaBattleASP.Models
 {
     public class ErrorViewModel

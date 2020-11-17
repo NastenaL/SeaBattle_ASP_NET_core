@@ -9,48 +9,48 @@
 
     public static class DbManager
     {
-        public static ApplicationContext db;
+        public static ApplicationContext Db { get; set; }
 
         #region GetEntities from DB
         public static List<Cell> GetCells()
         {
-            return db.Cells.ToListAsync<Cell>().Result;
+            return Db.Cells.ToListAsync<Cell>().Result;
         }
 
         public static List<Deck> GetDecks()
         {
-            return db.Decks.ToListAsync<Deck>().Result;
+            return Db.Decks.ToListAsync<Deck>().Result;
         }
 
         public static List<DeckCell> GetDeckCells()
         {
-            return db.DeckCells.ToListAsync<DeckCell>().Result;
+            return Db.DeckCells.ToListAsync<DeckCell>().Result;
         }
 
         public static List<Game> GetGames()
         {
-            return db.Games.ToListAsync<Game>().Result;
+            return Db.Games.ToListAsync<Game>().Result;
         }
 
         public static List<Player> GetPlayers()
         {
-            return db.Players.ToListAsync<Player>().Result;
+            return Db.Players.ToListAsync<Player>().Result;
         }
 
         public static List<PlayingField> GetPlayingFields()
         {
-            return db.PlayingFields.ToListAsync<PlayingField>().Result;
+            return Db.PlayingFields.ToListAsync<PlayingField>().Result;
         }
 
         public static List<Ship> GetAllShips()
         {
-            db.Cells.ToListAsync<Cell>();
-            db.Decks.ToListAsync<Deck>();
-            db.DeckCells.ToListAsync<DeckCell>();
+            Db.Cells.ToListAsync<Cell>();
+            Db.Decks.ToListAsync<Deck>();
+            Db.DeckCells.ToListAsync<DeckCell>();
 
-            var auxiliaryShips = db.AuxiliaryShips.ToListAsync<AuxiliaryShip>().Result;
-            var militaryShip = db.MilitaryShips.ToListAsync<MilitaryShip>().Result;
-            var mixShip = db.MixShips.ToListAsync<MixShip>().Result;
+            var auxiliaryShips = Db.AuxiliaryShips.ToListAsync<AuxiliaryShip>().Result;
+            var militaryShip = Db.MilitaryShips.ToListAsync<MilitaryShip>().Result;
+            var mixShip = Db.MixShips.ToListAsync<MixShip>().Result;
             List<Ship> allShips = new List<Ship>();
             allShips.AddRange(auxiliaryShips);
             allShips.AddRange(militaryShip);
@@ -60,52 +60,22 @@
         #endregion
 
         #region Add commands
-        private static void AddDeckCell(Ship ship)
-        {
-            foreach (DeckCell deckCell in ship.DeckCells.ToList())
-            {
-                AddCell(deckCell.Cell);
-                AddDeck(deckCell.Deck);
-                AddDeckCellOnly(deckCell);
-            }
-        }
-
-        #region For deckCell
-        private static void AddCell(Cell cell)
-        {
-            db.Cells.Add(cell);
-            db.SaveChanges();
-        }
-
-        private static void AddDeck(Deck deck)
-        {
-            db.Decks.Add(deck);
-            db.SaveChanges();
-        }
-
-        private static void AddDeckCellOnly(DeckCell deckCell)
-        {
-            db.DeckCells.Add(deckCell);
-            db.SaveChanges();
-        }
-        #endregion
-
         public static void AddGame(Game game)
         {
-            db.Games.Add(game);
-            db.SaveChanges();
+            Db.Games.Add(game);
+            Db.SaveChanges();
         }
 
         public static void AddPlayer(Player player)
         {
-            db.Players.Add(player);
-            db.SaveChanges();
+            Db.Players.Add(player);
+            Db.SaveChanges();
         }
 
         public static void AddPlayingField(PlayingField playingField)
         {
-            db.PlayingFields.Add(playingField);
-            db.SaveChanges();
+            Db.PlayingFields.Add(playingField);
+            Db.SaveChanges();
         }
 
         public static void AddShip(Ship ship)
@@ -117,17 +87,17 @@
             switch ((ShipType)type)
             {
                 case ShipType.AuxiliaryShip:
-                    db.AuxiliaryShips.Add((AuxiliaryShip)ship);
+                    Db.AuxiliaryShips.Add((AuxiliaryShip)ship);
                     break;
                 case ShipType.MilitaryShip:
-                    db.MilitaryShips.Add((MilitaryShip)ship);
+                    Db.MilitaryShips.Add((MilitaryShip)ship);
                     break;
                 case ShipType.MixShip:
-                    db.MixShips.Add((MixShip)ship);
+                    Db.MixShips.Add((MixShip)ship);
                     break;
-            };
+            }
 
-            db.SaveChanges();
+            Db.SaveChanges();
         }
         #endregion
 
@@ -136,17 +106,17 @@
         {
             for (int i = 0; i < hurtedShipDecks.Count; i++)
             {
-                db.Decks.Update(hurtedShipDecks[i].Deck);
-                db.Cells.Update(hurtedShipDecks[i].Cell);
-                db.DeckCells.Update(hurtedShipDecks[i]);
-                db.SaveChanges();
+                Db.Decks.Update(hurtedShipDecks[i].Deck);
+                Db.Cells.Update(hurtedShipDecks[i].Cell);
+                Db.DeckCells.Update(hurtedShipDecks[i]);
+                Db.SaveChanges();
             }
         }
 
         public static void UpdateGame(Game game)
         {
-            db.Update(game);
-            db.SaveChanges();
+            Db.Update(game);
+            Db.SaveChanges();
         }
 
         public static void UpdateShip(Ship ship)
@@ -156,17 +126,17 @@
             switch ((ShipType)shipTypeEnum)
             {
                 case ShipType.AuxiliaryShip:
-                    db.AuxiliaryShips.Update((AuxiliaryShip)ship);
+                    Db.AuxiliaryShips.Update((AuxiliaryShip)ship);
                     break;
                 case ShipType.MilitaryShip:
-                    db.MilitaryShips.Update((MilitaryShip)ship);
+                    Db.MilitaryShips.Update((MilitaryShip)ship);
                     break;
                 case ShipType.MixShip:
-                    db.MixShips.Update((MixShip)ship);
+                    Db.MixShips.Update((MixShip)ship);
                     break;
             }
 
-            db.SaveChanges();
+            Db.SaveChanges();
         }
 
         #endregion
@@ -176,23 +146,54 @@
         {
             foreach (DeckCell deckCell in deckCells)
             {
-                db.Cells.Remove(deckCell.Cell);
-                db.Decks.Remove(deckCell.Deck);
+                Db.Cells.Remove(deckCell.Cell);
+                Db.Decks.Remove(deckCell.Deck);
             }
-            db.DeckCells.RemoveRange(deckCells);
-            db.SaveChanges();
+
+            Db.DeckCells.RemoveRange(deckCells);
+            Db.SaveChanges();
         }
 
         public static void RemovePlayingField(PlayingField playingField)
         {
-            db.PlayingFields.Remove(playingField);
-            db.SaveChanges();
+            Db.PlayingFields.Remove(playingField);
+            Db.SaveChanges();
         }
 
         public static void RemoveGame(Game game)
         {
-            db.Games.Remove(game);
-            db.SaveChanges();
+            Db.Games.Remove(game);
+            Db.SaveChanges();
+        }
+        #endregion
+
+        #region For deckCell
+        private static void AddCell(Cell cell)
+        {
+            Db.Cells.Add(cell);
+            Db.SaveChanges();
+        }
+
+        private static void AddDeck(Deck deck)
+        {
+            Db.Decks.Add(deck);
+            Db.SaveChanges();
+        }
+
+        private static void AddDeckCellOnly(DeckCell deckCell)
+        {
+            Db.DeckCells.Add(deckCell);
+            Db.SaveChanges();
+        }
+
+        private static void AddDeckCell(Ship ship)
+        {
+            foreach (DeckCell deckCell in ship.DeckCells.ToList())
+            {
+                AddCell(deckCell.Cell);
+                AddDeck(deckCell.Deck);
+                AddDeckCellOnly(deckCell);
+            }
         }
         #endregion
     }

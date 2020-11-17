@@ -17,18 +17,18 @@
 
         public int Width { get; set; }
 
-        public int Heigth {get; set;}
+        public int Heigth { get; set; }
+
+        public static List<PlayingField> GetAllPlayingFields()
+        {
+            return DbManager.GetPlayingFields();
+        }
 
         public PlayingField CreateField()
         {
             this.Width = Rules.FieldWidth;
             this.Heigth = Rules.FieldHeight;
             return this;
-        }
-
-        public static List<PlayingField> GetAllPlayingFields()
-        {
-            return DbManager.GetPlayingFields();
         }
     }
 }

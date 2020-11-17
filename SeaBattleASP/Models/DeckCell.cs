@@ -32,45 +32,45 @@
             return DbManager.GetDeckCells();
         }
 
-        private static Point CreateNewPoint(DeckCell deckCell)
-        {
-            return new Point(x: deckCell.Cell.X, y: deckCell.Cell.Y);
-        }
-
         public static List<Point> GetNeighboringPoints(List<DeckCell> shipDecks, int range)
         {
-            List<Point> NeighboringCoordinates = new List<Point>();
+            List<Point> neighboringCoordinates = new List<Point>();
             foreach (DeckCell deckCell in shipDecks)
             {
-                var leftPoint = CreateNewPoint(deckCell);
-                var rightPoint = CreateNewPoint(deckCell);
-                var upPoint = CreateNewPoint(deckCell);
-                var downPoint = CreateNewPoint(deckCell);
+                var left = CreateNewPoint(deckCell);
+                var right = CreateNewPoint(deckCell);
+                var up = CreateNewPoint(deckCell);
+                var down = CreateNewPoint(deckCell);
 
                 for (int i = 0; i < range; i++)
                 {
-                    leftPoint.X  -= 1;
-                    rightPoint.X += 1;
-                    upPoint.Y    -= 1;
-                    downPoint.Y  += 1;
-                    NeighboringCoordinates.Add(leftPoint);
-                    NeighboringCoordinates.Add(rightPoint);
-                    NeighboringCoordinates.Add(upPoint);
-                    NeighboringCoordinates.Add(downPoint);
+                    left.X  -= 1;
+                    right.X += 1;
+                    up.Y    -= 1;
+                    down.Y  += 1;
+                    neighboringCoordinates.Add(left);
+                    neighboringCoordinates.Add(right);
+                    neighboringCoordinates.Add(up);
+                    neighboringCoordinates.Add(down);
                 }
-
             }
-            var wrongPoints = NeighboringCoordinates.Where(w => w.Y < 0 || w.X < 0).ToList();
+
+            var wrongPoints = neighboringCoordinates.Where(w => w.Y < 0 || w.X < 0).ToList();
 
             if (wrongPoints.Count > 0)
             {
                 foreach (Point point in wrongPoints)
                 {
-                    NeighboringCoordinates.Remove(point);
+                    neighboringCoordinates.Remove(point);
                 }
             }
 
-            return new HashSet<Point>(NeighboringCoordinates).ToList();
+            return new HashSet<Point>(neighboringCoordinates).ToList();
+        }
+
+        private static Point CreateNewPoint(DeckCell deckCell)
+        {
+            return new Point(x: deckCell.Cell.X, y: deckCell.Cell.Y);
         }
         #endregion
     }
