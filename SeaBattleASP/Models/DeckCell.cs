@@ -1,10 +1,10 @@
 ﻿namespace SeaBattleASP.Models
 {
-    using SeaBattleASP.Helpers;
-    using SeaBattleASP.Models.Enums;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Linq;
+    using SeaBattleASP.Helpers;
+    using SeaBattleASP.Models.Enums;
 
     public class DeckCell
     {

@@ -1,9 +1,8 @@
 ﻿namespace SeaBattleASP.Models.Constants
 {
-    using SeaBattleASP.Models.Enums;
-    using System;
     using System.Collections.Generic;
-    using System.Drawing;
+    using System;
+    using SeaBattleASP.Models.Enums;
 
     public static class Rules
     {

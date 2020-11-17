@@ -1,7 +1,7 @@
 ﻿namespace SeaBattleASP.Models
 {
-    using SeaBattleASP.Models.Constants;
     using System.Collections.Generic;
+    using SeaBattleASP.Models.Constants;
 
     public class MapModel
     {
@@ -12,14 +12,14 @@
 
         public MapModel()
         {
-            Coord = new List<Cell>();
-            Players = new List<Player>();
-            Ships = new Dictionary<int, Ship>();
-            HurtedShips = new List<DeckCell>();
-            RepairedShips = new List<DeckCell>();
-            Games = new List<Game>();
-            width = Rules.FieldWidth;
-            height = Rules.FieldHeight;
+            this.Coord = new List<Cell>();
+            this.Players = new List<Player>();
+            this.Ships = new Dictionary<int, Ship>();
+            this.HurtedShips = new List<DeckCell>();
+            this.RepairedShips = new List<DeckCell>();
+            this.Games = new List<Game>();
+            this.width = Rules.FieldWidth;
+            this.height = Rules.FieldHeight;
         }
 
         #region Property

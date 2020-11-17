@@ -1,14 +1,14 @@
 ﻿namespace SeaBattleASP.Models
 {
+    using System.Collections.Generic;
     using SeaBattleASP.Helpers;
     using SeaBattleASP.Models.Constants;
-    using System.Collections.Generic;
 
     public class PlayingField
     {
         public PlayingField()
         {
-            Ships = new List<Ship>();
+            this.Ships = new List<Ship>();
         }
 
         public int Id { get; set; }

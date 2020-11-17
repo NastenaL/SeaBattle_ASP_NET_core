@@ -1,11 +1,11 @@
 ﻿namespace SeaBattleASP.Helpers
 {
-    using Microsoft.EntityFrameworkCore;
-    using SeaBattleASP.Models;
-    using SeaBattleASP.Models.Enums;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Microsoft.EntityFrameworkCore;
+    using SeaBattleASP.Models;
+    using SeaBattleASP.Models.Enums;
 
     public static class DbManager
     {

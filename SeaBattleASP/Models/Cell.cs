@@ -1,8 +1,8 @@
 ﻿namespace SeaBattleASP.Models
 {
+    using System.Collections.Generic;
     using SeaBattleASP.Helpers;
     using SeaBattleASP.Models.Enums;
-    using System.Collections.Generic;
 
     public class Cell
     {

@@ -1,9 +1,9 @@
 ﻿namespace SeaBattleASP.Models
 {
-    using SeaBattleASP.Helpers;
-    using SeaBattleASP.Models.Enums;
     using System;
     using System.Collections.Generic;
+    using SeaBattleASP.Helpers;
+    using SeaBattleASP.Models.Enums;
 
     public class Game
     {

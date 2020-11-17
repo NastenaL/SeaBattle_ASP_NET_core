@@ -1,21 +1,20 @@
 ﻿namespace SeaBattleASP.Models
 {
-    using Microsoft.EntityFrameworkCore;
-    using SeaBattleASP.Helpers;
-    using SeaBattleASP.Models.Constants;
-    using SeaBattleASP.Models.Interfaces;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Drawing;
     using System.Linq;
+    using SeaBattleASP.Helpers;
+    using SeaBattleASP.Models.Constants;
+    using SeaBattleASP.Models.Interfaces;
 
     public abstract class Ship : IRepairable, IFireable
     {
         public Ship()
         {
-            DeckCells = new List<DeckCell>();
-            Type = GetShipType();
+            this.DeckCells = new List<DeckCell>();
+            this.Type = this.GetShipType();
         }
 
         #region Properties
@@ -94,7 +93,7 @@
             List<DeckCell> result = new List<DeckCell>();
             result.Clear();
             var head = this.DeckCells.Find(s =>s.Deck.IsHead);
-            if(this.DeckCells.Count > 0)
+            if (this.DeckCells.Count > 0)
             {
                 foreach (DeckCell shipDeck in this.DeckCells.ToList())
                 {
@@ -104,9 +103,9 @@
                         Y = shipDeck.Cell.Y
                     };
 
-                    if(this.IsXDirection)
+                    if (this.IsXDirection)
                     {
-                        if(p.X + this.Range > Rules.FieldWidth)
+                        if (p.X + this.Range > Rules.FieldWidth)
                         {
                             p.X -= this.Range;
                         }
@@ -134,13 +133,13 @@
                 }
             }
             
-            CheckNewCoordinate(result);
+            this.CheckNewCoordinate(result);
             return result;
         }
 
         private void CheckNewCoordinate(List<DeckCell> result)
         {
-            if(result.Count > 0)
+            if (result.Count > 0)
             {
                 foreach (DeckCell deckCell in result)
                 {
@@ -159,7 +158,7 @@
         {
             List<DeckCell> hurtedDecks = new List<DeckCell>();
             var neighborsPoints = DeckCell.GetNeighboringPoints(this.DeckCells, this.Range);
-            if(this.Player != null)
+            if (this.Player != null)
             {
                 List<DeckCell> allPlayerDeckCells = new List<DeckCell>();
                 foreach (Ship s in allShips)

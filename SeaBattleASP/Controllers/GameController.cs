@@ -1,26 +1,26 @@
 ﻿namespace SeaBattleASP.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using System.Linq;
     using Microsoft.AspNetCore.Mvc;
     using SeaBattleASP.Helpers;
     using SeaBattleASP.Models;
     using SeaBattleASP.Models.Constants;
     using SeaBattleASP.Models.Enums;
-    using System;
-    using System.Collections.Generic;
-    using System.Drawing;
-    using System.Linq;
 
     public class GameController : Controller
     {
         private readonly Random random;
-        readonly Array shipDirections = Enum.GetValues(typeof(ShipDirection));
+        private readonly Array shipDirections = Enum.GetValues(typeof(ShipDirection));
 
         public GameController(ApplicationContext context)
         {
             DbManager.db = context;
-            random = new Random();
+            this.random = new Random();
 
-            Model = new MapModel
+            this.Model = new MapModel
             {
                 Ships = Rules.CreateShips()
             };
@@ -36,24 +36,24 @@
         [HttpPost]
         public IActionResult MakeFireStep(int shipId)
         {
-            if(Model.CurrentGame != null)
+            if (this.Model.CurrentGame != null)
             {
                 var ship = Ship.GetShipByIdFromDB(shipId);
 
-                List<DeckCell> enemyDeckCells = ShipManager.GetEnemyShipsDeckCells(Model.CurrentGame);
+                List<DeckCell> enemyDeckCells = ShipManager.GetEnemyShipsDeckCells(this.Model.CurrentGame);
 
                 if (enemyDeckCells.Count > 0)
                 {
                     var hurtedShipDecks = ship.Fire(enemyDeckCells);
 
-                    if(hurtedShipDecks.Count > 0)
+                    if (hurtedShipDecks.Count > 0)
                     {
-                        Model.HurtedShips = hurtedShipDecks;
+                        this.Model.HurtedShips = hurtedShipDecks;
                         DbManager.UpdateShip(hurtedShipDecks);
                     }
                 }
             }
-            return Json(Model);
+            return this.Json(this.Model);
         }
 
         [HttpPost]
@@ -64,9 +64,9 @@
             var allShips = Ship.GetAll();
             var allPlayerShips = allShips.Where(i => i.Player == ship.Player).ToList();
 
-            Model.RepairedShips = ship.Repair(allPlayerShips);
+            this.Model.RepairedShips = ship.Repair(allPlayerShips);
 
-            return Json(Model);
+            return this.Json(this.Model);
         }
 
         [HttpPost]
@@ -89,13 +89,13 @@
         [HttpPost]
         public IActionResult AddShipToField(int shipId, int playerId, int gameId)
         {
-            var ship = Ship.GetShipByIdFromMapModel(shipId, Model);
+            var ship = Ship.GetShipByIdFromMapModel(shipId, this.Model);
             if (ship != null)
             {
-                Model.Players = Player.GetPlayers();
-                var player = Model.Players.Find(i => i.Id == playerId);
+                this.Model.Players = Player.GetPlayers();
+                var player = this.Model.Players.Find(i => i.Id == playerId);
                 ship.Player = player;
-                var shipDeckCells = GetCoordinatesForShip(ship);
+                var shipDeckCells = this.GetCoordinatesForShip(ship);
                 ship.DeckCells = shipDeckCells;
 
                 var playerFields = PlayingField.GetAllPlayingFields();
@@ -105,12 +105,12 @@
 
                // DbManager.db.PlayingFields.Update(game.PlayingField);
                 DbManager.UpdateGame(game);
-                Model.SelectedShip = ship;
-                Model.CurrentGame = game;
-                MapModel.FillMapModelWithCoordinates(shipDeckCells, Model);
+                this.Model.SelectedShip = ship;
+                this.Model.CurrentGame = game;
+                MapModel.FillMapModelWithCoordinates(shipDeckCells, this.Model);
             }
 
-            return Json(Model);
+            return this.Json(this.Model);
         }
        
 
@@ -122,7 +122,7 @@
             Deck.GetAll();
             DeckCell.GetAll();
             var ship = Ship.GetShipByIdFromDB(shipId);
-            if(ship != null)
+            if (ship != null)
             {
                 switch (direction)
                 {
@@ -154,14 +154,14 @@
                 DbManager.UpdateShip(ship);
             }
            
-            return Json(ship);
+            return this.Json(ship);
         }
 
         [HttpPost]
         public IActionResult SelectShip(int x, int y)
         {
             DeckCell deckCell = new DeckCell();
-            foreach(Ship ship in Model.CurrentGame.PlayingField.Ships)
+            foreach(Ship ship in this.Model.CurrentGame.PlayingField.Ships)
             {
                 deckCell = ship.DeckCells.Find(s => s.Cell.X == x && s.Cell.Y == y);
             }
@@ -174,8 +174,8 @@
         {
             List<DeckCell> ShipDeckCells = new List<DeckCell>();
 
-            var initalPoint = ShipManager.GetRandomPoint(random);
-            var direction = (ShipDirection)shipDirections.GetValue(random.Next(shipDirections.Length));
+            var initalPoint = ShipManager.GetRandomPoint(this.random);
+            var direction = (ShipDirection)this.shipDirections.GetValue(this.random.Next(this.shipDirections.Length));
 
             foreach (DeckCell deck in ship.DeckCells)
             {
@@ -183,7 +183,7 @@
 
                 var currentDeckCell = DeckCell.Create(initalPoint, deck.Deck);
                 ShipDeckCells.Add(currentDeckCell);
-                ShipDeckCells = CheckCoordinates(initalPoint, ShipDeckCells, ship);
+                ShipDeckCells = this.CheckCoordinates(initalPoint, ShipDeckCells, ship);
             }
             return ShipDeckCells;
         }
@@ -195,7 +195,7 @@
             var deckCells = DeckCell.GetAll();
             var allShips = Ship.GetAll();
             var allPlayerShips = allShips.Where(i => i.Player == ship.Player).ToList();
-            if(allPlayerShips.Count > 0)
+            if (allPlayerShips.Count > 0)
             {
                 var allPlayerDeckCells = new List<DeckCell>();
                 foreach (Ship s in allPlayerShips)
@@ -208,7 +208,7 @@
                 if (isShip || isShipOutOfAbroad)
                 {
                     ShipDeckCells.Clear();
-                    ShipDeckCells = GetCoordinatesForShip(ship);
+                    ShipDeckCells = this.GetCoordinatesForShip(ship);
                 }
             }
          
@@ -218,59 +218,59 @@
         [HttpGet]
         public IActionResult StartGame()
         {
-            return View(Model);
+            return this.View(this.Model);
         }
 
         [HttpPost]
         public IActionResult StartGame(int gameId)
         {
-            LoadRelatedEntities();
+            this.LoadRelatedEntities();
             var allPlayingF = PlayingField.GetAllPlayingFields();
             var games = Game.GetAll();
 
             var game = games.Find(g => g.Id == gameId);
             var allShipsInCurrentGame = allPlayingF.Find(g => g.Id == game.PlayingField.Id);
-            if(game != null)
+            if (game != null)
             {
                 bool isAllPlayersInGame = game.Player1 != null && game.Player2 != null;
-                bool isEnoughShips = allShipsInCurrentGame.Ships.Count == Model.Ships.Count * 2;
+                bool isEnoughShips = allShipsInCurrentGame.Ships.Count == this.Model.Ships.Count * 2;
 
                 if (!isEnoughShips)
                 {
-                    Model.Message = "Not enough ships. You or second player select not all ships";
+                    this.Model.Message = "Not enough ships. You or second player select not all ships";
                 }
                 else if (!isAllPlayersInGame)
                 {
-                    Model.Message = "Wait for second player";
+                    this.Model.Message = "Wait for second player";
                 }
                 else
                 {
-                    Model.Message = "The game is start. First step is ";
+                    this.Model.Message = "The game is start. First step is ";
                     var Pl1Turn = game.StartGame();
 
-                    if(Pl1Turn)
+                    if (Pl1Turn)
                     {
-                        Model.Message += game.Player1.Name;
+                        this.Model.Message += game.Player1.Name;
                     }
                     else
                     {
-                        Model.Message += game.Player2.Name;
+                        this.Model.Message += game.Player2.Name;
                     }
                     DbManager.UpdateGame(game);
-                    Model.CurrentGame = game;
+                    this.Model.CurrentGame = game;
                 }
             }
 
-            return Json(Model);
+            return this.Json(this.Model);
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            Model.Players = Player.GetPlayersNotInGame(Model);
+            this.Model.Players = Player.GetPlayersNotInGame(this.Model);
             var games = Game.GetAll();
-            Model.Games = games.Where(g => g.Player2 == null).ToList();
-            return View(Model);
+            this.Model.Games = games.Where(g => g.Player2 == null).ToList();
+            return this.View(this.Model);
         }
        
         [HttpPost]
@@ -279,7 +279,7 @@
             Game game = new Game();
             var allPLayers = Player.GetPlayers();
             var firstPlayer = allPLayers.Find(g => g.Id == playerId);
-            if(firstPlayer != null)
+            if (firstPlayer != null)
             {
                 var playingField = new PlayingField();
                 playingField.CreateField();
@@ -295,7 +295,7 @@
                 DbManager.AddGame(game);
             }
 
-            return Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { gameId = game.Id, playerId }) });
+            return this.Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { gameId = game.Id, playerId }) });
         }
 
         [HttpPost]
@@ -304,11 +304,11 @@
             var allGames = Game.GetAll();
             
             var game = allGames.Find(g => g.Id == gameId);
-            if(game != null)
+            if (game != null)
             {
                 var allPlayers = Player.GetPlayers();
                 var secondPlayer = allPlayers.Find(p => p.Id == playerId);
-                if(secondPlayer != null)
+                if (secondPlayer != null)
                 {
                     game.Player2 = secondPlayer;
                     
@@ -318,7 +318,7 @@
        
             }
 
-            return Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { gameId = game.Id, playerId }) });
+            return this.Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { gameId = game.Id, playerId }) });
         }
 
         private void LoadRelatedEntities()
@@ -334,10 +334,10 @@
         [HttpPost]
         public IActionResult GameOver(int gameId)
         {
-            LoadRelatedEntities();
+            this.LoadRelatedEntities();
             var games = Game.GetAll();
             var game = games.Find(g => g.Id == gameId);
-            if(game != null)
+            if (game != null)
             {
                 var ii = game.PlayingField.Ships.First().DeckCells.First().Cell.Id;
                 foreach (Ship ship in game.PlayingField.Ships)
@@ -349,7 +349,7 @@
                 DbManager.RemoveGame(game);
             }
 
-            return View();
+            return this.View();
         }
 
         #endregion

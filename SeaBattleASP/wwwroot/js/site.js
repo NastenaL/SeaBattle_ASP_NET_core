@@ -268,19 +268,20 @@ function changeButtonVisibility() {
     var makeStep = document.getElementById('makeStep');
     makeStep.style.display = 'inline';
 
-    //var selectShip = document.getElementById('selectShip');
-    //selectShip.style.display = 'none';
+    var selectShip = document.getElementById('selectShip');
+    selectShip.style.display = 'none';
 
     for (var i = 0; i < addedShips.length; i++) {
         var stepButton = document.getElementById('step' + i);
         stepButton.style.display = 'inline';
+        console.log(stepButton);
     }
 
     var startGame = document.getElementById('startGame');
     startGame.style.display = 'none';
 }
 
-function checkWhoseStep() {
+function checkWhoseStep(model, parameters) {
     var isPlayersInGame = model.currentGame.player1 != null && model.currentGame.player2 != null;
     var isPl1Step = model.currentGame.isPl1Turn && model.currentGame.player1.id == parameters.playerId;
     var isPl2Step = !model.currentGame.isPl1Turn && model.currentGame.player2.id == parameters.playerId;
@@ -305,7 +306,7 @@ function startGame() {
             directionPanel.style.display = 'none';
 
             message = model.message;
-            checkWhoseStep();
+            checkWhoseStep(model, parameters);
         },
     });
 };

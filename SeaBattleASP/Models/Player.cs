@@ -1,8 +1,8 @@
 ﻿namespace SeaBattleASP.Models
 {
-    using SeaBattleASP.Helpers;
     using System.Collections.Generic;
     using System.Linq;
+    using SeaBattleASP.Helpers;
 
     public class Player
     {
@@ -35,11 +35,11 @@
             List<Player> ingame = new List<Player>();
             foreach (Game g in games)
             {
-                if(g.Player1 != null && g.Player2 != null)
+                if (g.Player1 != null && g.Player2 != null)
                 {
                     var players1 = Model.Players.Where(i => i.Id == g.Player1.Id).ToList();
                     var players2 = Model.Players.Where(i => i.Id == g.Player2.Id).ToList();
-                    if(players1.Count > 0 && players2.Count > 0)
+                    if (players1.Count > 0 && players2.Count > 0)
                     {
                         ingame.AddRange(players1);
                         ingame.AddRange(players2);

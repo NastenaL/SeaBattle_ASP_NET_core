@@ -17,14 +17,14 @@
         [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            return this.View();
         }
 
         [HttpPost]
         public IActionResult Index(string userName)
         { 
             Player player = new Player();
-            if(!string.IsNullOrEmpty(userName))
+            if (!string.IsNullOrEmpty(userName))
             {
                 player.Name = userName;
               DbManager.AddPlayer(player);
@@ -43,13 +43,13 @@
                 height = Rules.FieldHeight
             };
 
-            return View(model);
+            return this.View(model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return this.View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

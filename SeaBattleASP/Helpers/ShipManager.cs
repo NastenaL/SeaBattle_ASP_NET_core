@@ -1,12 +1,12 @@
 ﻿namespace SeaBattleASP.Helpers
 {
-    using SeaBattleASP.Models;
-    using SeaBattleASP.Models.Constants;
-    using SeaBattleASP.Models.Enums;
     using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Linq;
+    using SeaBattleASP.Models;
+    using SeaBattleASP.Models.Constants;
+    using SeaBattleASP.Models.Enums;
 
     public static class ShipManager
     {
@@ -33,18 +33,18 @@
         public static bool CheckShipWithOtherShips(List<DeckCell> allPlayerDeckCells, List<DeckCell> ShipDeckCells)
         {
             bool error = false;
-            if(allPlayerDeckCells.Count > 0)
+            if (allPlayerDeckCells.Count > 0)
             {
                 List<DeckCell> commonCells = new List<DeckCell>();
                 foreach (DeckCell deckCell in ShipDeckCells)
                 {
-                    if(deckCell.Cell != null)
+                    if (deckCell.Cell != null)
                     {
                         commonCells.AddRange(allPlayerDeckCells.Where(s => s.Cell.X == deckCell.Cell.X && s.Cell.Y == deckCell.Cell.Y).ToList());
                     }
                   
                 }
-                if(commonCells.Count > 0)
+                if (commonCells.Count > 0)
                 {
                     error = true;
                 }
@@ -55,7 +55,7 @@
         public static bool CheckPointAbroad(Point point)
         {
             bool isShipAbroad = false;
-            if (point.X > Rules.FieldWidth - 1 || point.Y > Rules.FieldHeight - 1)//Check abroad
+            if (point.X > Rules.FieldWidth - 1 || point.Y > Rules.FieldHeight - 1)
             {
                 isShipAbroad = true;
             }
