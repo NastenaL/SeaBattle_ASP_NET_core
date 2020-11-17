@@ -1,6 +1,5 @@
 ﻿namespace SeaBattleASP.Models
 {
-    using Microsoft.EntityFrameworkCore;
     using SeaBattleASP.Helpers;
     using SeaBattleASP.Models.Enums;
     using System.Collections.Generic;
@@ -19,9 +18,9 @@
 
         public bool IsHead { get; set; }
 
-        public static List<Deck> GetAllDecks()
+        public static List<Deck> GetAll()
         {
-            return DbManager.db.Decks.ToListAsync<Deck>().Result;
+            return DbManager.GetDecks();
         }
     }
 }

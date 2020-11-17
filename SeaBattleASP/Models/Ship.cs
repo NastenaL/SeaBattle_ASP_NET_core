@@ -36,31 +36,20 @@
         public bool IsSelectedShip { get; set; }
         #endregion
 
-        private string GetShipType()
+        public string GetShipType()
         {
             return this.GetType().Name;
         }
 
         public static Ship GetShipByIdFromDB(int shipId)
         {
-            List<Ship> allShips = GetAllShips();
+            List<Ship> allShips = GetAll();
             return allShips.Find(i => i.Id == shipId);
         }
 
-        public static List<Ship> GetAllShips()
+        public static List<Ship> GetAll()
         {
-            DbManager.db.Cells.ToListAsync<Cell>();
-            DbManager.db.Decks.ToListAsync<Deck>();
-            DbManager.db.DeckCells.ToListAsync<DeckCell>();
-
-            var auxiliaryShips = DbManager.db.AuxiliaryShips.ToListAsync<AuxiliaryShip>().Result;
-            var militaryShip = DbManager.db.MilitaryShips.ToListAsync<MilitaryShip>().Result;
-            var mixShip = DbManager.db.MixShips.ToListAsync<MixShip>().Result;
-            List<Ship> allShips = new List<Ship>();
-            allShips.AddRange(auxiliaryShips);
-            allShips.AddRange(militaryShip);
-            allShips.AddRange(mixShip);
-            return allShips;
+            return DbManager.GetAllShips();
         }
 
         public static Ship GetShipByIdFromMapModel(int id, MapModel model)
@@ -79,7 +68,7 @@
 
         public virtual List<DeckCell> Fire(List<DeckCell> enemyShips)
         {
-            var allDeckCells= DbManager.db.DeckCells.ToListAsync<DeckCell>().Result;
+            var allDeckCells= DeckCell.GetAll();
             List<DeckCell> selectedShip = new List<DeckCell>();
             foreach(DeckCell deckCell in this.DeckCells)
             {

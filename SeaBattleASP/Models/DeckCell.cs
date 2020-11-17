@@ -1,6 +1,5 @@
 ﻿namespace SeaBattleASP.Models
 {
-    using Microsoft.EntityFrameworkCore;
     using SeaBattleASP.Helpers;
     using SeaBattleASP.Models.Enums;
     using System.Collections.Generic;
@@ -28,9 +27,9 @@
             return currentDeckCell;
         }
 
-        public static List<DeckCell> GetAllDeckCells()
+        public static List<DeckCell> GetAll()
         {
-            return DbManager.db.DeckCells.ToListAsync<DeckCell>().Result;
+            return DbManager.GetDeckCells();
         }
 
         private static Point CreateNewPoint(DeckCell deckCell)

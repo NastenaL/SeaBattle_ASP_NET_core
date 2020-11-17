@@ -13,7 +13,7 @@
         public static List<DeckCell> GetEnemyShipsDeckCells(Game game)
         {
             List<DeckCell> enemyDeckCells = new List<DeckCell>();
-            var allShips = Ship.GetAllShips();
+            var allShips = Ship.GetAll();
             if (game.Player2 != null)
             {
                 var enemyShips = allShips.Where(i => i.Id == game.Player2.Id).ToList();

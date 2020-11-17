@@ -1,6 +1,5 @@
 ﻿namespace SeaBattleASP.Models
 {
-    using Microsoft.EntityFrameworkCore;
     using SeaBattleASP.Helpers;
     using SeaBattleASP.Models.Constants;
     using System.Collections.Generic;
@@ -29,7 +28,7 @@
 
         public static List<PlayingField> GetAllPlayingFields()
         {
-            return DbManager.db.PlayingFields.ToListAsync<PlayingField>().Result;
+            return DbManager.GetPlayingFields();
         }
     }
 }

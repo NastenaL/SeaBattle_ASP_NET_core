@@ -1,6 +1,5 @@
 ﻿namespace SeaBattleASP.Models
 {
-    using Microsoft.EntityFrameworkCore;
     using SeaBattleASP.Helpers;
     using SeaBattleASP.Models.Enums;
     using System.Collections.Generic;
@@ -17,9 +16,9 @@
 
         public CellState State { get; set; }
 
-        public static List<Cell> GetAllCells()
+        public static List<Cell> GetAll()
         {
-            return DbManager.db.Cells.ToListAsync<Cell>().Result;
+            return DbManager.GetCells();
         }
     }
 }

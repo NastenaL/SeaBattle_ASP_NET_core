@@ -1,6 +1,5 @@
 ﻿namespace SeaBattleASP.Models
 {
-    using Microsoft.EntityFrameworkCore;
     using SeaBattleASP.Helpers;
     using SeaBattleASP.Models.Enums;
     using System;
@@ -32,9 +31,9 @@
             return this.IsPl1Turn;
         }
 
-        public static List<Game> GetAllGames()
+        public static List<Game> GetAll()
         {
-            return DbManager.db.Games.ToListAsync<Game>().Result;
+            return DbManager.GetGames();
         }
 
         public void EndGame()

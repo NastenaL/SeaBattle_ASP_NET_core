@@ -1,6 +1,5 @@
 ﻿namespace SeaBattleASP.Models
 {
-    using Microsoft.EntityFrameworkCore;
     using SeaBattleASP.Helpers;
     using System.Collections.Generic;
     using System.Linq;
@@ -12,8 +11,8 @@
 
         public static List<Player> GetPlayersNotInGame(MapModel Model)
         {
-            Model.Players = DbManager.db.Players.ToListAsync<Player>().Result;
-            var games = DbManager.db.Games.ToListAsync<Game>().Result;
+            Model.Players = DbManager.GetPlayers();
+            var games = DbManager.GetGames();
             List<Player> allplayers = Model.Players;
             if (games.Count > 0)
             {
@@ -26,9 +25,9 @@
             return allplayers;
         }
 
-        public static List<Player> GetAllPlayers()
+        public static List<Player> GetPlayers()
         {
-            return DbManager.db.Players.ToListAsync<Player>().Result;
+            return DbManager.GetPlayers();
         }
 
         private static List<Player> CheckPlayersInNotGame(List<Game> games, MapModel Model)

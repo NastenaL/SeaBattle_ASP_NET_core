@@ -59,7 +59,7 @@
         {
             var ship = Ship.GetShipByIdFromDB(shipId);
 
-            var allShips = Ship.GetAllShips();
+            var allShips = Ship.GetAll();
             var allPlayerShips = allShips.Where(i => i.Player == ship.Player).ToList();
 
             Model.RepairedShips = ship.Repair(allPlayerShips);
@@ -90,14 +90,14 @@
             var ship = Ship.GetShipByIdFromMapModel(id, Model);
             if (ship != null)
             {
-                Model.Players = Player.GetAllPlayers();
+                Model.Players = Player.GetPlayers();
                 var player = Model.Players.Find(i => i.Id == playerId);
                 ship.Player = player;
                 var shipDeckCells = GetCoordinatesForShip(ship);
                 ship.DeckCells = shipDeckCells;
 
                 var playerFields = PlayingField.GetAllPlayingFields();
-                var games = Game.GetAllGames();
+                var games = Game.GetAll();
                 var game = games.Find(g => g.Id == gameId);
                 game.PlayingField.Ships.Add(ship);
 
@@ -115,10 +115,10 @@
         [HttpPost]
         public IActionResult ShiftShip(int shipId, string direction)
         {
-            Player.GetAllPlayers();
-            Cell.GetAllCells();
-            Deck.GetAllDecks();
-            DeckCell.GetAllDeckCells();
+            Player.GetPlayers();
+            Cell.GetAll();
+            Deck.GetAll();
+            DeckCell.GetAll();
             var ship = Ship.GetShipByIdFromDB(shipId);
             if(ship != null)
             {
@@ -190,10 +190,10 @@
 
         private List<DeckCell> CheckCoordinates(Point initalPoint, List<DeckCell> ShipDeckCells, Ship ship)
         {
-            var decks = Deck.GetAllDecks();
-            var cells = Cell.GetAllCells();
-            var deckCells = DeckCell.GetAllDeckCells();
-            var allShips = Ship.GetAllShips();
+            var decks = Deck.GetAll();
+            var cells = Cell.GetAll();
+            var deckCells = DeckCell.GetAll();
+            var allShips = Ship.GetAll();
             var allPlayerShips = allShips.Where(i => i.Player == ship.Player).ToList();
             if(allPlayerShips.Count > 0)
             {
@@ -224,12 +224,12 @@
         [HttpPost]
         public IActionResult StartGame(int gameId)
         {
-            var cells = Cell.GetAllCells();
-            var deckCells = DeckCell.GetAllDeckCells();
-            var ships = Ship.GetAllShips();
-            var players = Player.GetAllPlayers();
+            var cells = Cell.GetAll();
+            var deckCells = DeckCell.GetAll();
+            var ships = Ship.GetAll();
+            var players = Player.GetPlayers();
             var allPlayingF = PlayingField.GetAllPlayingFields();
-            var games = Game.GetAllGames();
+            var games = Game.GetAll();
 
             var game = games.Find(g => g.Id == gameId);
             var allShipsInCurrentGame = allPlayingF.Find(g => g.Id == game.PlayingField.Id);
@@ -271,7 +271,7 @@
         public IActionResult Index()
         {
             Model.Players = Player.GetPlayersNotInGame(Model);
-            var games = Game.GetAllGames();
+            var games = Game.GetAll();
             Model.Games = games.Where(g => g.Player2 == null).ToList();
             return View(Model);
         }
@@ -280,7 +280,7 @@
         public IActionResult CreateGame(int playerId)
         {
             Game game = new Game();
-            var allPLayers = Player.GetAllPlayers();
+            var allPLayers = Player.GetPlayers();
             var firstPlayer = allPLayers.Find(g => g.Id == playerId);
             if(firstPlayer != null)
             {
@@ -295,7 +295,7 @@
                 };
 
                 DbManager.AddPlayingField(playingField);
-                DbManager.AddGameToDB(game);
+                DbManager.AddGame(game);
             }
 
             return Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { gameId = game.Id, playerId }) });
@@ -304,19 +304,19 @@
         [HttpPost]
         public IActionResult JoinToGame(int gameId, int playerId)
         {
-            var allGames = Game.GetAllGames();
+            var allGames = Game.GetAll();
             
             var game = allGames.Find(g => g.Id == gameId);
             if(game != null)
             {
-                var allPlayers = Player.GetAllPlayers();
+                var allPlayers = Player.GetPlayers();
                 var secondPlayer = allPlayers.Find(p => p.Id == playerId);
                 if(secondPlayer != null)
                 {
                     game.Player2 = secondPlayer;
                     
                     DbManager.UpdateGame(game);
-                    var allGames2 = Game.GetAllGames();
+                    var allGames2 = Game.GetAll();
                 }
        
             }
@@ -326,19 +326,19 @@
 
         private void LoadRelatedEntities()
         {
-            Player.GetAllPlayers();
+            Player.GetPlayers();
             PlayingField.GetAllPlayingFields();
-            DeckCell.GetAllDeckCells();
-            Cell.GetAllCells();
-            Deck.GetAllDecks();
-            Ship.GetAllShips();
+            DeckCell.GetAll();
+            Cell.GetAll();
+            Deck.GetAll();
+            Ship.GetAll();
         }
 
         [HttpPost]
         public IActionResult GameOver(int gameId)
         {
             LoadRelatedEntities();
-            var games = Game.GetAllGames();
+            var games = Game.GetAll();
             var game = games.Find(g => g.Id == gameId);
             if(game != null)
             {
@@ -349,7 +349,7 @@
                 }
                 
                 DbManager.RemovePlayingField(game.PlayingField);
-                DbManager.RemoveGameFromDb(game);
+                DbManager.RemoveGame(game);
             }
 
             return View();

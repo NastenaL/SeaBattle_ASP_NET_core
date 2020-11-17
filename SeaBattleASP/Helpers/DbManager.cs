@@ -1,5 +1,6 @@
 ﻿namespace SeaBattleASP.Helpers
 {
+    using Microsoft.EntityFrameworkCore;
     using SeaBattleASP.Models;
     using SeaBattleASP.Models.Enums;
     using System;
@@ -10,14 +11,62 @@
     {
         public static ApplicationContext db;
 
+        #region GetEntities from DB
+        public static List<Cell> GetCells()
+        {
+            return db.Cells.ToListAsync<Cell>().Result;
+        }
+
+        public static List<Deck> GetDecks()
+        {
+            return db.Decks.ToListAsync<Deck>().Result;
+        }
+
+        public static List<DeckCell> GetDeckCells()
+        {
+            return db.DeckCells.ToListAsync<DeckCell>().Result;
+        }
+
+        public static List<Game> GetGames()
+        {
+            return db.Games.ToListAsync<Game>().Result;
+        }
+
+        public static List<Player> GetPlayers()
+        {
+            return db.Players.ToListAsync<Player>().Result;
+        }
+
+        public static List<PlayingField> GetPlayingFields()
+        {
+            return db.PlayingFields.ToListAsync<PlayingField>().Result;
+        }
+
+        public static List<Ship> GetAllShips()
+        {
+            db.Cells.ToListAsync<Cell>();
+            db.Decks.ToListAsync<Deck>();
+            db.DeckCells.ToListAsync<DeckCell>();
+
+            var auxiliaryShips = db.AuxiliaryShips.ToListAsync<AuxiliaryShip>().Result;
+            var militaryShip = db.MilitaryShips.ToListAsync<MilitaryShip>().Result;
+            var mixShip = db.MixShips.ToListAsync<MixShip>().Result;
+            List<Ship> allShips = new List<Ship>();
+            allShips.AddRange(auxiliaryShips);
+            allShips.AddRange(militaryShip);
+            allShips.AddRange(mixShip);
+            return allShips;
+        }
+        #endregion
+
         #region Add commands
-        private static void AddDeckCellToDb(Ship ship)
+        private static void AddDeckCell(Ship ship)
         {
             foreach (DeckCell deckCell in ship.DeckCells.ToList())
             {
                 AddCell(deckCell.Cell);
                 AddDeck(deckCell.Deck);
-                AddDeckCell(deckCell);
+                AddDeckCellOnly(deckCell);
             }
         }
 
@@ -34,14 +83,14 @@
             db.SaveChanges();
         }
 
-        private static void AddDeckCell(DeckCell deckCell)
+        private static void AddDeckCellOnly(DeckCell deckCell)
         {
             db.DeckCells.Add(deckCell);
             db.SaveChanges();
         }
         #endregion
 
-        public static void AddGameToDB(Game game)
+        public static void AddGame(Game game)
         {
             db.Games.Add(game);
             db.SaveChanges();
@@ -61,10 +110,9 @@
 
         public static void AddShip(Ship ship)
         {
-            AddDeckCellToDb(ship);
+            AddDeckCell(ship);
 
-            var shipType = ship.GetType();
-            var type = Enum.Parse(typeof(ShipType), shipType.Name);
+            var type = Enum.Parse(typeof(ShipType), ship.GetShipType());
 
             switch ((ShipType)type)
             {
@@ -83,7 +131,7 @@
         }
         #endregion
 
-        #region Update
+        #region Update commands
         public static void UpdateShip(List<DeckCell> hurtedShipDecks)
         {
             for (int i = 0; i < hurtedShipDecks.Count; i++)
@@ -111,8 +159,7 @@
                 db.SaveChanges();
             }
 
-            var shipType = ship.GetType();
-            var shipTypeEnum = Enum.Parse(typeof(ShipType), shipType.Name);
+            var shipTypeEnum = Enum.Parse(typeof(ShipType), ship.GetShipType());
 
             switch ((ShipType)shipTypeEnum)
             {
@@ -132,16 +179,16 @@
 
         #endregion
 
-        #region Delete from DB
+        #region Delete commands
         public static void RemoveDecksAndCells(Ship ship)
         {
             foreach (DeckCell deckCell in ship.DeckCells)
             {
-                DbManager.db.Cells.Remove(deckCell.Cell);
-                DbManager.db.Decks.Remove(deckCell.Deck);
+                db.Cells.Remove(deckCell.Cell);
+                db.Decks.Remove(deckCell.Deck);
             }
-            DbManager.db.DeckCells.RemoveRange(ship.DeckCells);
-            DbManager.db.SaveChanges();
+            db.DeckCells.RemoveRange(ship.DeckCells);
+            db.SaveChanges();
         }
 
         public static void RemovePlayingField(PlayingField playingField)
@@ -150,7 +197,7 @@
             db.SaveChanges();
         }
 
-        public static void RemoveGameFromDb(Game game)
+        public static void RemoveGame(Game game)
         {
             db.Games.Remove(game);
             db.SaveChanges();
