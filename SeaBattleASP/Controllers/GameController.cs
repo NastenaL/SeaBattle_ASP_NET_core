@@ -113,6 +113,51 @@
        
 
         [HttpPost]
+        public IActionResult ShiftShip(int shipId, string direction)
+        {
+            Player.GetAllPlayers();
+            Cell.GetAllCells();
+            Deck.GetAllDecks();
+            DeckCell.GetAllDeckCells();
+            var ship = Ship.GetShipByIdFromDB(shipId);
+            if(ship != null)
+            {
+                switch (direction)
+                {
+                    case "left":
+                        foreach (DeckCell deckCell in ship.DeckCells)
+                        {
+                            deckCell.Cell.Y -= 1;
+                        }
+                        break;
+                    case "right":
+                        foreach (DeckCell deckCell in ship.DeckCells)
+                        {
+                            deckCell.Cell.Y += 1;
+                        }
+                        break;
+                    case "up":
+                        foreach (DeckCell deckCell in ship.DeckCells)
+                        {
+                            deckCell.Cell.X -= 1;
+                        }
+                        break;
+                    case "down":
+                        foreach (DeckCell deckCell in ship.DeckCells)
+                        {
+                            deckCell.Cell.X += 1;
+                        }
+                        break;
+                }
+                DbManager.UpdateShip(ship.DeckCells);
+            }
+           
+            return Json(ship);
+        }
+
+        
+
+        [HttpPost]
         public IActionResult SelectShip(int x, int y)
         {
             DeckCell deckCell = new DeckCell();

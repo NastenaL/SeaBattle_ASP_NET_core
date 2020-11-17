@@ -53,9 +53,40 @@ function emptyCellsToField(field) {
     }
 };
 
+function selectShipForShift(shipId) {
+    document.getElementById('left').value = shipId;
+    document.getElementById('right').value = shipId;
+    document.getElementById('up').value = shipId;
+    document.getElementById('down').value = shipId;
+}
+
+
+function shiftShip(direction) {
+    var b = document.getElementById('left');
+    
+    $.ajax({
+        type: 'POST',
+        url: '/Game/ShiftShip',
+        data: { shipId: b.value, direction: direction },
+        success: function (ship) {
+            console.log(ship);
+            var foundIndex = addedShips.findIndex(x => x.id == ship.id);
+            addedShips[foundIndex] = ship;
+            var convertedPoints = convertCellsToPoints(addedShips);
+
+            emptyCellsToField('#leftField');
+
+            for (var i = 0; i < convertedPoints.length; i++) {
+                paintDeckShip(convertedPoints[i], '#leftField');
+            }
+        },
+    });
+}
+
 function createShipTable() {
     var html = "<table class='shipsTable'>";
     html += "<tr>";
+    html += "<td>#</td>";
     html += "<td>Id</td>";
     html += "<td>Type</td>";
     html += "<td>Range</td>";
@@ -78,6 +109,7 @@ function createShipTable() {
         }
 
         html += "<tr>";
+        html += "<td style='padding: 2px'><input name='selectShip' onchange='selectShipForShift(" + addedShips[i].id +");' type='radio' value='" + addedShips[i].isSelectedShip + "'/></td>";
         html += "<td style='padding: 2px'>" + addedShips[i].id + "</td>";
         html += "<td style='padding: 2px'>" + addedShips[i].type + "</td>";
         html += "<td style='padding: 2px'>" + addedShips[i].range + "</td>";

@@ -48,7 +48,7 @@
 
         public static void UpdateShip(List<DeckCell> hurtedShipDecks)
         {
-            for (int i = 0; i < hurtedShipDecks.Count; i++)//Save to DB
+            for (int i = 0; i < hurtedShipDecks.Count; i++)
             {
                 db.Decks.Update(hurtedShipDecks[i].Deck);
                 db.Cells.Update(hurtedShipDecks[i].Cell);
