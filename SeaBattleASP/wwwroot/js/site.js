@@ -4,7 +4,7 @@ var addedShips = new Array();
 var message;
 var selectedShipId;
 var stepType;
-var user;
+var player;
 
 // функция нанесения надписей слева и справа от полей
 // входной параметр - иднетификтор контрола(left или right)
@@ -235,7 +235,7 @@ function openOptions(i) {
     document.getElementById("myDropdown" + i).classList.toggle("show");
 }
 
-// Close the dropdown menu if the user clicks outside of it
+// Close the dropdown menu if the player clicks outside of it
 window.onclick = function (event) {
     if (!event.target.matches('.dropbtn')) {
 
@@ -345,7 +345,7 @@ $("#btnAddShips").click(function () {
     $('#ModalPopUp').modal('show');
 })
 
-function validateUserName() {
+function validatePlayerName() {
     if (document.getElementById("userName").value === "") {
         document.getElementById('register').disabled = true;
     } else {
@@ -370,12 +370,12 @@ function joinToGame(gameId) {
 var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 var connection2 = new signalR.HubConnectionBuilder().withUrl("/stateGameHub").build();
 
-connection.on("ReceiveMessage", function (userId, ship, stepType) {
+connection.on("ReceiveMessage", function (playerId, ship, stepType) {
     var parameters = getUrlParams(window.location.href);
-    userId = parameters.playerId;
+    playerId = parameters.playerId;
 
     var seceltedShip = ship.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    var encodedMsg = "Player" + userId + "select ship " + seceltedShip + ", type " + stepType;
+    var encodedMsg = "Player" + playerId + "select ship " + seceltedShip + ", type " + stepType;
     var li = document.createElement("li");
     li.textContent = encodedMsg;
     console.log("message", ship);
@@ -401,7 +401,7 @@ connection.start().catch(function (err) {
 document.getElementById("sendButton").addEventListener("click", function (event) {
 
     console.log("sendButton");
-    connection.invoke("SendMessage", user, selectedShipId, stepType).catch(function (err) {
+    connection.invoke("SendMessage", player, selectedShipId, stepType).catch(function (err) {
         return console.error(err.toString());
     });
     event.preventDefault();
