@@ -1,6 +1,5 @@
 ﻿namespace SeaBattleASP.Helpers
 {
-    using Microsoft.EntityFrameworkCore;
     using SeaBattleASP.Models;
     using SeaBattleASP.Models.Enums;
     using System;
@@ -11,41 +10,80 @@
     {
         public static ApplicationContext db;
 
-        public static void SaveGameToDB(Game game)
+        #region Add commands
+        private static void AddDeckCellToDb(Ship ship)
+        {
+            foreach (DeckCell deckCell in ship.DeckCells.ToList())
+            {
+                AddCell(deckCell.Cell);
+                AddDeck(deckCell.Deck);
+                AddDeckCell(deckCell);
+            }
+        }
+
+        #region For deckCell
+        private static void AddCell(Cell cell)
+        {
+            db.Cells.Add(cell);
+            db.SaveChanges();
+        }
+
+        private static void AddDeck(Deck deck)
+        {
+            db.Decks.Add(deck);
+            db.SaveChanges();
+        }
+
+        private static void AddDeckCell(DeckCell deckCell)
+        {
+            db.DeckCells.Add(deckCell);
+            db.SaveChanges();
+        }
+        #endregion
+
+        public static void AddGameToDB(Game game)
         {
             db.Games.Add(game);
             db.SaveChanges();
         }
 
-        public static void SavePlayerToDB(Player player)
+        public static void AddPlayer(Player player)
         {
             db.Players.Add(player);
             db.SaveChanges();
         }
 
-        private static void DeleteDecksAndCells(Game game)
+        public static void AddPlayingField(PlayingField PlayingField)
         {
-            foreach (var cell in game.PlayingField.Ships)
-            {
-                foreach (DeckCell deckCell in cell.DeckCells)
-                {
-                    db.Decks.Remove(deckCell.Deck);
-                    db.Cells.Remove(deckCell.Cell);
-                    db.DeckCells.Remove(deckCell);
-                }
-            }
+            db.PlayingFields.Add(PlayingField);
+            db.SaveChanges();
         }
 
-        private static void DeletePlayingField(Game game)
+        public static void AddShip(Ship ship)
         {
-            var fields = db.PlayingFields.ToListAsync<PlayingField>().Result;
-            var currentField = fields.Find(f => f == game.PlayingField);
-            if (currentField != null)
-            {
-                db.PlayingFields.Remove(currentField);
-            }
-        }
+            AddDeckCellToDb(ship);
 
+            var shipType = ship.GetType();
+            var type = Enum.Parse(typeof(ShipType), shipType.Name);
+
+            switch ((ShipType)type)
+            {
+                case ShipType.AuxiliaryShip:
+                    db.AuxiliaryShips.Add((AuxiliaryShip)ship);
+                    break;
+                case ShipType.MilitaryShip:
+                    db.MilitaryShips.Add((MilitaryShip)ship);
+                    break;
+                case ShipType.MixShip:
+                    db.MixShips.Add((MixShip)ship);
+                    break;
+            };
+
+            db.SaveChanges();
+        }
+        #endregion
+
+        #region Update
         public static void UpdateShip(List<DeckCell> hurtedShipDecks)
         {
             for (int i = 0; i < hurtedShipDecks.Count; i++)
@@ -57,45 +95,9 @@
             }
         }
 
-        public static void DeleteGameFromDb(Game game)
-        {
-            db.Games.Remove(game);
-            DeleteDecksAndCells(game);
-            DeletePlayingField(game);
-            db.SaveChanges();
-        }
-
-        public static void UpdateGameInDb(Game game)
+        public static void UpdateGame(Game game)
         {
             db.Update(game);
-            db.SaveChanges();
-        }
-
-        private static void SaveDeckCellToDb(Ship ship)
-        {
-            foreach (DeckCell deckCell in ship.DeckCells.ToList())
-            {
-                SaveCell(deckCell.Cell);
-                SaveDeck(deckCell.Deck);
-                SaveDeckCell(deckCell);
-            }
-        }
-
-        private static void SaveCell(Cell cell)
-        {
-            db.Cells.Add(cell);
-            db.SaveChanges();
-        }
-
-        private static void SaveDeck(Deck deck)
-        {
-            db.Decks.Add(deck);
-            db.SaveChanges();
-        }
-
-        private static void SaveDeckCell(DeckCell deckCell)
-        {
-            db.DeckCells.Add(deckCell);
             db.SaveChanges();
         }
 
@@ -128,37 +130,31 @@
             db.SaveChanges();
         }
 
-        private static void SaveShip(Ship ship)
-        {
-            var shipType = ship.GetType();
-            var type = Enum.Parse(typeof(ShipType), shipType.Name);
+        #endregion
 
-            switch ((ShipType)type)
+        #region Delete from DB
+        public static void RemoveDecksAndCells(Ship ship)
+        {
+            foreach (DeckCell deckCell in ship.DeckCells)
             {
-                case ShipType.AuxiliaryShip:
-                    db.AuxiliaryShips.Add((AuxiliaryShip)ship);
-                    break;
-                case ShipType.MilitaryShip:
-                    db.MilitaryShips.Add((MilitaryShip)ship);
-                    break;
-                case ShipType.MixShip:
-                    db.MixShips.Add((MixShip)ship);
-                    break;
-            };
+                DbManager.db.Cells.Remove(deckCell.Cell);
+                DbManager.db.Decks.Remove(deckCell.Deck);
+            }
+            DbManager.db.DeckCells.RemoveRange(ship.DeckCells);
+            DbManager.db.SaveChanges();
+        }
 
+        public static void RemovePlayingField(PlayingField playingField)
+        {
+            db.PlayingFields.Remove(playingField);
             db.SaveChanges();
         }
 
-        public static void SavePlayingFieldToDB(PlayingField PlayingField)
+        public static void RemoveGameFromDb(Game game)
         {
-            db.PlayingFields.Add(PlayingField);
+            db.Games.Remove(game);
             db.SaveChanges();
         }
-
-        public static void SaveShipToDB(Ship ship)
-        {
-            SaveDeckCellToDb(ship);
-            SaveShip(ship);
-        }
+        #endregion
     }
 }

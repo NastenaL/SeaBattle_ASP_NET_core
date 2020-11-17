@@ -257,6 +257,20 @@ window.onclick = function (event) {
     }
 }
 
+function gameOver() {
+    var parameters = getUrlParams(window.location.href);
+    var gameId = parameters.gameId;
+    console.log("Game over", gameId);
+
+    $.ajax({
+        type: 'POST',
+        url: '/Game/GameOver',
+        data: { gameId: gameId },
+        success: function () {
+        },
+    });
+}
+
 function changeButtonVisibility() {
     var makeStep = document.getElementById('makeStep');
     makeStep.style.display = 'inline';

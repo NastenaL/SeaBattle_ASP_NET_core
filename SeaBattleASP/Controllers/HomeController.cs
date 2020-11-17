@@ -27,7 +27,7 @@
             if(!string.IsNullOrEmpty(userName))
             {
                 player.Name = userName;
-              DbManager.SavePlayerToDB(player);
+              DbManager.AddPlayer(player);
             }
 
             return this.RedirectToAction("Index", "Game", new {id = player.Id});

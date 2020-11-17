@@ -102,7 +102,7 @@
                 game.PlayingField.Ships.Add(ship);
 
                // DbManager.db.PlayingFields.Update(game.PlayingField);
-                DbManager.UpdateGameInDb(game);
+                DbManager.UpdateGame(game);
                 Model.SelectedShip = ship;
                 Model.CurrentGame = game;
                 MapModel.FillMapModelWithCoordinates(shipDeckCells, Model);
@@ -259,7 +259,7 @@
                     {
                         Model.Message += game.Player2.Name;
                     }
-                    DbManager.UpdateGameInDb(game);
+                    DbManager.UpdateGame(game);
                     Model.CurrentGame = game;
                 }
             }
@@ -294,8 +294,8 @@
                     PlayingField = playingField
                 };
 
-                DbManager.SavePlayingFieldToDB(playingField);
-                DbManager.SaveGameToDB(game);
+                DbManager.AddPlayingField(playingField);
+                DbManager.AddGameToDB(game);
             }
 
             return Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { gameId = game.Id, playerId }) });
@@ -315,7 +315,7 @@
                 {
                     game.Player2 = secondPlayer;
                     
-                    DbManager.UpdateGameInDb(game);
+                    DbManager.UpdateGame(game);
                     var allGames2 = Game.GetAllGames();
                 }
        
@@ -324,14 +324,34 @@
             return Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { gameId = game.Id, playerId }) });
         }
 
-        [HttpPost]
-        public IActionResult EndGame()
+        private void LoadRelatedEntities()
         {
-            if(Model.CurrentGame != null)
+            Player.GetAllPlayers();
+            PlayingField.GetAllPlayingFields();
+            DeckCell.GetAllDeckCells();
+            Cell.GetAllCells();
+            Deck.GetAllDecks();
+            Ship.GetAllShips();
+        }
+
+        [HttpPost]
+        public IActionResult GameOver(int gameId)
+        {
+            LoadRelatedEntities();
+            var games = Game.GetAllGames();
+            var game = games.Find(g => g.Id == gameId);
+            if(game != null)
             {
-                Model.CurrentGame.EndGame();
-                DbManager.DeleteGameFromDb(Model.CurrentGame);
+                var ii = game.PlayingField.Ships.First().DeckCells.First().Cell.Id;
+                foreach (Ship ship in game.PlayingField.Ships)
+                {
+                    DbManager.RemoveDecksAndCells(ship);
+                }
+                
+                DbManager.RemovePlayingField(game.PlayingField);
+                DbManager.RemoveGameFromDb(game);
             }
+
             return View();
         } 
     }
