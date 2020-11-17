@@ -2,6 +2,9 @@
 var leftText = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17'];
 var addedShips = new Array();
 var message;
+var selectedShipId;
+var stepType;
+var user;
 
 // функция нанесения надписей слева и справа от полей
 // входной параметр - иднетификтор контрола(left или right)
@@ -100,7 +103,7 @@ function createShipTable() {
         }
 
         html += "<tr>";
-        html += "<td style='padding: 2px'><input name='selectShip' onchange='selectShipForShift(" + addedShips[i].id + ");' type='radio' value='" + addedShips[i].isSelectedShip + "'/></td>";
+        html += "<td style='padding: 2px'><input id='selectShip' name='selectShip' onchange='selectShipForShift(" + addedShips[i].id + ");' type='radio' value='" + addedShips[i].isSelectedShip + "'/></td>";
         html += "<td style='padding: 2px'>" + addedShips[i].id + "</td>";
         html += "<td style='padding: 2px'>" + addedShips[i].type + "</td>";
         html += "<td style='padding: 2px'>" + addedShips[i].range + "</td>";
@@ -130,12 +133,8 @@ var getUrlParams = function (url) {
     return params;
 };
 
-function changeColor(ship) {
-
-}
-
-function addShipToField(id) {
-    var element = document.getElementById(id);
+function addShipToField(shipId) {
+    var element = document.getElementById(shipId);
     element.style.display = 'none';
 
     var parameters = getUrlParams(window.location.href);
@@ -144,10 +143,8 @@ function addShipToField(id) {
     $.ajax({
         type: 'POST',
         url: '/Game/AddShipToField',
-        data: { id: id, playerId: playerId, gameId: gameId },
-        success: function (mapModel) {
-            var convertedPoints = getCellPoint(mapModel);
-          
+        data: { shipId: shipId, playerId: playerId, gameId: gameId },
+        success: function (mapModel) {     
             addedShips.push(mapModel.selectedShip);
             for (var i = 0; i < addedShips.length; i++) {
                 paintShip(addedShips[i].deckCells, 'usualShipColor');
@@ -171,10 +168,6 @@ function convertCellsToPoints(ships) {
     }
     return convertedPoints;
 }
-
-var selectedShipId;
-var stepType;
-var user;
 
 function makeMovement(shipId, type) {
     selectedShipId = shipId;
@@ -275,10 +268,14 @@ function changeButtonVisibility() {
     var makeStep = document.getElementById('makeStep');
     makeStep.style.display = 'inline';
 
+    //var selectShip = document.getElementById('selectShip');
+    //selectShip.style.display = 'none';
+
     for (var i = 0; i < addedShips.length; i++) {
-        var makeStep = document.getElementById('step' + i);
-        makeStep.style.display = 'inline';
+        var stepButton = document.getElementById('step' + i);
+        stepButton.style.display = 'inline';
     }
+
     var startGame = document.getElementById('startGame');
     startGame.style.display = 'none';
 }

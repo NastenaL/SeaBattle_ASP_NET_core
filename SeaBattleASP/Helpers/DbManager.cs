@@ -102,9 +102,9 @@
             db.SaveChanges();
         }
 
-        public static void AddPlayingField(PlayingField PlayingField)
+        public static void AddPlayingField(PlayingField playingField)
         {
-            db.PlayingFields.Add(PlayingField);
+            db.PlayingFields.Add(playingField);
             db.SaveChanges();
         }
 
@@ -151,14 +151,6 @@
 
         public static void UpdateShip(Ship ship)
         {
-            foreach (DeckCell deckCell in ship.DeckCells.ToList())
-            {
-                db.Cells.Update(deckCell.Cell);
-                db.Decks.Update(deckCell.Deck);
-                db.DeckCells.Update(deckCell);
-                db.SaveChanges();
-            }
-
             var shipTypeEnum = Enum.Parse(typeof(ShipType), ship.GetShipType());
 
             switch ((ShipType)shipTypeEnum)
@@ -180,14 +172,14 @@
         #endregion
 
         #region Delete commands
-        public static void RemoveDecksAndCells(Ship ship)
+        public static void RemoveDecksAndCells(List<DeckCell> deckCells)
         {
-            foreach (DeckCell deckCell in ship.DeckCells)
+            foreach (DeckCell deckCell in deckCells)
             {
                 db.Cells.Remove(deckCell.Cell);
                 db.Decks.Remove(deckCell.Deck);
             }
-            db.DeckCells.RemoveRange(ship.DeckCells);
+            db.DeckCells.RemoveRange(deckCells);
             db.SaveChanges();
         }
 

@@ -30,6 +30,8 @@
         private MapModel Model { get; set; }
         #endregion
 
+        #region Methods
+
         #region Step methods
         [HttpPost]
         public IActionResult MakeFireStep(int shipId)
@@ -85,9 +87,9 @@
         #endregion
 
         [HttpPost]
-        public IActionResult AddShipToField(int id, int playerId, int gameId)
+        public IActionResult AddShipToField(int shipId, int playerId, int gameId)
         {
-            var ship = Ship.GetShipByIdFromMapModel(id, Model);
+            var ship = Ship.GetShipByIdFromMapModel(shipId, Model);
             if (ship != null)
             {
                 Model.Players = Player.GetPlayers();
@@ -149,13 +151,11 @@
                         }
                         break;
                 }
-                DbManager.UpdateShip(ship.DeckCells);
+                DbManager.UpdateShip(ship);
             }
            
             return Json(ship);
         }
-
-        
 
         [HttpPost]
         public IActionResult SelectShip(int x, int y)
@@ -224,10 +224,7 @@
         [HttpPost]
         public IActionResult StartGame(int gameId)
         {
-            var cells = Cell.GetAll();
-            var deckCells = DeckCell.GetAll();
-            var ships = Ship.GetAll();
-            var players = Player.GetPlayers();
+            LoadRelatedEntities();
             var allPlayingF = PlayingField.GetAllPlayingFields();
             var games = Game.GetAll();
 
@@ -345,7 +342,7 @@
                 var ii = game.PlayingField.Ships.First().DeckCells.First().Cell.Id;
                 foreach (Ship ship in game.PlayingField.Ships)
                 {
-                    DbManager.RemoveDecksAndCells(ship);
+                    DbManager.RemoveDecksAndCells(ship.DeckCells);
                 }
                 
                 DbManager.RemovePlayingField(game.PlayingField);
@@ -353,6 +350,8 @@
             }
 
             return View();
-        } 
+        }
+
+        #endregion
     }
 }
