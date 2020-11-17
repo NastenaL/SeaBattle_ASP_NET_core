@@ -69,16 +69,7 @@ function shiftShip(direction) {
         url: '/Game/ShiftShip',
         data: { shipId: b.value, direction: direction },
         success: function (ship) {
-            console.log(ship);
-            var foundIndex = addedShips.findIndex(x => x.id == ship.id);
-            addedShips[foundIndex] = ship;
-            var convertedPoints = convertCellsToPoints(addedShips);
-
-            emptyCellsToField('#leftField');
-
-            for (var i = 0; i < convertedPoints.length; i++) {
-                paintDeckShip(convertedPoints[i], '#leftField', 'usualShipColor');
-            }
+            repaintShip(ship);
         },
     });
 }
@@ -158,7 +149,7 @@ function addShipToField(id) {
             var convertedPoints = getCellPoint(mapModel);
 
             addedShips.push(mapModel.selectedShip);
-            paintShip(convertedPoints, 'drownedFiredColor');
+            paintShip(convertedPoints, 'usualShipColor');
 
             var html = createShipTable();
             document.getElementById("shipsPanel").innerHTML = html;
@@ -227,17 +218,21 @@ function makeMove(shipId) {
         url: '/Game/MakeMoveStep',
         data: { shipId: shipId},
         success: function (ship) {
-            var foundIndex = addedShips.findIndex(x => x.id == ship.id);
-            addedShips[foundIndex] = ship;
-            var convertedPoints = convertCellsToPoints(addedShips);
-
-            emptyCellsToField('#leftField');
-
-            for (var i = 0; i < convertedPoints.length; i++) {
-                paintDeckShip(convertedPoints[i], '#leftField', 'usualShipColor');
-            }
+            repaintShip(ship);
         },
     });
+}
+
+function repaintShip(ship) {
+    var foundIndex = addedShips.findIndex(x => x.id == ship.id);
+    addedShips[foundIndex] = ship;
+    var convertedPoints = convertCellsToPoints(addedShips);
+
+    emptyCellsToField('#leftField');
+
+    for (var i = 0; i < convertedPoints.length; i++) {
+        paintDeckShip(convertedPoints[i], '#leftField', 'usualShipColor');
+    }
 }
 
 function openOptions(i) {
