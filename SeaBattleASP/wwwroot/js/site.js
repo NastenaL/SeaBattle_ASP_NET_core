@@ -270,6 +270,11 @@ function makeMovement(shipId, type) {
     selectedShipId = shipId;
     stepType = type;
 
+    var t = document.getElementById("sendButton");
+    console.log(t);
+    t.click();
+    var parameters = getUrlParams(window.location.href);
+    var gameId = parameters.gameId;
     console.log(type);
     switch (type) {
         case 0:
@@ -279,7 +284,7 @@ function makeMovement(shipId, type) {
             makeRepair(shipId);
             break;
         case 2:
-            makeMove(shipId);
+            makeMove(shipId, gameId);
             break;
     }
 }
@@ -306,11 +311,11 @@ function makeFire(shipId) {
     });
 }
 
-function makeMove(shipId) {
+function makeMove(shipId, gameId) {
     $.ajax({
         type: 'POST',
         url: '/Game/MakeMoveStep',
-        data: { shipId: shipId },
+        data: { shipId: shipId, gameId: gameId },
         success: function (ship) {
             repaintShip(ship);
         },

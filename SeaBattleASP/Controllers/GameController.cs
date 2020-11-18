@@ -73,8 +73,12 @@
         }
 
         [HttpPost]
-        public Ship MakeMoveStep(int shipId)
+        public Ship MakeMoveStep(int shipId, int gameId)
         {
+            LoadRelatedEntities();
+            var games = Game.GetAll();
+            var game = games.Find(g => g.Id == gameId);
+
             var ship = Ship.GetShipByIdFromDB(shipId);
             if (ship != null)
             {
@@ -86,7 +90,7 @@
                 }
             }
 
-            CheckWinner(this.Model.CurrentGame);
+            CheckWinner(game);
             return ship;
         }
         #endregion
@@ -368,6 +372,45 @@
             var player1Ships = game.PlayingField.Ships.Where(i => i.Player == game.Player1).ToList();
             var player2Ships = game.PlayingField.Ships.Where(i => i.Player == game.Player2).ToList();
 
+            var isPlayer1Lose = CheckAllShipsDrowned(player1Ships);
+            var isPlayer2Lose = CheckAllShipsDrowned(player2Ships);
+
+            this.Model.Message = "Player2 win. Con";
+            if (isPlayer1Lose)
+            {
+                this.Model.Message += game.Player2.Name;
+            }
+            if(isPlayer2Lose)
+            {
+                this.Model.Message += game.Player1.Name;
+            }
+
+        }
+
+        private bool CheckAllShipsDrowned(List<Ship> ships)
+        {
+            List<Ship> drownedShips = new List<Ship>();
+            foreach (Ship ship in ships)
+            {
+                var drownedShip = CheckDrownedShip(ship);
+                if(drownedShip != null)
+                {
+                    drownedShips.Add(drownedShip);
+                }
+            }
+
+            return drownedShips.Count == ships.Count;
+        }
+
+        private Ship CheckDrownedShip(Ship ship)
+        {
+            Ship result = null;
+            var drownedDeckCells = ship.DeckCells.Where(i => i.Deck.State == DeckState.Drowned).ToList();
+            if(drownedDeckCells.Count == ship.DeckCells.Count)
+            {
+                result = ship;
+            }
+            return result;
         }
         #endregion
     }
