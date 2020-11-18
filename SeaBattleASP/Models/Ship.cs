@@ -38,6 +38,10 @@
         #region Methods
         public static Ship GetShipByIdFromDB(int shipId)
         {
+            Player.GetAll();
+            Deck.GetAll();
+            Cell.GetAll();
+            DeckCell.GetAll();
             List<Ship> allShips = GetAll();
             return allShips.Find(i => i.Id == shipId);
         }
@@ -170,7 +174,7 @@
             {
                 foreach (DeckCell deckCell in result)
                 {
-                    bool isAbroad = deckCell.Cell.X > Rules.FieldWidth || deckCell.Cell.Y > Rules.FieldHeight;
+                    bool isAbroad = deckCell.Cell.X > Rules.FieldWidth - 1 || deckCell.Cell.Y > Rules.FieldHeight - 1;
                     if (isAbroad)
                     {
                         this.IsXDirection = !this.IsXDirection;

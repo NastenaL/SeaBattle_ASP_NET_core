@@ -97,16 +97,19 @@
             var ship = Ship.GetShipByIdFromMapModel(shipId, this.Model);
             if (ship != null)
             {
-                this.Model.Players = Player.GetPlayers();
-                var player = this.Model.Players.Find(i => i.Id == playerId);
-                ship.Player = player;
-                var shipDeckCells = this.GetCoordinatesForShip(ship);
-                ship.DeckCells = shipDeckCells;
-
+                this.Model.Players = Player.GetAll();
                 var game = Game.GetGameById(gameId);
                 game.PlayingField.Ships.Add(ship);
 
-               // DbManager.db.PlayingFields.Update(game.PlayingField);
+                var player = this.Model.Players.Find(i => i.Id == playerId);
+                if(player != null)
+                {
+                    ship.Player = player;
+                }
+                var shipDeckCells = this.GetDeckCellsForShip(ship.DeckCells, player, game);
+                ship.DeckCells = shipDeckCells;
+
+               
                 DbManager.UpdateGame(game);
                 this.Model.SelectedShip = ship;
                 this.Model.CurrentGame = game;
@@ -117,9 +120,10 @@
         }
        
         [HttpPost]
-        public IActionResult ShiftShip(int shipId, string direction)
+        public IActionResult ShiftShip(int shipId, 
+                                       string direction)
         {
-            Player.GetPlayers();
+            Player.GetAll();
             Cell.GetAll();
             Deck.GetAll();
             DeckCell.GetAll();
@@ -237,7 +241,7 @@
         public IActionResult CreateGame(int playerId)
         {
             Game game = new Game();
-            var allPLayers = Player.GetPlayers();
+            var allPLayers = Player.GetAll();
             var firstPlayer = allPLayers.Find(g => g.Id == playerId);
             if (firstPlayer != null)
             {
@@ -259,13 +263,14 @@
         }
 
         [HttpPost]
-        public IActionResult JoinToGame(int gameId, int playerId)
+        public IActionResult JoinToGame(int gameId, 
+                                        int playerId)
         {
             var game = Game.GetGameById(gameId);
 
             if (game != null)
             {
-                var allPlayers = Player.GetPlayers();
+                var allPlayers = Player.GetAll();
                 var secondPlayer = allPlayers.Find(p => p.Id == playerId);
                 if (secondPlayer != null)
                 {
@@ -298,51 +303,61 @@
             return this.Json(new { redirectToUrl = Url.Action("Index", "Game", new {playerId }) });
         }
 
-        private List<DeckCell> CheckCoordinates(Point initalPoint, List<DeckCell> shipDeckCells, Ship ship)
+        private List<DeckCell> GetDeckCellsForShip(List<DeckCell> deckCells, Player player, Game game)
         {
-            var decks = Deck.GetAll();
-            var cells = Cell.GetAll();
-            var deckCells = DeckCell.GetAll();
-            var allShips = Ship.GetAll();
-            var allPlayerShips = allShips.Where(i => i.Player == ship.Player).ToList();
-            if (allPlayerShips.Count > 0)
-            {
-                var allPlayerDeckCells = new List<DeckCell>();
-                foreach (Ship s in allPlayerShips)
-                {
-                    allPlayerDeckCells.AddRange(s.DeckCells);
-                }
-
-                var isShip = ShipManager.CheckShipWithOtherShips(allPlayerDeckCells, shipDeckCells);
-                var isShipOutOfAbroad = ShipManager.CheckPointAbroad(initalPoint);
-
-                if (isShip || isShipOutOfAbroad)
-                {
-                    shipDeckCells.Clear();
-                    shipDeckCells = this.GetCoordinatesForShip(ship);
-                }
-            }
-
-            return shipDeckCells;
-        }
-
-        private List<DeckCell> GetCoordinatesForShip(Ship ship)
-        {
-            List<DeckCell> shipDeckCells = new List<DeckCell>();
+            List<DeckCell> resultDeckCells = new List<DeckCell>();
 
             var initalPoint = ShipManager.GetRandomPoint(this.random);
             var direction = (ShipDirection)this.shipDirections.GetValue(this.random.Next(this.shipDirections.Length));
 
-            foreach (DeckCell deck in ship.DeckCells)
+            foreach (DeckCell deck in deckCells)
             {
                 initalPoint = ShipManager.ShiftPoint(initalPoint, direction);
 
                 var currentDeckCell = DeckCell.Create(initalPoint, deck.Deck);
-                shipDeckCells.Add(currentDeckCell);
-                shipDeckCells = this.CheckCoordinates(initalPoint, shipDeckCells, ship);
+                resultDeckCells.Add(currentDeckCell);
             }
 
-            return shipDeckCells;
+            var isError = DeckCell.CheckDeckCell(resultDeckCells);
+            var isBool = CheckOtherShips(resultDeckCells, game, player);
+            if (isError || isBool)
+            {
+                
+                GetDeckCellsForShip(deckCells, player, game);
+            }
+
+            return resultDeckCells;
+        }
+
+        private bool CheckOtherShips(List<DeckCell> deckCells, Game game, Player player)
+        {
+            var allDeckCell = DeckCell.GetAll();
+            var allShips = Ship.GetAll();
+            var games = Game.GetAll();
+
+            var allPlayersShips = game.PlayingField.Ships.Where(s => s.Player == player).ToList();
+            var lastShip = allPlayersShips.Last();
+            allPlayersShips.Remove(lastShip);
+            List<DeckCell> allPlayerDeckCell = new List<DeckCell>();
+
+            bool isError = false;
+            if(allPlayersShips.Count > 0)
+            {
+                foreach (Ship ship in allPlayersShips)
+                {
+                    foreach (DeckCell deckCell in ship.DeckCells)
+                    {
+                     
+                        var dc = deckCells.Find(i => i.Cell.X == deckCell.Cell.X && i.Cell.Y == deckCell.Cell.Y);
+                        if (dc != null)
+                        {
+                            isError = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            return isError;
         }
 
         private void CheckWinner(Game game)

@@ -27,7 +27,7 @@
             return allplayers;
         }
 
-        public static List<Player> GetPlayers()
+        public static List<Player> GetAll()
         {
             return DbManager.GetPlayers();
         }

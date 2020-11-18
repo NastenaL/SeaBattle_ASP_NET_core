@@ -51,7 +51,7 @@
 
         private static void LoadRelatedEntities()
         {
-            Player.GetPlayers();
+            Player.GetAll();
             PlayingField.GetAllPlayingFields();
             DeckCell.GetAll();
             Cell.GetAll();

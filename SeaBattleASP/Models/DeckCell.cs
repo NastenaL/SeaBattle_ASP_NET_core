@@ -4,6 +4,7 @@
     using System.Drawing;
     using System.Linq;
     using SeaBattleASP.Helpers;
+    using SeaBattleASP.Models.Constants;
     using SeaBattleASP.Models.Enums;
 
     public class DeckCell
@@ -66,6 +67,21 @@
             }
 
             return new HashSet<Point>(neighboringCoordinates).ToList();
+        }
+
+        public static bool CheckDeckCell(List<DeckCell> deckCell)
+        {
+            List<DeckCell> wrong = new List<DeckCell>();
+            foreach (DeckCell dc in deckCell)
+            {
+                bool isShipOutAbroad = dc.Cell.X > Rules.FieldWidth - 1 || dc.Cell.Y > Rules.FieldHeight - 1;
+                if (isShipOutAbroad)
+                {
+                    wrong.Add(dc);
+                }
+            }
+
+            return wrong.Count > 0;
         }
 
         private static Point CreateNewPoint(DeckCell deckCell)
