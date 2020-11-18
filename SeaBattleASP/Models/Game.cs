@@ -40,6 +40,25 @@
         {
             this.State = GameState.Finished;
         }
+
+        public static Game GetGameById(int gameId)
+        {
+            LoadRelatedEntities();
+            var games = Game.GetAll();
+            var game = games.Find(g => g.Id == gameId);
+            return game;
+        }
+
+        private static void LoadRelatedEntities()
+        {
+            Player.GetPlayers();
+            PlayingField.GetAllPlayingFields();
+            DeckCell.GetAll();
+            Cell.GetAll();
+            Deck.GetAll();
+            Ship.GetAll();
+        }
+
         #endregion
     }
 }

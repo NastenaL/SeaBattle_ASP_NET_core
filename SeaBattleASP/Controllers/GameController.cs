@@ -75,10 +75,6 @@
         [HttpPost]
         public Ship MakeMoveStep(int shipId, int gameId)
         {
-            LoadRelatedEntities();
-            var games = Game.GetAll();
-            var game = games.Find(g => g.Id == gameId);
-
             var ship = Ship.GetShipByIdFromDB(shipId);
             if (ship != null)
             {
@@ -90,7 +86,7 @@
                 }
             }
 
-            CheckWinner(game);
+            CheckWinner(Game.GetGameById(gameId));
             return ship;
         }
         #endregion
@@ -107,9 +103,7 @@
                 var shipDeckCells = this.GetCoordinatesForShip(ship);
                 ship.DeckCells = shipDeckCells;
 
-                var playerFields = PlayingField.GetAllPlayingFields();
-                var games = Game.GetAll();
-                var game = games.Find(g => g.Id == gameId);
+                var game = Game.GetGameById(gameId);
                 game.PlayingField.Ships.Add(ship);
 
                // DbManager.db.PlayingFields.Update(game.PlayingField);
@@ -192,11 +186,8 @@
         [HttpPost]
         public IActionResult StartGame(int gameId)
         {
-            this.LoadRelatedEntities();
+            var game = Game.GetGameById(gameId);
             var allPlayingF = PlayingField.GetAllPlayingFields();
-            var games = Game.GetAll();
-
-            var game = games.Find(g => g.Id == gameId);
             var allShipsInCurrentGame = allPlayingF.Find(g => g.Id == game.PlayingField.Id);
             if (game != null)
             {
@@ -270,9 +261,8 @@
         [HttpPost]
         public IActionResult JoinToGame(int gameId, int playerId)
         {
-            var allGames = Game.GetAll();
-            
-            var game = allGames.Find(g => g.Id == gameId);
+            var game = Game.GetGameById(gameId);
+
             if (game != null)
             {
                 var allPlayers = Player.GetPlayers();
@@ -292,9 +282,7 @@
         [HttpPost]
         public IActionResult GameOver(int gameId, int playerId)
         {
-            this.LoadRelatedEntities();
-            var games = Game.GetAll();
-            var game = games.Find(g => g.Id == gameId);
+            var game = Game.GetGameById(gameId);
             if (game != null)
             {
                 var ii = game.PlayingField.Ships.First().DeckCells.First().Cell.Id;
@@ -357,34 +345,22 @@
             return shipDeckCells;
         }
 
-        private void LoadRelatedEntities()
-        {
-            Player.GetPlayers();
-            PlayingField.GetAllPlayingFields();
-            DeckCell.GetAll();
-            Cell.GetAll();
-            Deck.GetAll();
-            Ship.GetAll();
-        }
-
         private void CheckWinner(Game game)
         {
-            var player1Ships = game.PlayingField.Ships.Where(i => i.Player == game.Player1).ToList();
-            var player2Ships = game.PlayingField.Ships.Where(i => i.Player == game.Player2).ToList();
-
-            var isPlayer1Lose = CheckAllShipsDrowned(player1Ships);
-            var isPlayer2Lose = CheckAllShipsDrowned(player2Ships);
-
-            this.Model.Message = "Player2 win. Con";
-            if (isPlayer1Lose)
+            if(game != null)
             {
-                this.Model.Message += game.Player2.Name;
-            }
-            if(isPlayer2Lose)
-            {
-                this.Model.Message += game.Player1.Name;
-            }
+                var player1Ships = game.PlayingField.Ships.Where(i => i.Player == game.Player1).ToList();
+                var player2Ships = game.PlayingField.Ships.Where(i => i.Player == game.Player2).ToList();
 
+                var isPlayer1Lose = CheckAllShipsDrowned(player1Ships);
+                var isPlayer2Lose = CheckAllShipsDrowned(player2Ships);
+
+                if(isPlayer1Lose || isPlayer2Lose)
+                {
+                    this.Model.Message = "Player2 win. Con";
+                    this.Model.Message += isPlayer1Lose ? game.Player2.Name : game.Player1.Name;
+                }
+            }
         }
 
         private bool CheckAllShipsDrowned(List<Ship> ships)
