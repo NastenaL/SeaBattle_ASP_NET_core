@@ -6,17 +6,6 @@ var selectedShipId;
 var stepType;
 var player;
 
-// функция нанесения надписей слева и справа от полей
-// входной параметр - иднетификтор контрола(left или right)
-function addTextToPositioning(id) {
-    for (var i = 0; i < width; i++) {
-        $('#' + id + 'Text').append('<span>' + topText[i] + '</span>');
-    }
-    for (var i = 0; i < height; i++) {
-        $('#' + id + 'TextLeft').append('<span>' + leftText[i] + '</span>');
-    }
-}
-
 function getCursorCoordinate(x, y) {
     console.log("x = ", x);
     console.log("y = ", y);
@@ -44,17 +33,6 @@ function createSingleGame() {
         },
     });
 }
-
-// функция заполняет поле элементами span
-// входной параметр - поля(левое или правое)
-function emptyCellsToField(field) {
-    $(field).empty();
-    for (var i = 0; i < width; i++) {
-        for (var j = 0; j < height; j++) {
-            $(field).append('<span onclick="return getCursorCoordinate(' + i + ',' + j + ')" class="cell cellColor" id=cell' + i + j + '  oncontextmenu="blocker(' + i + j + ');return false" ></span>');
-        }
-    }
-};
 
 function selectShipForShift(shipId) {
     document.getElementById('left').value = shipId;
@@ -220,17 +198,6 @@ function makeMove(shipId) {
     });
 }
 
-function repaintShip(ship) {
-    var foundIndex = addedShips.findIndex(x => x.id == ship.id);
-    addedShips[foundIndex] = ship;
-
-    emptyCellsToField('#leftField');
-
-    for (var i = 0; i < addedShips.length; i++) {
-        paintShip(addedShips[i].deckCells, 'usualShipColor');
-    }
-}
-
 function openOptions(i) {
     document.getElementById("myDropdown" + i).classList.toggle("show");
 }
@@ -321,25 +288,6 @@ function getCellPoint(mapModel) {
     return convertedPoints;
 }
 
-function paintShip(deckCells, shipColor) {
-    var len = deckCells.length;
-    for (var i = 0; i < len; i++) {
-        paintDeckShip(deckCells[i], '#leftField', shipColor);
-    }
-}
-
-function paintDeckShip(deckcell, field, shipColor) {
-
-    $(field + ' #cell' + deckcell.cell.x + deckcell.cell.y).removeClass(shipColor + ' cellColor').addClass(shipColor);
-    $(field + ' #cell' + deckcell.cell.x + deckcell.cell.y).addClass('ship');
-};
-
-emptyCellsToField('#leftField');
-emptyCellsToField('#rightField');
-$('.cell').removeClass('cellColor');
-addTextToPositioning('left');
-addTextToPositioning('right');
-
 //Открыть модальное окно для добавления кораблей
 $("#btnAddShips").click(function () {
     $('#ModalPopUp').modal('show');
@@ -366,11 +314,88 @@ function joinToGame(gameId) {
     });
 }
 
-//SignalR
-var connection = new signalR.HubConnectionBuilder().withUrl("/stepHub").build();
-var connection2 = new signalR.HubConnectionBuilder().withUrl("/stateGameHub").build();
+//For drawing objects
+function paintShip(deckCells, shipColor) {
+    var len = deckCells.length;
+    for (var i = 0; i < len; i++) {
+        paintDeckShip(deckCells[i], '#leftField', shipColor);
+    }
+}
 
-connection.on("ReceiveMessage", function (playerId, ship, stepType) {
+function paintDeckShip(deckcell, field, shipColor) {
+
+    $(field + ' #cell' + deckcell.cell.x + deckcell.cell.y).removeClass(shipColor + ' cellColor').addClass(shipColor);
+    $(field + ' #cell' + deckcell.cell.x + deckcell.cell.y).addClass('ship');
+};
+
+function repaintShip(ship) {
+    var foundIndex = addedShips.findIndex(x => x.id == ship.id);
+    addedShips[foundIndex] = ship;
+
+    emptyCellsToField('#leftField');
+
+    for (var i = 0; i < addedShips.length; i++) {
+        paintShip(addedShips[i].deckCells, 'usualShipColor');
+    }
+}
+
+// функция заполняет поле элементами span
+// входной параметр - поля(левое или правое)
+function emptyCellsToField(field) {
+    $(field).empty();
+    for (var i = 0; i < width; i++) {
+        for (var j = 0; j < height; j++) {
+            $(field).append('<span onclick="return getCursorCoordinate(' + i + ',' + j + ')" class="cell cellColor" id=cell' + i + j + '  oncontextmenu="blocker(' + i + j + ');return false" ></span>');
+        }
+    }
+};
+
+// функция нанесения надписей слева и справа от полей
+// входной параметр - иднетификтор контрола(left или right)
+function addTextToPositioning(id) {
+    for (var i = 0; i < width; i++) {
+        $('#' + id + 'Text').append('<span>' + topText[i] + '</span>');
+    }
+    for (var i = 0; i < height; i++) {
+        $('#' + id + 'TextLeft').append('<span>' + leftText[i] + '</span>');
+    }
+}
+
+emptyCellsToField('#leftField');
+emptyCellsToField('#rightField');
+$('.cell').removeClass('cellColor');
+addTextToPositioning('left');
+addTextToPositioning('right');
+
+//SignalR -------
+
+//For game state
+var stateGameHubconnection = new signalR.HubConnectionBuilder().withUrl("/stateGameHub").build();
+
+stateGameHubconnection.on("ReceiveMessage", function (message) {
+
+    var encodedMsg = "Message: " + message;
+    var li = document.createElement("li");
+    li.textContent = encodedMsg;
+    document.getElementById("messagesList").appendChild(li);
+});
+
+stateGameHubconnection.start().catch(function (err) {
+    return console.error(err.toString());
+});
+
+document.getElementById("startGame").addEventListener("click", function (event) {
+
+    stateGameHubconnection.invoke("SendMessage", message).catch(function (err) {
+        return console.error(err.toString());
+    });
+    event.preventDefault();
+});
+
+//For step
+var stepHubconnection = new signalR.HubConnectionBuilder().withUrl("/stepHub").build();
+
+stepHubconnection.on("ReceiveMessage", function (playerId, ship, stepType) {
     var seceltedShip = ship.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     var encodedMsg = "Player" + playerId + "select ship " + seceltedShip + ", type " + stepType;
     var li = document.createElement("li");
@@ -379,34 +404,14 @@ connection.on("ReceiveMessage", function (playerId, ship, stepType) {
     document.getElementById("messagesList").appendChild(li);
 });
 
-connection2.on("ReceiveMessage", function (message) {
-
-    var encodedMsg = "Message: " + message;
-    var li = document.createElement("li");
-    li.textContent = encodedMsg;
-    document.getElementById("messagesList").appendChild(li);
-});
-
-connection2.start().catch(function (err) {
-    return console.error(err.toString());
-});
-
-connection.start().catch(function (err) {
+stepHubconnection.start().catch(function (err) {
     return console.error(err.toString());
 });
 
 document.getElementById("sendButton").addEventListener("click", function (event) {
 
     console.log("sendButton");
-    connection.invoke("SendMessage", player, selectedShipId, stepType).catch(function (err) {
-        return console.error(err.toString());
-    });
-    event.preventDefault();
-});
-
-document.getElementById("startGame").addEventListener("click", function (event) {
-
-    connection2.invoke("SendMessage", message).catch(function (err) {
+    stepHubconnection.invoke("SendMessage", player, selectedShipId, stepType).catch(function (err) {
         return console.error(err.toString());
     });
     event.preventDefault();
