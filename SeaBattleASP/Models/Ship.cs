@@ -1,5 +1,6 @@
 ﻿namespace SeaBattleASP.Models
 {
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
@@ -7,6 +8,7 @@
     using System.Linq;
     using SeaBattleASP.Helpers;
     using SeaBattleASP.Models.Constants;
+    using SeaBattleASP.Models.Enums;
     using SeaBattleASP.Models.Interfaces;
 
     public abstract class Ship : IRepairable, IFireable
@@ -51,7 +53,8 @@
             return DbManager.GetAllShips();
         }
 
-        public static Ship GetShipByIdFromMapModel(int id, MapModel model)
+        public static Ship GetShipByIdFromMapModel(int id, 
+                                                   MapModel model)
         {
             Ship ship = null;
 
@@ -80,8 +83,10 @@
                 selectedShip.Add(allDeckCells.Find(i => i.Id == deckCell.Id));
             }
             
-            var neighborsPoints = DeckCell.GetNeighboringPoints(selectedShip, this.Range);
-            var firedShipDecks = ShipManager.CheckEnemyShips(enemyShips, neighborsPoints);
+            var neighborsPoints = DeckCell.GetNeighboringPoints(selectedShip, 
+                                                                this.Range);
+            var firedShipDecks = ShipManager.CheckEnemyShips(enemyShips, 
+                                                             neighborsPoints);
             if (firedShipDecks.Count > 0)
             {
                 foreach (DeckCell firedDeck in firedShipDecks)
@@ -92,6 +97,63 @@
             }
 
             return firedShipDecks;
+        }
+
+        public static Ship SetShipProperties(int gameId, 
+                                             int playerId, 
+                                             Ship ship)
+        {
+            var players = Player.GetAll();
+            var game = Game.GetGameById(gameId);
+            game.PlayingField.Ships.Add(ship);
+
+            var player = players.Find(i => i.Id == playerId);
+            if (player != null)
+            {
+                ship.Player = player;
+            }
+            var shipDeckCells = GetDeckCellsForShip(ship.DeckCells, 
+                                                    player, 
+                                                    game);
+            ship.DeckCells = shipDeckCells;
+
+            return ship;
+        }
+
+        private static List<DeckCell> GetDeckCellsForShip(List<DeckCell> deckCells, 
+                                                          Player player, 
+                                                          Game game)
+        {
+            Random random = new Random();
+            Array shipDirections = Enum.GetValues(typeof(ShipDirection));
+            List<DeckCell> resultDeckCells = new List<DeckCell>();
+
+            var initalPoint = ShipManager.GetRandomPoint(random);
+            var direction = (ShipDirection)shipDirections.GetValue(random.Next(shipDirections.Length));
+
+            foreach (DeckCell deck in deckCells)
+            {
+                initalPoint = ShipManager.ShiftPoint(initalPoint, 
+                                                     direction);
+
+                var currentDeckCell = DeckCell.Create(initalPoint, 
+                                                      deck.Deck);
+                resultDeckCells.Add(currentDeckCell);
+            }
+
+            var isError = DeckCell.CheckDeckCellOutOfBorder(resultDeckCells);
+            var isBool = DeckCell.CheckDeckCellOtherShips(resultDeckCells, 
+                                                          game, 
+                                                          player);
+
+            if (isError || isBool)
+            {
+                GetDeckCellsForShip(deckCells, 
+                                    player, 
+                                    game);
+            }
+
+            return resultDeckCells;
         }
 
         public List<DeckCell> Move()
@@ -146,7 +208,8 @@
         public virtual List<DeckCell> Repair(List<Ship> allShips)
         {
             List<DeckCell> hurtedDecks = new List<DeckCell>();
-            var neighborsPoints = DeckCell.GetNeighboringPoints(this.DeckCells, this.Range);
+            var neighborsPoints = DeckCell.GetNeighboringPoints(this.DeckCells, 
+                                                                this.Range);
             if (this.Player != null)
             {
                 List<DeckCell> allPlayerDeckCells = new List<DeckCell>();
@@ -155,7 +218,8 @@
                     allPlayerDeckCells.AddRange(s.DeckCells);
                 }
 
-                hurtedDecks = ShipManager.GetHurtedShip(neighborsPoints, allPlayerDeckCells);
+                hurtedDecks = ShipManager.GetHurtedShip(neighborsPoints, 
+                                                        allPlayerDeckCells);
                 if (hurtedDecks.Count > 0)
                 {
                     foreach (DeckCell hurtedDeck in hurtedDecks)
