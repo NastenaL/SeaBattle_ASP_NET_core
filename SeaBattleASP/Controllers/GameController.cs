@@ -54,6 +54,7 @@
                 }
             }
 
+            CheckWinner(this.Model.CurrentGame);
             return this.Json(this.Model);
         }
 
@@ -67,6 +68,7 @@
 
             this.Model.RepairedShips = ship.Repair(allPlayerShips);
 
+            CheckWinner(this.Model.CurrentGame);
             return this.Json(this.Model);
         }
 
@@ -84,6 +86,7 @@
                 }
             }
 
+            CheckWinner(this.Model.CurrentGame);
             return ship;
         }
         #endregion
@@ -358,6 +361,13 @@
             Cell.GetAll();
             Deck.GetAll();
             Ship.GetAll();
+        }
+
+        private void CheckWinner(Game game)
+        {
+            var player1Ships = game.PlayingField.Ships.Where(i => i.Player == game.Player1).ToList();
+            var player2Ships = game.PlayingField.Ships.Where(i => i.Player == game.Player2).ToList();
+
         }
         #endregion
     }
