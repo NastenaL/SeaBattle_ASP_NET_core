@@ -141,19 +141,28 @@
                 resultDeckCells.Add(currentDeckCell);
             }
 
-            var isError = DeckCell.CheckDeckCellOutOfBorder(resultDeckCells);
-            var isBool = DeckCell.CheckDeckCellOtherShips(resultDeckCells, 
-                                                          game, 
+            CheckNewDeckCells(resultDeckCells,
+                              game,
+                              player); 
+
+            return resultDeckCells;
+        }
+
+        private static void CheckNewDeckCells(List<DeckCell> deckCells,
+                                              Player player,
+                                              Game game)
+        {
+            var isError = DeckCell.CheckDeckCellOutOfBorder(deckCells);
+            var isBool = DeckCell.CheckDeckCellOtherShips(deckCells,
+                                                          game,
                                                           player);
 
             if (isError || isBool)
             {
-                GetDeckCellsForShip(deckCells, 
-                                    player, 
+                GetDeckCellsForShip(deckCells,
+                                    player,
                                     game);
             }
-
-            return resultDeckCells;
         }
 
         public List<DeckCell> Move()
@@ -238,7 +247,8 @@
             {
                 foreach (DeckCell deckCell in result)
                 {
-                    bool isAbroad = deckCell.Cell.X > Rules.FieldWidth - 1 || deckCell.Cell.Y > Rules.FieldHeight - 1;
+                    bool isAbroad = deckCell.Cell.X > Rules.FieldWidth - 1 
+                         || deckCell.Cell.Y > Rules.FieldHeight - 1;
                     if (isAbroad)
                     {
                         this.IsXDirection = !this.IsXDirection;

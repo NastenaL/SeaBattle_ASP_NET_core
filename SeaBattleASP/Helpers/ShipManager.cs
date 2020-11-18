@@ -40,7 +40,8 @@
                 {
                     if (deckCell.Cell != null)
                     {
-                        commonCells.AddRange(allPlayerDeckCells.Where(s => s.Cell.X == deckCell.Cell.X && s.Cell.Y == deckCell.Cell.Y).ToList());
+                        commonCells.AddRange(allPlayerDeckCells.Where(s => s.Cell.X == deckCell.Cell.X 
+                                                                      && s.Cell.Y == deckCell.Cell.Y).ToList());
                     }
                 }
 
@@ -51,17 +52,6 @@
             }
 
             return error;
-        }
-
-        public static bool CheckPointAbroad(Point point)
-        {
-            bool isShipAbroad = false;
-            if (point.X > Rules.FieldWidth - 1 || point.Y > Rules.FieldHeight - 1)
-            {
-                isShipAbroad = true;
-            }
-
-            return isShipAbroad;
         }
 
         public static Point GetRandomPoint(Random random)

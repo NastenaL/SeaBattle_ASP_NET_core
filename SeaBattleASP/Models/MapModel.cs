@@ -41,7 +41,8 @@
         public string Message { get; set; }
         #endregion
 
-        public static void FillMapModelWithCoordinates(List<DeckCell> shipCoordinates, MapModel model)
+        public static void FillMapModelWithCoordinates(List<DeckCell> shipCoordinates, 
+                                                       MapModel model)
         {
             foreach (var shipDeckCell in shipCoordinates)
             {

@@ -17,7 +17,8 @@
             List<Player> allplayers = mapModel.Players;
             if (games.Count > 0)
             {
-                var busyPLayers = CheckPlayersInNotGame(games, mapModel);
+                var busyPLayers = CheckPlayersInNotGame(games, 
+                                                        mapModel);
                 foreach (var busyPlayer in busyPLayers.ToList())
                 {
                     allplayers.Remove(busyPlayer);
@@ -32,12 +33,14 @@
             return DbManager.GetPlayers();
         }
 
-        private static List<Player> CheckPlayersInNotGame(List<Game> games, MapModel mapModel)
+        private static List<Player> CheckPlayersInNotGame(List<Game> games, 
+                                                          MapModel mapModel)
         {
             List<Player> ingame = new List<Player>();
             foreach (Game g in games)
             {
-                if (g.Player1 != null && g.Player2 != null)
+                if (g.Player1 != null 
+                    && g.Player2 != null)
                 {
                     var players1 = mapModel.Players.Where(i => i.Id == g.Player1.Id).ToList();
                     var players2 = mapModel.Players.Where(i => i.Id == g.Player2.Id).ToList();
