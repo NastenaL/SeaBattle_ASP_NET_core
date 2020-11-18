@@ -3,7 +3,7 @@
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.SignalR;
 
-    public class ChatHub : Hub
+    public class StepHub : Hub
     {
         public async Task SendMessage(string playerId, string shipId, string stepType)
         {

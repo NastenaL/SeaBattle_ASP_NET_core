@@ -64,7 +64,7 @@
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<ChatHub>("/chatHub");
+                routes.MapHub<StepHub>("/stepHub");
                 routes.MapHub<StateGameHub>("/stateGameHub");
             });
 

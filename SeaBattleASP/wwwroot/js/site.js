@@ -367,13 +367,10 @@ function joinToGame(gameId) {
 }
 
 //SignalR
-var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+var connection = new signalR.HubConnectionBuilder().withUrl("/stepHub").build();
 var connection2 = new signalR.HubConnectionBuilder().withUrl("/stateGameHub").build();
 
 connection.on("ReceiveMessage", function (playerId, ship, stepType) {
-    var parameters = getUrlParams(window.location.href);
-    playerId = parameters.playerId;
-
     var seceltedShip = ship.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     var encodedMsg = "Player" + playerId + "select ship " + seceltedShip + ", type " + stepType;
     var li = document.createElement("li");
