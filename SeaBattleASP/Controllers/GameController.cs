@@ -283,7 +283,7 @@
         }
 
         [HttpPost]
-        public IActionResult GameOver(int gameId)
+        public IActionResult GameOver(int gameId, int playerId)
         {
             this.LoadRelatedEntities();
             var games = Game.GetAll();
@@ -300,7 +300,7 @@
                 DbManager.RemoveGame(game);
             }
 
-            return this.View();
+            return this.Json(new { redirectToUrl = Url.Action("Index", "Game", new {playerId }) });
         }
 
         private List<DeckCell> CheckCoordinates(Point initalPoint, List<DeckCell> shipDeckCells, Ship ship)

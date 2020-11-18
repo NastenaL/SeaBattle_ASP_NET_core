@@ -147,57 +147,6 @@ function convertCellsToPoints(ships) {
     return convertedPoints;
 }
 
-function makeMovement(shipId, type) {
-    selectedShipId = shipId;
-    stepType = type;
-
-    console.log(type);
-    switch (type) {
-        case 0:
-            makeFire(shipId);
-            break;
-        case 1:
-            makeRepair(shipId);
-            break;
-        case 2:
-            makeMove(shipId);
-            break;
-    }
-}
-
-function makeRepair(shipId) {
-    $.ajax({
-        type: 'POST',
-        url: '/Game/MakeRepairStep',
-        data: { shipId: shipId },
-        success: function (model) {
-            console.log(model);
-        },
-    });
-}
-
-function makeFire(shipId) {
-    $.ajax({
-        type: 'POST',
-        url: '/Game/MakeFireStep',
-        data: { shipId: shipId },
-        success: function (model) {
-            console.log(model);
-        },
-    });
-}
-
-function makeMove(shipId) {
-    $.ajax({
-        type: 'POST',
-        url: '/Game/MakeMoveStep',
-        data: { shipId: shipId },
-        success: function (ship) {
-            repaintShip(ship);
-        },
-    });
-}
-
 function openOptions(i) {
     document.getElementById("myDropdown" + i).classList.toggle("show");
 }
@@ -220,13 +169,15 @@ window.onclick = function (event) {
 function gameOver() {
     var parameters = getUrlParams(window.location.href);
     var gameId = parameters.gameId;
+    var playerId = parameters.playerId;
     console.log("Game over", gameId);
-
+    message = "Game over";
     $.ajax({
         type: 'POST',
         url: '/Game/GameOver',
-        data: { gameId: gameId },
-        success: function () {
+        data: { gameId: gameId, playerId: playerId },
+        success: function (response) {
+            window.location.href = response.redirectToUrl;
         },
     });
 }
@@ -313,6 +264,58 @@ function joinToGame(gameId) {
         },
     });
 }
+//For step
+
+function makeMovement(shipId, type) {
+    selectedShipId = shipId;
+    stepType = type;
+
+    console.log(type);
+    switch (type) {
+        case 0:
+            makeFire(shipId);
+            break;
+        case 1:
+            makeRepair(shipId);
+            break;
+        case 2:
+            makeMove(shipId);
+            break;
+    }
+}
+
+function makeRepair(shipId) {
+    $.ajax({
+        type: 'POST',
+        url: '/Game/MakeRepairStep',
+        data: { shipId: shipId },
+        success: function (model) {
+            console.log(model);
+        },
+    });
+}
+
+function makeFire(shipId) {
+    $.ajax({
+        type: 'POST',
+        url: '/Game/MakeFireStep',
+        data: { shipId: shipId },
+        success: function (model) {
+            console.log(model);
+        },
+    });
+}
+
+function makeMove(shipId) {
+    $.ajax({
+        type: 'POST',
+        url: '/Game/MakeMoveStep',
+        data: { shipId: shipId },
+        success: function (ship) {
+            repaintShip(ship);
+        },
+    });
+}
 
 //For drawing objects
 function paintShip(deckCells, shipColor) {
@@ -385,6 +388,14 @@ stateGameHubconnection.start().catch(function (err) {
 });
 
 document.getElementById("startGame").addEventListener("click", function (event) {
+
+    stateGameHubconnection.invoke("SendMessage", message).catch(function (err) {
+        return console.error(err.toString());
+    });
+    event.preventDefault();
+});
+
+document.getElementById("gameOver").addEventListener("click", function (event) {
 
     stateGameHubconnection.invoke("SendMessage", message).catch(function (err) {
         return console.error(err.toString());
