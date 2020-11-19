@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using SeaBattleASP.Helpers;
+    using SeaBattleASP.Models.Constants;
     using SeaBattleASP.Models.Enums;
 
     public class Game
@@ -39,7 +40,10 @@
 
         public static MapModel CheckGame(Game game)
         {
-            MapModel result = new MapModel();
+            MapModel result = new MapModel
+            {
+                Ships = Rules.CreateShips()
+            };
             var allPlayingF = PlayingField.GetAllPlayingFields();
             var allShipsInCurrentGame = allPlayingF.Find(g => g.Id == game.PlayingField.Id);
 

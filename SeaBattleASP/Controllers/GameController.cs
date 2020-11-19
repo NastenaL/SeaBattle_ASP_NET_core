@@ -3,17 +3,19 @@
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.SignalR;
     using SeaBattleASP.Helpers;
+    using SeaBattleASP.Hubs;
     using SeaBattleASP.Models;
     using SeaBattleASP.Models.Constants;
     using SeaBattleASP.Models.Enums;
 
     public class GameController : Controller
     {
-        public GameController(ApplicationContext context)
+        public GameController(ApplicationContext context, IHubContext<StateGameHub> contextHub)
         {
             DbManager.Db = context;
-           
+            this.context = contextHub;
             this.Model = new MapModel
             {
                 Ships = Rules.CreateShips()
@@ -21,6 +23,7 @@
         }
 
         #region Properties 
+        private readonly IHubContext<StateGameHub> context;
         private MapModel Model { get; set; }
         #endregion
 
@@ -188,6 +191,7 @@
                 this.Model = Game.CheckGame(game);
             }
 
+            context.Clients.All.SendAsync("startGameSignalR");
             return this.Json(this.Model);
         }
 
@@ -263,7 +267,8 @@
                 DbManager.RemoveGame(game);
             }
 
-            return this.Json(new { redirectToUrl = Url.Action("Index", "Game", new {playerId }) });
+            context.Clients.All.SendAsync("gameOverSignalR");
+            return View();
         }
         #endregion
     }

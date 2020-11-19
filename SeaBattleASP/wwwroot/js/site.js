@@ -380,14 +380,6 @@ addTextToPositioning('right');
 //For game state
 var stateGameHubconnection = new signalR.HubConnectionBuilder().withUrl("/stateGameHub").build();
 
-stateGameHubconnection.on("ReceiveMessage", function (message) {
-
-    var encodedMsg = "Message: " + message;
-    var li = document.createElement("li");
-    li.textContent = encodedMsg;
-    document.getElementById("messagesList").appendChild(li);
-});
-
 stateGameHubconnection.start().catch(function (err) {
     return console.error(err.toString());
 });
@@ -431,4 +423,30 @@ document.getElementById("sendButton").addEventListener("click", function (event)
         return console.error(err.toString());
     });
     event.preventDefault();
+});
+
+stateGameHubconnection.on("startGameSignalR", function () {
+    changeButtonVisibility();
+    var encodedMsg = "Message: The game is start";
+    var li = document.createElement("li");
+    li.textContent = encodedMsg;
+    document.getElementById("messagesList").appendChild(li);
+});
+
+var delayInMilliseconds = 2000; 
+
+stateGameHubconnection.on("gameOverSignalR", function () {
+    var parameters = getUrlParams(window.location.href);
+    var playerId = parameters.playerId;
+
+    var encodedMsg = "Message: The game is over";
+    var li = document.createElement("li");
+    li.textContent = encodedMsg;
+    document.getElementById("messagesList").appendChild(li);
+
+
+    setTimeout(function () {
+        window.location.href = '/Game/Index/' + playerId;
+    }, delayInMilliseconds);
+   
 });
