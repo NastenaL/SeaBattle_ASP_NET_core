@@ -211,6 +211,18 @@ function getEnemy(model, playerId) {
     return enemy;
 }
 
+function getEnemyShip(model, enemy) {
+    var ships = new Array();
+    model.currentGame.playingField.ships.forEach(function (ship) {
+
+        if (ship.player.id == enemy.id) {
+
+            ships.push(ship);
+        }
+    });
+    return ships;
+}
+
 function startGame() {
     var parameters = getUrlParams(window.location.href);
     var playerId = parameters.playerId;
@@ -228,17 +240,14 @@ function startGame() {
             var enemy = getEnemy(model, playerId);
 
             console.log(enemy);
-            var decksC = new Array();
-            for (var i = 0; i < model.currentGame.playingField.ships.length; i++) {
-                if (model.currentGame.playingField.ships[i].player == enemy) {
-                    decksC(model.currentGame.playingField.ships[i]);
-                }
-            }
+            var ships = getEnemyShip(model, enemy);
+            console.log(ships);
 
-            //console.log(decksC);
-            //for (var i = 0; i < decksC.length; i++) {
-            //    paintDeckShip(decksC[i].deckCells, '#rightField', 'usualShipColor');
-            //}
+            ships.forEach(function (ship) {
+                ship.deckCells.forEach(function (deckCell) {
+                    paintDeckShip(deckCell, '#rightField', 'usualShipColor');
+                });
+            });
 
             var directionPanel = document.getElementById('directionPanel');
             directionPanel.style.display = 'none';
@@ -483,6 +492,6 @@ document.getElementById("sendButton").addEventListener("click", function (event)
     event.preventDefault();
 });
 
-stateGameHubconnection.on("makeStepSignalR", function () {
-    console.log("work");
+stateGameHubconnection.on("makeStepSignalR", function (ship) {
+    console.log(ship);
 });

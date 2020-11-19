@@ -88,7 +88,7 @@
                 }
             }
 
-            context.Clients.All.SendAsync("makeStepSignalR");
+              context.Clients.All.SendAsync("makeStepSignalR", ship);
             this.Model = Game.CheckWinner(Game.GetGameById(gameId));
             return ship;
         }
