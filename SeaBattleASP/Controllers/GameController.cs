@@ -31,13 +31,14 @@
 
         #region Step methods
         [HttpPost]
-        public IActionResult MakeFireStep(int shipId)
+        public IActionResult MakeFireStep(int shipId, int gameId)
         {
-            if (this.Model.CurrentGame != null)
-            {
-                var ship = Ship.GetShipByIdFromDB(shipId);
+             var ship = Ship.GetShipByIdFromDB(shipId);
+            var game = Game.GetGameById(gameId);
 
-                List<DeckCell> enemyDeckCells = ShipManager.GetEnemyShipsDeckCells(this.Model.CurrentGame);
+            if(ship != null)
+            {
+                List<DeckCell> enemyDeckCells = ShipManager.GetEnemyShipsDeckCells(game, ship.Player);
 
                 if (enemyDeckCells.Count > 0)
                 {
@@ -49,10 +50,11 @@
                         DbManager.UpdateShip(hurtedShipDecks);
                     }
                 }
+
+                context.Clients.All.SendAsync("makeStepFireSignalR", this.Model);
+                this.Model = Game.CheckWinner(this.Model.CurrentGame);
             }
 
-            context.Clients.All.SendAsync("makeStepSignalR");
-            this.Model = Game.CheckWinner(this.Model.CurrentGame);
             return this.Json(this.Model);
         }
 
@@ -132,28 +134,28 @@
                     case "left":
                         foreach (DeckCell deckCell in ship.DeckCells)
                         {
-                            deckCell.Cell.Y -= 1;
+                            deckCell.Cell.X -= 1;
                         }
 
                         break;
                     case "right":
                         foreach (DeckCell deckCell in ship.DeckCells)
                         {
-                            deckCell.Cell.Y += 1;
+                            deckCell.Cell.X += 1;
                         }
 
                         break;
                     case "up":
                         foreach (DeckCell deckCell in ship.DeckCells)
                         {
-                            deckCell.Cell.X -= 1;
+                            deckCell.Cell.Y -= 1;
                         }
 
                         break;
                     case "down":
                         foreach (DeckCell deckCell in ship.DeckCells)
                         {
-                            deckCell.Cell.X += 1;
+                            deckCell.Cell.Y += 1;
                         }
 
                         break;

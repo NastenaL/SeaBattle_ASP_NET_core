@@ -343,10 +343,12 @@ function makeRepair(shipId) {
 }
 
 function makeFire(shipId) {
+    var parameters = getUrlParams(window.location.href);
+    var gameId = parameters.gameId;
     $.ajax({
         type: 'POST',
         url: '/Game/MakeFireStep',
-        data: { shipId: shipId },
+        data: { shipId: shipId, gameId: gameId },
         success: function (model) {
             console.log(model);
         },
@@ -510,4 +512,8 @@ stateGameHubconnection.on("makeStepSignalR", function (ship) {
     showEnemyShips(ships);
 
     repaintShip(ship);
+});
+
+stateGameHubconnection.on("makeStepFireSignalR", function (model) {
+    console.log(model);
 });

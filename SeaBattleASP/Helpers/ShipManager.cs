@@ -10,13 +10,14 @@
 
     public static class ShipManager
     {
-        public static List<DeckCell> GetEnemyShipsDeckCells(Game game)
+        public static List<DeckCell> GetEnemyShipsDeckCells(Game game, Player player)
         {
+            var enemyPlayer = game.Player1 == player ? game.Player2 : game.Player1;
             List<DeckCell> enemyDeckCells = new List<DeckCell>();
-            var allShips = Ship.GetAll();
-            if (game.Player2 != null)
+      
+            if (enemyPlayer != null)
             {
-                var enemyShips = allShips.Where(i => i.Id == game.Player2.Id).ToList();
+                var enemyShips = game.PlayingField.Ships.Where(s => s.Player == enemyPlayer).ToList();
 
                 if (enemyShips.Count > 0)
                 {
