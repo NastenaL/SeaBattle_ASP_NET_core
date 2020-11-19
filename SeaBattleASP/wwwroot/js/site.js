@@ -1,4 +1,6 @@
-﻿var topText = ['а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с'];
+﻿var width;
+var height;
+var topText = ['а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с'];
 var leftText = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17'];
 var addedShips = new Array();
 var message;
@@ -198,18 +200,9 @@ function changeButtonVisibility() {
     startGame.style.display = 'none';
 }
 
-function checkWhoseStep(model, parameters) {
-    var isPlayersInGame = model.currentGame.player1 != null && model.currentGame.player2 != null;
-    var isPl1Step = model.currentGame.isPl1Turn && model.currentGame.player1.id == parameters.playerId;
-    var isPl2Step = !model.currentGame.isPl1Turn && model.currentGame.player2.id == parameters.playerId;
-
-    if (isPlayersInGame && (isPl1Step || isPl2Step)) {
-        changeButtonVisibility();
-    }
-}
-
 function startGame() {
     var parameters = getUrlParams(window.location.href);
+    var playerId = parameters.playerId;
     var gameId = parameters.gameId;
 
     $.ajax({
@@ -217,16 +210,44 @@ function startGame() {
         data: { gameId: gameId },
         url: '/Game/StartGame',
         success: function (model) {
+            message = model.message;
             alert(model.message);
+            checkWhoseStep(model);
+
+            var enemy;
+            if (model.currentGame.player1 == playerId) {
+                enemy = model.currentGame.player2;
+            }
+            else {
+                enemy = model.currentGame.player1;
+            }
+
+            var decksC = new Array();
+            for (var i = 0; i < model.currentGame.playingField.ships.length; i++) {
+                if (model.currentGame.playingField.ships[i].player == enemy) {
+                    decksC(model.currentGame.playingField.ships[i]);
+                }
+            }
+
+            //console.log(decksC);
+            //for (var i = 0; i < decksC.length; i++) {
+            //    paintDeckShip(decksC[i].deckCells, '#rightField', 'usualShipColor');
+            //}
 
             var directionPanel = document.getElementById('directionPanel');
             directionPanel.style.display = 'none';
-
-            message = model.message;
-            checkWhoseStep(model, parameters);
         },
     });
 };
+
+function checkWhoseStep(model) {
+    if (model.currentGame.isPl1Turn) {
+        console.log(model.currentGame.player1);
+    }
+    else {
+        console.log(model.currentGame.player2);
+    }
+}
 
 function getCellPoint(mapModel) {
     var convertedPoints = [];
@@ -242,6 +263,12 @@ function getCellPoint(mapModel) {
 $("#btnAddShips").click(function () {
     $('#ModalPopUp').modal('show');
 })
+
+$(document).ready(function () {
+    $('#userName').keyup(function () {
+        validatePlayerName();
+    });
+});
 
 function validatePlayerName() {
     if (document.getElementById("userName").value === "") {
@@ -269,8 +296,8 @@ function makeMovement(shipId, type) {
     selectedShipId = shipId;
     stepType = type;
 
-    var t = document.getElementById("sendButton");
-    t.click();
+    var sendButton = document.getElementById("sendButton");
+    sendButton.click();
 
     var parameters = getUrlParams(window.location.href);
     var gameId = parameters.gameId;
@@ -450,6 +477,6 @@ document.getElementById("sendButton").addEventListener("click", function (event)
     event.preventDefault();
 });
 
-stepHubconnection.on("makeStepSignalR", function () {
+stateGameHubconnection.on("makeStepSignalR", function () {
     console.log("work");
 });
