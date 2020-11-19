@@ -12,6 +12,8 @@
 
     public class GameController : Controller
     {
+        private readonly IHubContext<StateGameHub> context;
+
         public GameController(ApplicationContext context, IHubContext<StateGameHub> contextHub)
         {
             DbManager.Db = context;
@@ -23,7 +25,7 @@
         }
 
         #region Properties 
-        private readonly IHubContext<StateGameHub> context;
+
         private MapModel Model { get; set; }
         #endregion
 
@@ -36,7 +38,7 @@
              var ship = Ship.GetShipByIdFromDB(shipId);
             var game = Game.GetGameById(gameId);
 
-            if(ship != null)
+            if (ship != null)
             {
                 List<DeckCell> enemyDeckCells = ShipManager.GetEnemyShipsDeckCells(game, ship.Player);
 
@@ -51,7 +53,7 @@
                     }
                 }
 
-                context.Clients.All.SendAsync("makeStepFireSignalR", this.Model);
+                this.context.Clients.All.SendAsync("makeStepFireSignalR", this.Model);
                 this.Model = Game.CheckWinner(this.Model.CurrentGame);
             }
 
@@ -70,14 +72,14 @@
 
             this.Model = Game.CheckWinner(this.Model.CurrentGame);
 
-            context.Clients.All.SendAsync("makeStepSignalR");
+            this.context.Clients.All.SendAsync("makeStepSignalR");
 
             return this.Json(this.Model);
         }
 
         [HttpPost]
         public IActionResult MakeMoveStep(int shipId, 
-                                 int gameId)
+                                          int gameId)
         {
             var ship = Ship.GetShipByIdFromDB(shipId);
             if (ship != null)
@@ -90,9 +92,9 @@
                 }
             }
 
-              context.Clients.All.SendAsync("makeStepSignalR", ship);
+            this.context.Clients.All.SendAsync("makeStepSignalR", ship);
             this.Model = Game.CheckWinner(Game.GetGameById(gameId));
-            return View();
+            return this.View();
         }
         #endregion
 
@@ -105,9 +107,9 @@
             var ship = Ship.GetShipByIdFromMapModel(shipId, this.Model);
             if (ship != null)
             {
-                ship = Ship.SetShipProperties( gameId, 
-                                               playerId, 
-                                               ship);
+                ship = Ship.SetShipProperties(gameId, 
+                                              playerId, 
+                                              ship);
 
                 DbManager.UpdateGame(game);
                 this.Model.SelectedShip = ship;
@@ -120,7 +122,7 @@
 
         [HttpPost]
         public IActionResult ShiftShip(int shipId, 
-                                       string direction)
+                             string direction)
         {
             Player.GetAll();
             Cell.GetAll();
@@ -199,7 +201,7 @@
                 this.Model = Game.CheckGame(game);
             }
 
-            context.Clients.All.SendAsync("startGameSignalR", this.Model);
+            this.context.Clients.All.SendAsync("startGameSignalR", this.Model);
             return this.Json(this.Model);
         }
 
@@ -275,8 +277,8 @@
                 DbManager.RemoveGame(game);
             }
 
-            context.Clients.All.SendAsync("gameOverSignalR");
-            return View();
+            this.context.Clients.All.SendAsync("gameOverSignalR");
+            return this.View();
         }
         #endregion
     }

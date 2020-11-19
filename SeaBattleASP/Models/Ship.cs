@@ -1,6 +1,5 @@
 ﻿namespace SeaBattleASP.Models
 {
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
@@ -53,6 +52,28 @@
             return DbManager.GetAllShips();
         }
 
+        public static Ship SetShipProperties(int gameId,
+                                           int playerId,
+                                           Ship ship)
+        {
+            var players = Player.GetAll();
+            var game = Game.GetGameById(gameId);
+            game.PlayingField.Ships.Add(ship);
+
+            var player = players.Find(i => i.Id == playerId);
+            if (player != null)
+            {
+                ship.Player = player;
+            }
+
+            var shipDeckCells = ShipManager.GetDeckCellsForShip(ship.DeckCells,
+                                                    player,
+                                                    game);
+            ship.DeckCells = shipDeckCells;
+
+            return ship;
+        }
+
         public static Ship GetShipByIdFromMapModel(int id, 
                                                    MapModel model)
         {
@@ -99,26 +120,6 @@
             return firedShipDecks;
         }
 
-        public static Ship SetShipProperties(int gameId, 
-                                             int playerId, 
-                                             Ship ship)
-        {
-            var players = Player.GetAll();
-            var game = Game.GetGameById(gameId);
-            game.PlayingField.Ships.Add(ship);
-
-            var player = players.Find(i => i.Id == playerId);
-            if (player != null)
-            {
-                ship.Player = player;
-            }
-            var shipDeckCells = ShipManager.GetDeckCellsForShip(ship.DeckCells, 
-                                                    player, 
-                                                    game);
-            ship.DeckCells = shipDeckCells;
-
-            return ship;
-        }
 
         public List<DeckCell> Move()
         {

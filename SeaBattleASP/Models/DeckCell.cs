@@ -26,7 +26,8 @@
                 Cell = new Cell { Color = CellColor.White, 
                                   X = point.X, 
                                   Y = point.Y, 
-                                  State = CellState.ShipDeck },
+                                  State = CellState.ShipDeck 
+                },
                 Deck = deck
             };
             return currentDeckCell;
@@ -114,7 +115,6 @@
             var allPlayersShips = ShipManager.GetAllPlayerShips(game,
                                                                 player);
 
-            List<DeckCell> allPlayerDeckCell = new List<DeckCell>();
             List<DeckCell> wrongDeckCells = new List<DeckCell>();
             if (allPlayersShips.Count > 0)
             {

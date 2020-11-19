@@ -32,7 +32,7 @@
         }
 
         public static List<Ship> GetAllPlayerShips(Game game,
-                                Player player)
+                                                   Player player)
         {
             var allDeckCell = DeckCell.GetAll();
             var allShips = Ship.GetAll();
@@ -46,7 +46,7 @@
         }
 
         public static List<DeckCell> GetDeckCellsForShip(List<DeckCell> deckCells,
-                                                        Player player,
+                                                         Player player,
                                                         Game game)
         {
             Random random = new Random();
@@ -71,22 +71,6 @@
                               game);
 
             return resultDeckCells;
-        }
-
-        private static void CheckNewDeckCells(List<DeckCell> deckCells,
-                                             Player player,
-                                             Game game)
-        {
-            var isError = DeckCell.CheckDeckCellOutOfBorder(deckCells);
-            var isBool = DeckCell.CheckDeckCellOtherShips(deckCells,
-                                                          game,
-                                                          player);
-            if (isError || isBool)
-            {
-                GetDeckCellsForShip(deckCells,
-                                    player,
-                                    game);
-            }
         }
 
         public static Point GetRandomPoint(Random random)
@@ -161,6 +145,22 @@
             initalPoint.Y = direction == ShipDirection.vertical ? initalPoint.Y + 1 
                                                                 : initalPoint.Y;
             return initalPoint;
+        }
+
+        private static void CheckNewDeckCells(List<DeckCell> deckCells,
+                                            Player player,
+                                            Game game)
+        {
+            var isError = DeckCell.CheckDeckCellOutOfBorder(deckCells);
+            var isBool = DeckCell.CheckDeckCellOtherShips(deckCells,
+                                                          game,
+                                                          player);
+            if (isError || isBool)
+            {
+                GetDeckCellsForShip(deckCells,
+                                    player,
+                                    game);
+            }
         }
     }
 }

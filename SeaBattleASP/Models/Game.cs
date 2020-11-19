@@ -29,15 +29,6 @@
             return DbManager.GetGames();
         }
 
-        public bool StartGame()
-        {
-            this.State = GameState.Started;
-
-            Random gen = new Random();
-            this.IsPl1Turn = gen.Next(100) < 50;
-            return this.IsPl1Turn;
-        }
-
         public static MapModel CheckGame(Game game)
         {
             MapModel result = new MapModel
@@ -94,32 +85,6 @@
             return mapModel;
         }
 
-        private static bool CheckAllShipsDrowned(List<Ship> ships)
-        {
-            List<Ship> drownedShips = new List<Ship>();
-            foreach (Ship ship in ships)
-            {
-                var drownedShip = CheckDrownedShip(ship);
-                if (drownedShip != null)
-                {
-                    drownedShips.Add(drownedShip);
-                }
-            }
-
-            return drownedShips.Count == ships.Count;
-        }
-
-        private static Ship CheckDrownedShip(Ship ship)
-        {
-            Ship result = null;
-            var drownedDeckCells = ship.DeckCells.Where(i => i.Deck.State == DeckState.Drowned).ToList();
-            if (drownedDeckCells.Count == ship.DeckCells.Count)
-            {
-                result = ship;
-            }
-            return result;
-        }
-
         public void EndGame()
         {
             this.State = GameState.Finished;
@@ -141,6 +106,41 @@
             Cell.GetAll();
             Deck.GetAll();
             Ship.GetAll();
+        }
+
+        private static Ship CheckDrownedShip(Ship ship)
+        {
+            Ship result = null;
+            var drownedDeckCells = ship.DeckCells.Where(i => i.Deck.State == DeckState.Drowned).ToList();
+            if (drownedDeckCells.Count == ship.DeckCells.Count)
+            {
+                result = ship;
+            }
+            return result;
+        }
+
+        private static bool CheckAllShipsDrowned(List<Ship> ships)
+        {
+            List<Ship> drownedShips = new List<Ship>();
+            foreach (Ship ship in ships)
+            {
+                var drownedShip = CheckDrownedShip(ship);
+                if (drownedShip != null)
+                {
+                    drownedShips.Add(drownedShip);
+                }
+            }
+
+            return drownedShips.Count == ships.Count;
+        }
+
+        public bool StartGame()
+        {
+            this.State = GameState.Started;
+
+            Random gen = new Random();
+            this.IsPl1Turn = gen.Next(100) < 50;
+            return this.IsPl1Turn;
         }
         #endregion
     }
