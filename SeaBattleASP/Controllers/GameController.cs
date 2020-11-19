@@ -74,7 +74,7 @@
         }
 
         [HttpPost]
-        public Ship MakeMoveStep(int shipId, 
+        public IActionResult MakeMoveStep(int shipId, 
                                  int gameId)
         {
             var ship = Ship.GetShipByIdFromDB(shipId);
@@ -90,7 +90,7 @@
 
               context.Clients.All.SendAsync("makeStepSignalR", ship);
             this.Model = Game.CheckWinner(Game.GetGameById(gameId));
-            return ship;
+            return View();
         }
         #endregion
 
@@ -193,10 +193,11 @@
 
             if (game != null)
             {
+                this.Model.CurrentGame = game;
                 this.Model = Game.CheckGame(game);
             }
 
-            context.Clients.All.SendAsync("startGameSignalR");
+            context.Clients.All.SendAsync("startGameSignalR", this.Model);
             return this.Json(this.Model);
         }
 

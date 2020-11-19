@@ -132,9 +132,6 @@ function addShipToField(shipId) {
 
             var html = createShipTable();
             document.getElementById("shipsPanel").innerHTML = html;
-
-            var directionPanel = document.getElementById('directionPanel');
-            directionPanel.style.display = 'inline';
         },
     });
 };
@@ -184,9 +181,10 @@ function gameOver() {
     });
 }
 
-function changeButtonVisibility() {
-    var makeStep = document.getElementById('makeStep');
-    makeStep.style.display = 'inline';
+function changeButtonVisibility(game) {
+    var btnAddShips = document.getElementById('btnAddShips');
+    btnAddShips.style.display = 'none';
+    
 
     var stepButton = new Array();
     for (var i = 0; i < addedShips.length; i++) {
@@ -198,6 +196,9 @@ function changeButtonVisibility() {
 
     var startGame = document.getElementById('startGame');
     startGame.style.display = 'none';
+
+    var directionPanel = document.getElementById('directionPanel');
+    directionPanel.style.display = 'inline';
 }
 
 function getEnemy(model, playerId) {
@@ -237,23 +238,24 @@ function startGame() {
             alert(model.message);
             checkWhoseStep(model);
 
-            var enemy = getEnemy(model, playerId);
+            //var enemy = getEnemy(model, playerId);
 
-            console.log(enemy);
-            var ships = getEnemyShip(model, enemy);
-            console.log(ships);
+            //console.log(enemy);
+            //var ships = getEnemyShip(model, enemy);
+            //console.log(ships);
 
-            ships.forEach(function (ship) {
-                ship.deckCells.forEach(function (deckCell) {
-                    paintDeckShip(deckCell, '#rightField', 'usualShipColor');
-                });
-            });
-
-            var directionPanel = document.getElementById('directionPanel');
-            directionPanel.style.display = 'none';
+            //showEnemyShips(ships);
         },
     });
 };
+
+function showEnemyShips(ships) {
+    ships.forEach(function (ship) {
+        ship.deckCells.forEach(function (deckCell) {
+            paintDeckShip(deckCell, '#rightField', 'usualShipColor');
+        });
+    });
+}
 
 function checkWhoseStep(model) {
     if (model.currentGame.isPl1Turn) {
@@ -356,9 +358,7 @@ function makeMove(shipId, gameId) {
         type: 'POST',
         url: '/Game/MakeMoveStep',
         data: { shipId: shipId, gameId: gameId },
-        success: function (ship) {
-            repaintShip(ship);
-
+        success: function () {
         },
     });
 }
@@ -442,8 +442,16 @@ document.getElementById("gameOver").addEventListener("click", function (event) {
 });
 
 
-stateGameHubconnection.on("startGameSignalR", function () {
-    changeButtonVisibility();
+stateGameHubconnection.on("startGameSignalR", function (model) {
+    var parameters = getUrlParams(window.location.href);
+    var playerId = parameters.playerId;
+
+    var enemy = getEnemy(model, playerId);
+    var ships = getEnemyShip(model, enemy);
+
+    showEnemyShips(ships);
+
+    changeButtonVisibility(model.currentGame);
     var encodedMsg = "Message: The game is start";
     var li = document.createElement("li");
     li.textContent = encodedMsg;
@@ -493,5 +501,13 @@ document.getElementById("sendButton").addEventListener("click", function (event)
 });
 
 stateGameHubconnection.on("makeStepSignalR", function (ship) {
-    console.log(ship);
+    var parameters = getUrlParams(window.location.href);
+    var playerId = parameters.playerId;
+
+    var enemy = getEnemy(model, playerId);
+    var ships = getEnemyShip(model, enemy);
+
+    showEnemyShips(ships);
+
+    repaintShip(ship);
 });
