@@ -112,56 +112,12 @@
             {
                 ship.Player = player;
             }
-            var shipDeckCells = GetDeckCellsForShip(ship.DeckCells, 
+            var shipDeckCells = ShipManager.GetDeckCellsForShip(ship.DeckCells, 
                                                     player, 
                                                     game);
             ship.DeckCells = shipDeckCells;
 
             return ship;
-        }
-
-        private static List<DeckCell> GetDeckCellsForShip(List<DeckCell> deckCells, 
-                                                          Player player, 
-                                                          Game game)
-        {
-            Random random = new Random();
-            Array shipDirections = Enum.GetValues(typeof(ShipDirection));
-            List<DeckCell> resultDeckCells = new List<DeckCell>();
-
-            var initalPoint = ShipManager.GetRandomPoint(random);
-            var direction = (ShipDirection)shipDirections.GetValue(random.Next(shipDirections.Length));
-
-            foreach (DeckCell deck in deckCells)
-            {
-                initalPoint = ShipManager.ShiftPoint(initalPoint, 
-                                                     direction);
-
-                var currentDeckCell = DeckCell.Create(initalPoint, 
-                                                      deck.Deck);
-                resultDeckCells.Add(currentDeckCell);
-            }
-
-            CheckNewDeckCells(resultDeckCells,
-                              player,
-                              game); 
-
-            return resultDeckCells;
-        }
-
-        private static void CheckNewDeckCells(List<DeckCell> deckCells,
-                                              Player player,
-                                              Game game)
-        {
-            var isError = DeckCell.CheckDeckCellOutOfBorder(deckCells);
-            var isBool = DeckCell.CheckDeckCellOtherShips(deckCells,
-                                                          game,
-                                                          player);
-            if (isError || isBool)
-            {
-                GetDeckCellsForShip(deckCells,
-                                    player,
-                                    game);
-            }
         }
 
         public List<DeckCell> Move()
