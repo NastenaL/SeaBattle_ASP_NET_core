@@ -519,6 +519,8 @@ document.getElementById("sendButton").addEventListener("click", function (event)
 });
 
 stateGameHubconnection.on("makeStepSignalR", function (ship) {
+    repaintShip(ship);
+
     var parameters = getUrlParams(window.location.href);
     var playerId = parameters.playerId;
 
@@ -526,8 +528,6 @@ stateGameHubconnection.on("makeStepSignalR", function (ship) {
     var ships = getEnemyShip(model, enemy);
 
     showEnemyShips(ships);
-
-    repaintShip(ship);
 });
 
 stateGameHubconnection.on("makeStepFireSignalR", function (model) {

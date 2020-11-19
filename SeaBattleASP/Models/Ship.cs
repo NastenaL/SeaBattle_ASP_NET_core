@@ -37,6 +37,18 @@
         #endregion
 
         #region Methods
+
+        public static Ship ShiftShip(string direction, Ship ship)
+        {
+            if (ship != null)
+            {
+                ship = ShipManager.ShiftShipDeckCell(direction, ship);
+                DbManager.UpdateShip(ship);
+            }
+
+            return ship;
+        }
+
         public static Ship GetShipByIdFromDB(int shipId)
         {
             Player.GetAll();
@@ -120,8 +132,21 @@
             return firedShipDecks;
         }
 
+        public Ship Move()
+        {
+            if (this != null)
+            {
+                var shipDeckCells = this.ShiftShipDeckCells();
+                if (shipDeckCells.Count > 0)
+                {
+                    this.DeckCells = shipDeckCells;
+                    DbManager.UpdateShip(this);
+                }
+            }
+            return this;
+        }
 
-        public List<DeckCell> Move()
+        public List<DeckCell> ShiftShipDeckCells()
         {
             List<DeckCell> result = new List<DeckCell>();
             result.Clear();
@@ -187,7 +212,7 @@
                     if (isAbroad)
                     {
                         this.IsXDirection = !this.IsXDirection;
-                        this.Move();
+                        this.ShiftShipDeckCells();
                     }
                 }
             }

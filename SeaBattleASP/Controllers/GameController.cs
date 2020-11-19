@@ -69,7 +69,6 @@
             var allPlayerShips = allShips.Where(i => i.Player == ship.Player).ToList();
 
             this.Model.RepairedShips = ship.Repair(allPlayerShips);
-
             this.Model = Game.CheckWinner(this.Model.CurrentGame);
 
             this.context.Clients.All.SendAsync("makeStepSignalR");
@@ -82,15 +81,7 @@
                                           int gameId)
         {
             var ship = Ship.GetShipByIdFromDB(shipId);
-            if (ship != null)
-            {
-                var shipDeckCells = ship.Move();
-                if (shipDeckCells.Count > 0)
-                {
-                    ship.DeckCells = shipDeckCells;
-                    DbManager.UpdateShip(ship);
-                }
-            }
+            ship = ship.Move();
 
             this.context.Clients.All.SendAsync("makeStepSignalR", ship);
             this.Model = Game.CheckWinner(Game.GetGameById(gameId));
@@ -124,17 +115,9 @@
         public IActionResult ShiftShip(int shipId, 
                              string direction)
         {
-            Player.GetAll();
-            Cell.GetAll();
-            Deck.GetAll();
-            DeckCell.GetAll();
             var ship = Ship.GetShipByIdFromDB(shipId);
-            if (ship != null)
-            {
-                ship = ShipManager.ShiftShipDeckCell(direction, ship);
-                DbManager.UpdateShip(ship);
-            }
-           
+            ship = Ship.ShiftShip(direction, ship);
+
             return this.Json(ship);
         }
 
