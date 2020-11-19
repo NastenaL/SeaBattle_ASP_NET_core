@@ -131,38 +131,7 @@
             var ship = Ship.GetShipByIdFromDB(shipId);
             if (ship != null)
             {
-                switch (direction)
-                {
-                    case "left":
-                        foreach (DeckCell deckCell in ship.DeckCells)
-                        {
-                            deckCell.Cell.X -= 1;
-                        }
-
-                        break;
-                    case "right":
-                        foreach (DeckCell deckCell in ship.DeckCells)
-                        {
-                            deckCell.Cell.X += 1;
-                        }
-
-                        break;
-                    case "up":
-                        foreach (DeckCell deckCell in ship.DeckCells)
-                        {
-                            deckCell.Cell.Y -= 1;
-                        }
-
-                        break;
-                    case "down":
-                        foreach (DeckCell deckCell in ship.DeckCells)
-                        {
-                            deckCell.Cell.Y += 1;
-                        }
-
-                        break;
-                }
-
+                ship = ShipManager.ShiftShipDeckCell(direction, ship);
                 DbManager.UpdateShip(ship);
             }
            
@@ -217,25 +186,7 @@
         [HttpPost]
         public IActionResult CreateGame(int playerId)
         {
-            Game game = new Game();
-            var allPLayers = Player.GetAll();
-            var firstPlayer = allPLayers.Find(g => g.Id == playerId);
-            if (firstPlayer != null)
-            {
-                var playingField = new PlayingField();
-                playingField.CreateField();
-
-                game = new Game
-                {
-                    Player1 = firstPlayer,
-                    State = GameState.Initialized,
-                    PlayingField = playingField
-                };
-
-                DbManager.AddPlayingField(playingField);
-                DbManager.AddGame(game);
-            }
-
+            Game game = Game.CreateGame(playerId);
             return this.Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { gameId = game.Id, playerId }) });
         }
 
@@ -247,15 +198,7 @@
 
             if (game != null)
             {
-                var allPlayers = Player.GetAll();
-                var secondPlayer = allPlayers.Find(p => p.Id == playerId);
-                if (secondPlayer != null)
-                {
-                    game.Player2 = secondPlayer;
-                    
-                    DbManager.UpdateGame(game);
-                    var allGames2 = Game.GetAll();
-                }
+                Game.AddPlayerToGame(game, playerId);
             }
 
             return this.Json(new { redirectToUrl = Url.Action("StartGame", "Game", new { gameId = game.Id, playerId }) });
@@ -268,13 +211,7 @@
             var game = Game.GetGameById(gameId);
             if (game != null)
             {
-                foreach (Ship ship in game.PlayingField.Ships)
-                {
-                    DbManager.RemoveDecksAndCells(ship.DeckCells);
-                }
-                
-                DbManager.RemovePlayingField(game.PlayingField);
-                DbManager.RemoveGame(game);
+                DbManager.RemoveGameWithRelatedObjects(game);
             }
 
             this.context.Clients.All.SendAsync("gameOverSignalR");

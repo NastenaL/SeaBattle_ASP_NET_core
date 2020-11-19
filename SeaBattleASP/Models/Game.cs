@@ -29,6 +29,18 @@
             return DbManager.GetGames();
         }
 
+        public static void AddPlayerToGame(Game game, int playerId)
+        {
+            var allPlayers = Player.GetAll();
+            var secondPlayer = allPlayers.Find(p => p.Id == playerId);
+            if (secondPlayer != null)
+            {
+                game.Player2 = secondPlayer;
+
+                DbManager.UpdateGame(game);
+            }
+        }
+
         public static MapModel CheckGame(Game game)
         {
             MapModel result = new MapModel
@@ -132,6 +144,30 @@
             }
 
             return drownedShips.Count == ships.Count;
+        }
+
+        public static Game CreateGame(int playerId)
+        {
+            Game game = new Game();
+            var allPLayers = Player.GetAll();
+            var firstPlayer = allPLayers.Find(g => g.Id == playerId);
+            if (firstPlayer != null)
+            {
+                var playingField = new PlayingField();
+                playingField.CreateField();
+
+                game = new Game
+                {
+                    Player1 = firstPlayer,
+                    State = GameState.Initialized,
+                    PlayingField = playingField
+                };
+
+                DbManager.AddPlayingField(playingField);
+                DbManager.AddGame(game);
+            }
+
+            return game;
         }
 
         public bool StartGame()

@@ -31,6 +31,42 @@
             return enemyDeckCells;
         }
 
+        public static Ship ShiftShipDeckCell(string direction, Ship ship)
+        {
+            switch (direction)
+            {
+                case "left":
+                    foreach (DeckCell deckCell in ship.DeckCells)
+                    {
+                        deckCell.Cell.X -= 1;
+                    }
+
+                    break;
+                case "right":
+                    foreach (DeckCell deckCell in ship.DeckCells)
+                    {
+                        deckCell.Cell.X += 1;
+                    }
+
+                    break;
+                case "up":
+                    foreach (DeckCell deckCell in ship.DeckCells)
+                    {
+                        deckCell.Cell.Y -= 1;
+                    }
+
+                    break;
+                case "down":
+                    foreach (DeckCell deckCell in ship.DeckCells)
+                    {
+                        deckCell.Cell.Y += 1;
+                    }
+
+                    break;
+            }
+            return ship;
+        }
+
         public static List<Ship> GetAllPlayerShips(Game game,
                                                    Player player)
         {

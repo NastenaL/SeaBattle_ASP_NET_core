@@ -141,7 +141,18 @@
 
         #endregion
 
-        #region Delete commands
+        #region Remove commands
+        public static void RemoveGameWithRelatedObjects(Game game)
+        {
+            foreach (Ship ship in game.PlayingField.Ships)
+            {
+                DbManager.RemoveDecksAndCells(ship.DeckCells);
+            }
+
+            DbManager.RemovePlayingField(game.PlayingField);
+            DbManager.RemoveGame(game);
+        }
+
         public static void RemoveDecksAndCells(List<DeckCell> deckCells)
         {
             foreach (DeckCell deckCell in deckCells)
