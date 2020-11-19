@@ -68,12 +68,18 @@
             </div>
             <div class="modal-body" style="text-align:center;">
                 <table class="table">
+                    <tr>
+                        <td>#Id</td>
+                        <td>Ship range</td>
+                        <td>Type</td>
+                        <td>Action</td>
+                    </tr>
                     @foreach (KeyValuePair<int, Ship> p in Model.Ships)
                     {
                         <tr>
                             <td>@p.Key</td>
                             <td>@p.Value.Range</td>
-                            <td>@p.Value.GetType()</td>
+                            <td>@p.Value.GetType().Name</td>
                             <td><button id="@p.Key" onclick="return addShipToField(@p.Key)">Select</button></td>
                         </tr>
                     }

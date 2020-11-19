@@ -113,9 +113,22 @@ var getUrlParams = function (url) {
     return params;
 };
 
+function changeEnabledShipButton(disableResult) {
+    var stepButton = new Array();
+    for (var i = 0; i < 4; i++) {
+        stepButton.push(document.getElementById(i));
+        stepButton[i].disabled = disableResult;
+    }
+}
+
 function addShipToField(shipId) {
     var element = document.getElementById(shipId);
     element.style.display = 'none';
+
+    var directionPanel = document.getElementById('directionPanel');
+    directionPanel.style.display = 'inline';
+
+    changeEnabledShipButton(true);
 
     var parameters = getUrlParams(window.location.href);
     var playerId = parameters.playerId;
@@ -132,6 +145,8 @@ function addShipToField(shipId) {
 
             var html = createShipTable();
             document.getElementById("shipsPanel").innerHTML = html;
+
+            changeEnabledShipButton(false);
         },
     });
 };
@@ -147,6 +162,7 @@ function convertCellsToPoints(ships) {
 }
 
 function openOptions(i) {
+
     document.getElementById("myDropdown" + i).classList.toggle("show");
 }
 
@@ -198,7 +214,7 @@ function changeButtonVisibility(game) {
     startGame.style.display = 'none';
 
     var directionPanel = document.getElementById('directionPanel');
-    directionPanel.style.display = 'inline';
+    directionPanel.style.display = 'none';
 }
 
 function getEnemy(model, playerId) {
