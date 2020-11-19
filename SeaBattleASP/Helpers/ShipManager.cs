@@ -30,28 +30,18 @@
             return enemyDeckCells;
         }
 
-        public static bool CheckShipWithOtherShips(List<DeckCell> allPlayerDeckCells, List<DeckCell> shipDeckCells)
+        public static List<Ship> GetAllPlayerShips(Game game,
+                                Player player)
         {
-            bool error = false;
-            if (allPlayerDeckCells.Count > 0)
-            {
-                List<DeckCell> commonCells = new List<DeckCell>();
-                foreach (DeckCell deckCell in shipDeckCells)
-                {
-                    if (deckCell.Cell != null)
-                    {
-                        commonCells.AddRange(allPlayerDeckCells.Where(s => s.Cell.X == deckCell.Cell.X 
-                                                                      && s.Cell.Y == deckCell.Cell.Y).ToList());
-                    }
-                }
+            var allDeckCell = DeckCell.GetAll();
+            var allShips = Ship.GetAll();
+            var games = Game.GetAll();
 
-                if (commonCells.Count > 0)
-                {
-                    error = true;
-                }
-            }
+            var allPlayersShips = game.PlayingField.Ships.Where(s => s.Player == player).ToList();
+            var lastShip = allPlayersShips.Last();
+            allPlayersShips.Remove(lastShip);
 
-            return error;
+            return allPlayersShips;
         }
 
         public static Point GetRandomPoint(Random random)
@@ -64,12 +54,33 @@
             return point;
         }
 
-        public static List<DeckCell> GetHurtedShip(List<Point> repairedPoints, List<DeckCell> allShipsDecks)
+        public static Point ShiftCell(Point p,
+                                      bool IsXDirection,
+                                      int Range)
+        {
+            if (IsXDirection)
+            {
+                p.X = p.X + Range > Rules.FieldWidth - 1 ? p.X - Range 
+                                                         : p.X + Range; 
+            }
+            else
+            {
+                p.Y = p.Y + Range > Rules.FieldHeight - 1 ? p.Y - Range 
+                                                          : p.Y + Range;
+            }
+
+            return p;
+        }
+
+        public static List<DeckCell> GetHurtedShip(List<Point> repairedPoints, 
+                                                   List<DeckCell> allShipsDecks)
         {
             List<DeckCell> hurtedShips = new List<DeckCell>();
             foreach (Point point in repairedPoints)
             {
-                var hurtedDeck = allShipsDecks.Find(s => s.Deck.State == Models.Enums.DeckState.Hurted && s.Cell.X == point.X && s.Cell.Y == point.Y);
+                var hurtedDeck = allShipsDecks.Find(s => s.Deck.State == Models.Enums.DeckState.Hurted 
+                                                    && s.Cell.X == point.X 
+                                                    && s.Cell.Y == point.Y);
                 if (hurtedDeck != null)
                 {
                     hurtedShips.Add(hurtedDeck);
@@ -79,13 +90,15 @@
             return hurtedShips;
         }
 
-        public static List<DeckCell> CheckEnemyShips(List<DeckCell> enemyShips, List<Point> neighborsPoints)
+        public static List<DeckCell> CheckEnemyShips(List<DeckCell> enemyShips, 
+                                                     List<Point> neighborsPoints)
         {
             List<DeckCell> result = new List<DeckCell>();
 
             foreach (Point point in neighborsPoints)
             {
-                var firedDeck = enemyShips.Find(s => s.Cell.X == point.X && s.Cell.Y == point.Y);
+                var firedDeck = enemyShips.Find(s => s.Cell.X == point.X 
+                                                && s.Cell.Y == point.Y);
                 if (firedDeck != null)
                 {
                     result.Add(firedDeck);
@@ -95,10 +108,13 @@
             return result;
         }
 
-        public static Point ShiftPoint(Point initalPoint, ShipDirection direction)
+        public static Point ShiftPoint(Point initalPoint, 
+                                       ShipDirection direction)
         {
-            initalPoint.X = direction == ShipDirection.horizontal ? initalPoint.X + 1 : initalPoint.X;
-            initalPoint.Y = direction == ShipDirection.vertical ? initalPoint.Y + 1 : initalPoint.Y;
+            initalPoint.X = direction == ShipDirection.horizontal ? initalPoint.X + 1 
+                                                                  : initalPoint.X;
+            initalPoint.Y = direction == ShipDirection.vertical ? initalPoint.Y + 1 
+                                                                : initalPoint.Y;
             return initalPoint;
         }
     }

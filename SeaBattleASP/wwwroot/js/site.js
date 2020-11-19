@@ -332,8 +332,8 @@ function paintShip(deckCells, shipColor) {
 
 function paintDeckShip(deckcell, field, shipColor) {
 
-    $(field + ' #cell' + deckcell.cell.x + deckcell.cell.y).removeClass(shipColor + ' cellColor').addClass(shipColor);
-    $(field + ' #cell' + deckcell.cell.x + deckcell.cell.y).addClass('ship');
+    $(field + ' #cell' + deckcell.cell.y + deckcell.cell.x).removeClass(shipColor + ' cellColor').addClass(shipColor);
+    $(field + ' #cell' + deckcell.cell.y + deckcell.cell.x).addClass('ship');
 };
 
 function repaintShip(ship) {

@@ -90,38 +90,40 @@
             return wrong.Count > 0;
         }
 
-            public static bool CheckDeckCellOtherShips(List<DeckCell> deckCells, 
-                                                       Game game, 
-                                                       Player player)
+        private static List<DeckCell> FindWrongDeckCells(Ship ship, List<DeckCell> currentShipDeckCells)
         {
-            var allDeckCell = DeckCell.GetAll();
-            var allShips = Ship.GetAll();
-            var games = Game.GetAll();
+            List<DeckCell> wrongDeckCells = new List<DeckCell>();
+            foreach (DeckCell deckCell in currentShipDeckCells)
+            {
+                var dc = ship.DeckCells.Find(i => i.Cell.X == deckCell.Cell.X
+                                             && i.Cell.Y == deckCell.Cell.Y);
+                if (dc != null)
+                {
+                    wrongDeckCells.Add(dc);
+                }
 
-            var allPlayersShips = game.PlayingField.Ships.Where(s => s.Player == player).ToList();
-            var lastShip = allPlayersShips.Last();
-            allPlayersShips.Remove(lastShip);
+            }
+
+            return wrongDeckCells;
+        }
+
+        public static bool CheckDeckCellOtherShips(List<DeckCell> currentShipDeckCells, 
+                                                   Game game, 
+                                                   Player player)
+        {
+            var allPlayersShips = ShipManager.GetAllPlayerShips(game,
+                                                                player);
+
             List<DeckCell> allPlayerDeckCell = new List<DeckCell>();
-
-            bool isError = false;
+            List<DeckCell> wrongDeckCells = new List<DeckCell>();
             if (allPlayersShips.Count > 0)
             {
                 foreach (Ship ship in allPlayersShips)
                 {
-                    foreach (DeckCell deckCell in ship.DeckCells)
-                    {
-
-                        var dc = deckCells.Find(i => i.Cell.X == deckCell.Cell.X 
-                                                && i.Cell.Y == deckCell.Cell.Y);
-                        if (dc != null)
-                        {
-                            isError = true;
-                            break;
-                        }
-                    }
+                    wrongDeckCells = FindWrongDeckCells(ship, currentShipDeckCells);
                 }
             }
-            return isError;
+            return wrongDeckCells.Count > 0;
         }
 
         private static Point CreateNewPoint(DeckCell deckCell)

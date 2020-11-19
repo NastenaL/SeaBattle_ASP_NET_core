@@ -142,8 +142,8 @@
             }
 
             CheckNewDeckCells(resultDeckCells,
-                              game,
-                              player); 
+                              player,
+                              game); 
 
             return resultDeckCells;
         }
@@ -156,7 +156,6 @@
             var isBool = DeckCell.CheckDeckCellOtherShips(deckCells,
                                                           game,
                                                           player);
-
             if (isError || isBool)
             {
                 GetDeckCellsForShip(deckCells,
@@ -180,28 +179,7 @@
                         Y = shipDeck.Cell.Y
                     };
 
-                    if (this.IsXDirection)
-                    {
-                        if (p.X + this.Range > Rules.FieldWidth)
-                        {
-                            p.X -= this.Range;
-                        }
-                        else
-                        {
-                            p.X += this.Range;
-                        }
-                    }
-                    else
-                    {
-                        if (p.Y + this.Range > Rules.FieldHeight)
-                        {
-                            p.Y -= this.Range;
-                        }
-                        else
-                        {
-                            p.Y += this.Range;
-                        }
-                    }
+                    p = ShipManager.ShiftCell(p, this.IsXDirection, this.Range);
 
                     shipDeck.Cell.X = p.X;
                     shipDeck.Cell.Y = p.Y;
@@ -213,7 +191,7 @@
             this.CheckNewCoordinate(result);
             return result;
         }
-
+       
         public virtual List<DeckCell> Repair(List<Ship> allShips)
         {
             List<DeckCell> hurtedDecks = new List<DeckCell>();
@@ -241,11 +219,11 @@
             return hurtedDecks;
         }
 
-        private void CheckNewCoordinate(List<DeckCell> result)
+        private void CheckNewCoordinate(List<DeckCell> deckCells)
         {
-            if (result.Count > 0)
+            if (deckCells.Count > 0)
             {
-                foreach (DeckCell deckCell in result)
+                foreach (DeckCell deckCell in deckCells)
                 {
                     bool isAbroad = deckCell.Cell.X > Rules.FieldWidth - 1 
                          || deckCell.Cell.Y > Rules.FieldHeight - 1;
