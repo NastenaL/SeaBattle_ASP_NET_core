@@ -200,6 +200,17 @@ function changeButtonVisibility() {
     startGame.style.display = 'none';
 }
 
+function getEnemy(model, playerId) {
+    var enemy;
+    if (model.currentGame.player1 == playerId) {
+        enemy = model.currentGame.player2;
+    }
+    else {
+        enemy = model.currentGame.player1;
+    }
+    return enemy;
+}
+
 function startGame() {
     var parameters = getUrlParams(window.location.href);
     var playerId = parameters.playerId;
@@ -214,14 +225,9 @@ function startGame() {
             alert(model.message);
             checkWhoseStep(model);
 
-            var enemy;
-            if (model.currentGame.player1 == playerId) {
-                enemy = model.currentGame.player2;
-            }
-            else {
-                enemy = model.currentGame.player1;
-            }
+            var enemy = getEnemy(model, playerId);
 
+            console.log(enemy);
             var decksC = new Array();
             for (var i = 0; i < model.currentGame.playingField.ships.length; i++) {
                 if (model.currentGame.playingField.ships[i].player == enemy) {
