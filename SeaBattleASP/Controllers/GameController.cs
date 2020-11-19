@@ -51,6 +51,7 @@
                 }
             }
 
+            context.Clients.All.SendAsync("makeStepSignalR");
             this.Model = Game.CheckWinner(this.Model.CurrentGame);
             return this.Json(this.Model);
         }
@@ -66,6 +67,9 @@
             this.Model.RepairedShips = ship.Repair(allPlayerShips);
 
             this.Model = Game.CheckWinner(this.Model.CurrentGame);
+
+            context.Clients.All.SendAsync("makeStepSignalR");
+
             return this.Json(this.Model);
         }
 
@@ -84,6 +88,7 @@
                 }
             }
 
+            context.Clients.All.SendAsync("makeStepSignalR");
             this.Model = Game.CheckWinner(Game.GetGameById(gameId));
             return ship;
         }

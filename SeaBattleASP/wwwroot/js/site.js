@@ -81,13 +81,13 @@ function createShipTable() {
         }
 
         html += "<tr>";
-        html += "<td style='padding: 2px'><input id='selectShip' name='selectShip' onchange='selectShipForShift(" + addedShips[i].id + ");' type='radio' value='" + addedShips[i].isSelectedShip + "'/></td>";
+        html += "<td style='padding: 2px'><input id='selectShip"+i+"' name='selectShip' onchange='selectShipForShift(" + addedShips[i].id + ");' type='radio' value='" + addedShips[i].isSelectedShip + "'/></td>";
         html += "<td style='padding: 2px'>" + addedShips[i].id + "</td>";
         html += "<td style='padding: 2px'>" + addedShips[i].type + "</td>";
         html += "<td style='padding: 2px'>" + addedShips[i].range + "</td>";
         html += "<td style='padding: 2px'>" +
             "<div class='dropdown'>" +
-            "<button id='step" + i + "' onclick='openOptions(" + i + ")' class='dropbtn'>Select</button>" +
+            "<button id='step" + i + "' style='display: none;' onclick='openOptions(" + i + ")' class='dropbtn'>Select</button>" +
             "<div id='myDropdown" + i + "' class='dropdown-content'>" + options + " </div>" +
             "</div >" +
             " </td > ";
@@ -170,7 +170,7 @@ function gameOver() {
     var parameters = getUrlParams(window.location.href);
     var gameId = parameters.gameId;
     var playerId = parameters.playerId;
-    console.log("Game over", gameId);
+   
     message = "Game over";
     $.ajax({
         type: 'POST',
@@ -186,13 +186,12 @@ function changeButtonVisibility() {
     var makeStep = document.getElementById('makeStep');
     makeStep.style.display = 'inline';
 
-    var selectShip = document.getElementById('selectShip');
-    selectShip.style.display = 'none';
-
+    var stepButton = new Array();
     for (var i = 0; i < addedShips.length; i++) {
-        var stepButton = document.getElementById('step' + i);
-        stepButton.style.display = 'inline';
-        console.log(stepButton);
+        var selectShip = document.getElementById('selectShip'+i);
+        selectShip.style.display = 'none';
+        stepButton.push(document.getElementById('step' + i));
+        stepButton[i].style.display = 'inline';
     }
 
     var startGame = document.getElementById('startGame');
@@ -271,11 +270,10 @@ function makeMovement(shipId, type) {
     stepType = type;
 
     var t = document.getElementById("sendButton");
-    console.log(t);
     t.click();
+
     var parameters = getUrlParams(window.location.href);
     var gameId = parameters.gameId;
-    console.log(type);
     switch (type) {
         case 0:
             makeFire(shipId);
@@ -318,6 +316,7 @@ function makeMove(shipId, gameId) {
         data: { shipId: shipId, gameId: gameId },
         success: function (ship) {
             repaintShip(ship);
+
         },
     });
 }
@@ -400,30 +399,6 @@ document.getElementById("gameOver").addEventListener("click", function (event) {
     event.preventDefault();
 });
 
-//For step
-var stepHubconnection = new signalR.HubConnectionBuilder().withUrl("/stepHub").build();
-
-stepHubconnection.on("ReceiveMessage", function (playerId, ship, stepType) {
-    var seceltedShip = ship.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    var encodedMsg = "Player" + playerId + "select ship " + seceltedShip + ", type " + stepType;
-    var li = document.createElement("li");
-    li.textContent = encodedMsg;
-    console.log("message", ship);
-    document.getElementById("messagesList").appendChild(li);
-});
-
-stepHubconnection.start().catch(function (err) {
-    return console.error(err.toString());
-});
-
-document.getElementById("sendButton").addEventListener("click", function (event) {
-
-    console.log("sendButton");
-    stepHubconnection.invoke("SendMessage", player, selectedShipId, stepType).catch(function (err) {
-        return console.error(err.toString());
-    });
-    event.preventDefault();
-});
 
 stateGameHubconnection.on("startGameSignalR", function () {
     changeButtonVisibility();
@@ -433,13 +408,14 @@ stateGameHubconnection.on("startGameSignalR", function () {
     document.getElementById("messagesList").appendChild(li);
 });
 
-var delayInMilliseconds = 2000; 
+var delayInMilliseconds = 2000;
 
 stateGameHubconnection.on("gameOverSignalR", function () {
     var parameters = getUrlParams(window.location.href);
     var playerId = parameters.playerId;
 
     var encodedMsg = "Message: The game is over";
+    alert("Message: The game is over");
     var li = document.createElement("li");
     li.textContent = encodedMsg;
     document.getElementById("messagesList").appendChild(li);
@@ -448,5 +424,32 @@ stateGameHubconnection.on("gameOverSignalR", function () {
     setTimeout(function () {
         window.location.href = '/Game/Index/' + playerId;
     }, delayInMilliseconds);
-   
+
+});
+
+//For step
+var stepHubconnection = new signalR.HubConnectionBuilder().withUrl("/stepHub").build();
+
+stepHubconnection.on("ReceiveMessage", function (playerId, ship, stepType) {
+    var seceltedShip = ship.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    var encodedMsg = "Player" + playerId + "select ship " + seceltedShip + ", type " + stepType;
+    var li = document.createElement("li");
+    li.textContent = encodedMsg;
+    document.getElementById("messagesList").appendChild(li);
+});
+
+stepHubconnection.start().catch(function (err) {
+    return console.error(err.toString());
+});
+
+document.getElementById("sendButton").addEventListener("click", function (event) {
+
+    stepHubconnection.invoke("SendMessage", player, selectedShipId, stepType).catch(function (err) {
+        return console.error(err.toString());
+    });
+    event.preventDefault();
+});
+
+stepHubconnection.on("makeStepSignalR", function () {
+    console.log("work");
 });
