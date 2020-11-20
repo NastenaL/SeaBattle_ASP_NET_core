@@ -256,7 +256,7 @@ function startGame() {
 };
 
 
-function showEnemyShips(ships, field, color) {
+function repaintShips(ships, field, color) {
     ships.forEach(function (ship) {
         ship.deckCells.forEach(function (deckCell) {
             paintDeckShip(deckCell, field, color);
@@ -339,7 +339,7 @@ function makeRepair(shipId) {
         url: '/Game/MakeRepairStep',
         data: { shipId: shipId, gameId: gameId, playerId: playerId },
         success: function (model) {
-      
+            alert(model.message);
         },
     });
 }
@@ -352,7 +352,7 @@ function makeFire(shipId) {
         url: '/Game/MakeFireStep',
         data: { shipId: shipId, gameId: gameId },
         success: function (model) {
-      
+            alert(model.message);
         },
     });
 }
@@ -457,8 +457,8 @@ stateGameHubconnection.on("startGameSignalR", function (game) {
     emptyCellsToField('#leftField');
     emptyCellsToField('#rightField');
 
-    showEnemyShips(myShips, '#leftField', 'usualShipColor');
-    showEnemyShips(enemyShips, '#rightField', 'usualShipColor');
+    repaintShips(myShips, '#leftField', 'usualShipColor');
+    repaintShips(enemyShips, '#rightField', 'usualShipColor');
 
     changeButtonVisibility(game);
     var encodedMsg = "Message: The game is start";
@@ -535,21 +535,39 @@ stateGameHubconnection.on("makeStepSignalR", function (game) {
     emptyCellsToField('#leftField');
     emptyCellsToField('#rightField');
 
-    showEnemyShips(enemyShips, '#rightField', 'usualShipColor');
-    showEnemyShips(myShips, '#leftField', 'usualShipColor');
+    repaintShips(enemyShips, '#rightField', 'usualShipColor');
+    repaintShips(myShips, '#leftField', 'usualShipColor');
 
 });
 
-stateGameHubconnection.on("makeStepFireSignalR", function (model) {
+stateGameHubconnection.on("makeStepFireSignalR", function (game) {
     var parameters = getUrlParams(window.location.href);
     var playerId = parameters.playerId;
 
     var enemy = getEnemy(game, playerId);
     var enemyShips = getShipsByPlayerId(game, enemy.id);
+    var hurtedShips = getFiredEnemyShips(enemyShips);
 
     emptyCellsToField('#rightField');
-    showEnemyShips(enemyShips, '#rightField', 'shipFiredColor');
+
+    paintDeckShip(deckcell,  '#rightField', 'shipFiredColor');
+    repaintShips(hurtedShips, '#rightField', 'shipFiredColor');
 });
+
+function getFiredEnemyShips(enemyShips) {
+    var hurtedShips = new Array();
+
+    enemyShips.forEach(function (ship) {
+        ship.deckCells.forEach(function (deckCell) {
+            console.log(deckCell.deck.state);
+            if (deckCell.deck.state == 1) {
+                hurtedShips.push(ship);
+            }
+        });
+
+    });
+    return hurtedShips;
+}
 
 stateGameHubconnection.on("makeRepairStepSignalR", function (game) {
     console.log("Repair");

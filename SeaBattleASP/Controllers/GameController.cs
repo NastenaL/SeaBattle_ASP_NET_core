@@ -54,8 +54,8 @@
                     }
                 }
 
+                this.Model.Message = Game.CheckWinner(game);
                 this.context.Clients.All.SendAsync("makeStepFireSignalR", game);
-                this.Model.Message = Game.CheckWinner(this.Model.CurrentGame);
             }
 
             return this.Json(this.Model);
