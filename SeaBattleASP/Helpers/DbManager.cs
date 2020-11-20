@@ -44,9 +44,9 @@
 
         public static List<Ship> GetAllShips()
         {
-            Db.Cells.ToListAsync<Cell>();
-            Db.Decks.ToListAsync<Deck>();
-            Db.DeckCells.ToListAsync<DeckCell>();
+            var a = Db.Cells.ToListAsync<Cell>().Result;
+            var b = Db.Decks.ToListAsync<Deck>().Result;
+            var c = Db.DeckCells.ToListAsync<DeckCell>().Result;
 
             var auxiliaryShips = Db.AuxiliaryShips.ToListAsync<AuxiliaryShip>().Result;
             var militaryShip = Db.MilitaryShips.ToListAsync<MilitaryShip>().Result;
