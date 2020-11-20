@@ -49,6 +49,10 @@
 
                     if (hurtedShipDecks.Count > 0)
                     {
+                        this.Model.Message = hurtedShipDecks.Count > 0 ? "You hurt some ship. Keep going"
+                                                                  : "Ops, lucky some other time ";
+                        game.IsPl1Turn = hurtedShipDecks.Count > 0 ? game.IsPl1Turn
+                                                                   : !game.IsPl1Turn;
                         this.Model.HurtedShips = hurtedShipDecks;
                         DbManager.UpdateShip(hurtedShipDecks);
                     }
@@ -71,15 +75,10 @@
             if(playerShips.Count > 0)
             {
                 var repairedShipDeckCells = ship.Repair(playerShips);
-                if(repairedShipDeckCells.Count > 0)
-                {
-                    this.Model.Message = "Ships repaired";
-                    game.IsPl1Turn = !game.IsPl1Turn;
-                }
-                else
-                {
-                    this.Model.Message = "There are no ships for repairing";
-                }
+                this.Model.Message = repairedShipDeckCells.Count > 0 ? "Ships repaired"
+                                                                     : "There are no ships for repairing";
+                game.IsPl1Turn = repairedShipDeckCells.Count > 0 ? !game.IsPl1Turn
+                                                                 : game.IsPl1Turn;
             }
 
             var updatedGame = Game.GetGameById(gameId);
