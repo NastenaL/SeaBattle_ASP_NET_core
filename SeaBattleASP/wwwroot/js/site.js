@@ -449,16 +449,11 @@ document.getElementById("gameOver").addEventListener("click", function (event) {
 stateGameHubconnection.on("startGameSignalR", function (game) {
     var parameters = getUrlParams(window.location.href);
     var playerId = parameters.playerId;
-
-    var enemy = getEnemy(game, playerId);
     var myShips = getShipsByPlayerId(game, playerId);
-    var enemyShips = getShipsByPlayerId(game, enemy.id);
 
     emptyCellsToField('#leftField');
-    emptyCellsToField('#rightField');
 
     repaintShips(myShips, '#leftField', 'usualShipColor');
-    repaintShips(enemyShips, '#rightField', 'usualShipColor');
 
     changeButtonVisibility(game);
     var encodedMsg = "Message: The game is start";
