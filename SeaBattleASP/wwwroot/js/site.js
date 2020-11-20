@@ -532,15 +532,6 @@ function repaintAllShips(game) {
     emptyCellsToField('#leftField');
     emptyCellsToField('#rightField');
 
-    var parameters = getUrlParams(window.location.href);
-    var playerId = parameters.playerId;
-
-    var enemy = getEnemy(game, playerId);
-    var enemyShips = getShipsByPlayerId(game, enemy.id);
-    var hurtedShips = getFiredEnemyShips(enemyShips);
-
-    emptyCellsToField('#rightField');
-
     repaintShips(hurtedShips, '#rightField', 'shipFiredColor');
     repaintShips(myShips, '#leftField', 'usualShipColor');
 }
