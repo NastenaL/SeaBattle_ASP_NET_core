@@ -71,15 +71,27 @@
             if(playerShips.Count > 0)
             {
                 var repairedShipDeckCells = ship.Repair(playerShips);
+                if(repairedShipDeckCells.Count > 0)
+                {
+                    this.Model.Message = "Ships repaired";
+                    game.IsPl1Turn = !game.IsPl1Turn;
+                }
+                else
+                {
+                    this.Model.Message = "There are no ships for repairing";
+                }
             }
 
             var updatedGame = Game.GetGameById(gameId);
 
 
-            this.Model.Message = Game.CheckWinner(updatedGame);
+            var totalGameMessage = Game.CheckWinner(updatedGame);
+            if (!string.IsNullOrEmpty(totalGameMessage))
+            {
+                this.Model.Message = totalGameMessage;
+            }
 
             this.context.Clients.All.SendAsync("makeRepairStepSignalR", updatedGame);
-
             return this.Json(this.Model);
         }
 
