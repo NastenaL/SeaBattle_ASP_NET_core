@@ -174,30 +174,28 @@
             return result;
         }
        
-        public virtual List<DeckCell> Repair(List<Ship> allShips)
+        public List<DeckCell> Repair(List<Ship> myShips)
         {
             List<DeckCell> hurtedDecks = new List<DeckCell>();
             var neighborsPoints = DeckCell.GetNeighboringPoints(this.DeckCells, 
                                                                 this.Range);
-            if (this.Player != null)
-            {
-                List<DeckCell> allPlayerDeckCells = new List<DeckCell>();
-                foreach (Ship s in allShips)
-                {
-                    allPlayerDeckCells.AddRange(s.DeckCells);
-                }
 
-                hurtedDecks = ShipManager.GetHurtedShip(neighborsPoints, 
-                                                        allPlayerDeckCells);
+            foreach(Ship sh in myShips)
+            {
+                hurtedDecks.AddRange(ShipManager.GetHurtedShip(neighborsPoints,
+                                     sh.DeckCells));
                 if (hurtedDecks.Count > 0)
                 {
                     foreach (DeckCell hurtedDeck in hurtedDecks)
                     {
                         hurtedDeck.Deck.State = Enums.DeckState.Normal;
+
+                        DbManager.Db.DeckCells.Update(hurtedDeck);
+                        DbManager.Db.SaveChanges();
                     }
                 }
             }
-
+            
             return hurtedDecks;
         }
 
@@ -217,7 +215,6 @@
                 }
             }
         }
-
         #endregion
     }
 }

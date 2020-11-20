@@ -76,9 +76,9 @@
             return result;
         }
 
-        public static MapModel CheckWinner(Game game)
+        public static string CheckWinner(Game game)
         {
-            MapModel mapModel = new MapModel();
+            string message = null;
             if (game != null)
             {
                 var player1Ships = game.PlayingField.Ships.Where(i => i.Player == game.Player1).ToList();
@@ -89,12 +89,13 @@
 
                 if (isPlayer1Lose || isPlayer2Lose)
                 {
-                    mapModel.Message = "Player2 win. Con";
-                    mapModel.Message += isPlayer1Lose ? game.Player2.Name 
+                    message = "Winner = ";
+                    message += isPlayer1Lose ? game.Player2.Name 
                                                       : game.Player1.Name;
                 }
+          
             }
-            return mapModel;
+            return message;
         }
 
         public void EndGame()

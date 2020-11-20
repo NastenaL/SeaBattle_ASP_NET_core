@@ -176,15 +176,6 @@ width:auto;
     margin: 0;
 }
 
-.shipFiredColor {
-    content: '';
-    display: block;
-    position: relative;
-    width: 30px;
-    height: 30px;
-    background-color: brown;
-    margin: 0;
-}
 
 .drownedFiredColor {
     content: '';

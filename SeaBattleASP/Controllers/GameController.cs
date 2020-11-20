@@ -33,7 +33,8 @@
 
         #region Step methods
         [HttpPost]
-        public IActionResult MakeFireStep(int shipId, int gameId)
+        public IActionResult MakeFireStep(int shipId, 
+                                          int gameId)
         {
              var ship = Ship.GetShipByIdFromDB(shipId);
             var game = Game.GetGameById(gameId);
@@ -53,25 +54,31 @@
                     }
                 }
 
-                this.context.Clients.All.SendAsync("makeStepFireSignalR", this.Model);
-                this.Model = Game.CheckWinner(this.Model.CurrentGame);
+                this.context.Clients.All.SendAsync("makeStepFireSignalR", game);
+                this.Model.Message = Game.CheckWinner(this.Model.CurrentGame);
             }
 
             return this.Json(this.Model);
         }
 
         [HttpPost]
-        public IActionResult MakeRepairStep(int shipId)
+        public IActionResult MakeRepairStep(int shipId, int gameId, int playerId)
         {
+            var game = Game.GetGameById(gameId);
             var ship = Ship.GetShipByIdFromDB(shipId);
 
-            var allShips = Ship.GetAll();
-            var allPlayerShips = allShips.Where(i => i.Player == ship.Player).ToList();
+            var playerShips = game.PlayingField.Ships.Where(s => s.Player.Id == playerId).ToList();
+            if(playerShips.Count > 0)
+            {
+                var repairedShipDeckCells = ship.Repair(playerShips);
+            }
 
-            this.Model.RepairedShips = ship.Repair(allPlayerShips);
-            this.Model = Game.CheckWinner(this.Model.CurrentGame);
+            var updatedGame = Game.GetGameById(gameId);
 
-            this.context.Clients.All.SendAsync("makeStepSignalR");
+
+            this.Model.Message = Game.CheckWinner(updatedGame);
+
+            this.context.Clients.All.SendAsync("makeRepairStepSignalR", updatedGame);
 
             return this.Json(this.Model);
         }
@@ -84,7 +91,7 @@
             ship = ship.Move();
 
             var game = Game.GetGameById(gameId);
-            this.Model = Game.CheckWinner(Game.GetGameById(gameId));
+            this.Model.Message = Game.CheckWinner(Game.GetGameById(gameId));
             this.context.Clients.All.SendAsync("makeStepSignalR", game);
             
             return this.Json(this.Model);

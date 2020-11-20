@@ -256,10 +256,10 @@ function startGame() {
 };
 
 
-function showEnemyShips(ships, field) {
+function showEnemyShips(ships, field, color) {
     ships.forEach(function (ship) {
         ship.deckCells.forEach(function (deckCell) {
-            paintDeckShip(deckCell, field, 'usualShipColor');
+            paintDeckShip(deckCell, field, color);
         });
     });
 }
@@ -330,10 +330,14 @@ function makeMovement(shipId, type) {
 }
 
 function makeRepair(shipId) {
+    var parameters = getUrlParams(window.location.href);
+    var gameId = parameters.gameId;
+    var playerId = parameters.playerId;
+
     $.ajax({
         type: 'POST',
         url: '/Game/MakeRepairStep',
-        data: { shipId: shipId },
+        data: { shipId: shipId, gameId: gameId, playerId: playerId },
         success: function (model) {
       
         },
@@ -453,8 +457,8 @@ stateGameHubconnection.on("startGameSignalR", function (game) {
     emptyCellsToField('#leftField');
     emptyCellsToField('#rightField');
 
-    showEnemyShips(myShips, '#leftField');
-    showEnemyShips(enemyShips, '#rightField');
+    showEnemyShips(myShips, '#leftField', 'usualShipColor');
+    showEnemyShips(enemyShips, '#rightField', 'usualShipColor');
 
     changeButtonVisibility(game);
     var encodedMsg = "Message: The game is start";
@@ -531,12 +535,24 @@ stateGameHubconnection.on("makeStepSignalR", function (game) {
     emptyCellsToField('#leftField');
     emptyCellsToField('#rightField');
 
-
-    showEnemyShips(enemyShips, '#rightField');
-    showEnemyShips(myShips, '#leftField');
+    showEnemyShips(enemyShips, '#rightField', 'usualShipColor');
+    showEnemyShips(myShips, '#leftField', 'usualShipColor');
 
 });
 
 stateGameHubconnection.on("makeStepFireSignalR", function (model) {
-  
+    var parameters = getUrlParams(window.location.href);
+    var playerId = parameters.playerId;
+
+    var enemy = getEnemy(game, playerId);
+    var enemyShips = getShipsByPlayerId(game, enemy.id);
+
+    emptyCellsToField('#rightField');
+    showEnemyShips(enemyShips, '#rightField', 'shipFiredColor');
 });
+
+stateGameHubconnection.on("makeRepairStepSignalR", function (game) {
+    console.log("Repair");
+});
+
+
