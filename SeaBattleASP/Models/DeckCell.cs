@@ -91,16 +91,21 @@
             return wrong.Count > 0;
         }
 
-        private static List<DeckCell> FindWrongDeckCells(Ship ship, List<DeckCell> currentShipDeckCells)
+        private static List<Point> FindWrongDeckCells(Ship ship, List<DeckCell> currentShipDeckCells)
         {
-            List<DeckCell> wrongDeckCells = new List<DeckCell>();
-            foreach (DeckCell deckCell in currentShipDeckCells)
+            List<Point> wrongDeckCells = new List<Point>();
+            foreach (DeckCell point in ship.DeckCells)
             {
-                var dc = ship.DeckCells.Find(i => i.Cell.X == deckCell.Cell.X
-                                             && i.Cell.Y == deckCell.Cell.Y);
+                var dc = currentShipDeckCells.Find(i => i.Cell.X == point.Cell.X
+                                             && i.Cell.Y == point.Cell.Y);
                 if (dc != null)
                 {
-                    wrongDeckCells.Add(dc);
+                    Point p = new Point
+                    {
+                        X = dc.Cell.X,
+                        Y = dc.Cell.Y
+                    };
+                    wrongDeckCells.Add(p);
                 }
 
             }
@@ -114,13 +119,26 @@
         {
             var allPlayersShips = ShipManager.GetAllPlayerShips(game,
                                                                 player);
-
-            List<DeckCell> wrongDeckCells = new List<DeckCell>();
+            List<Point> wrongDeckCells = new List<Point>();
             if (allPlayersShips.Count > 0)
             {
+                var getNeughtbourPoints = GetNeighboringPoints(currentShipDeckCells, 1);
+
+            List<DeckCell> getNeughtbourDeckCells = new List<DeckCell>();
+            foreach(Point point in getNeughtbourPoints)
+            {
+                DeckCell deckCell = new DeckCell();
+                Cell cell = new Cell();
+                cell.X = point.X;
+                cell.Y = point.Y;
+                deckCell.Cell = cell;
+
+                getNeughtbourDeckCells.Add(deckCell);
+            }
+            
                 foreach (Ship ship in allPlayersShips)
                 {
-                    wrongDeckCells = FindWrongDeckCells(ship, currentShipDeckCells);
+                    wrongDeckCells = FindWrongDeckCells(ship, getNeughtbourDeckCells);
                 }
             }
             return wrongDeckCells.Count > 0;

@@ -102,9 +102,16 @@
                 resultDeckCells.Add(currentDeckCell);
             }
 
-            CheckNewDeckCells(resultDeckCells,
+            var isWrong = CheckNewDeckCells(resultDeckCells,
                               player,
                               game);
+            if(isWrong)
+            {
+                resultDeckCells.Clear();
+                resultDeckCells = GetDeckCellsForShip(deckCells,
+                                    player,
+                                    game);
+            }
 
             return resultDeckCells;
         }
@@ -183,20 +190,19 @@
             return initalPoint;
         }
 
-        private static void CheckNewDeckCells(List<DeckCell> deckCells,
+        private static bool CheckNewDeckCells(List<DeckCell> deckCells,
                                             Player player,
                                             Game game)
         {
-            var isError = DeckCell.CheckDeckCellOutOfBorder(deckCells);
-            var isBool = DeckCell.CheckDeckCellOtherShips(deckCells,
+            var isOutOfBorder = DeckCell.CheckDeckCellOutOfBorder(deckCells);
+            var isCrossOtherShip = DeckCell.CheckDeckCellOtherShips(deckCells,
                                                           game,
                                                           player);
-            if (isError || isBool)
+            if (isOutOfBorder || isCrossOtherShip)
             {
-                GetDeckCellsForShip(deckCells,
-                                    player,
-                                    game);
+                return true;
             }
+            return false;
         }
     }
 }

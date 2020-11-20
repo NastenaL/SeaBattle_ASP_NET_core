@@ -7,7 +7,6 @@
     using System.Linq;
     using SeaBattleASP.Helpers;
     using SeaBattleASP.Models.Constants;
-    using SeaBattleASP.Models.Enums;
     using SeaBattleASP.Models.Interfaces;
 
     public abstract class Ship : IRepairable, IFireable
@@ -79,8 +78,8 @@
             }
 
             var shipDeckCells = ShipManager.GetDeckCellsForShip(ship.DeckCells,
-                                                    player,
-                                                    game);
+                                                                player,
+                                                                game);
             ship.DeckCells = shipDeckCells;
 
             return ship;
