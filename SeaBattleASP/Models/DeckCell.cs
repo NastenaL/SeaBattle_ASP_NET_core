@@ -91,12 +91,12 @@
             return wrong.Count > 0;
         }
 
-        private static List<Point> FindWrongDeckCells(Ship ship, List<DeckCell> currentShipDeckCells)
+        private static List<Point> FindWrongDeckCells(Ship otherShip, List<DeckCell> neughtbourDeckCells)
         {
             List<Point> wrongDeckCells = new List<Point>();
-            foreach (DeckCell point in ship.DeckCells)
+            foreach (DeckCell point in neughtbourDeckCells)
             {
-                var dc = currentShipDeckCells.Find(i => i.Cell.X == point.Cell.X
+                var dc = otherShip.DeckCells.Find(i => i.Cell.X == point.Cell.X
                                              && i.Cell.Y == point.Cell.Y);
                 if (dc != null)
                 {
@@ -138,7 +138,7 @@
             
                 foreach (Ship ship in allPlayersShips)
                 {
-                    wrongDeckCells = FindWrongDeckCells(ship, getNeughtbourDeckCells);
+                    wrongDeckCells.AddRange(FindWrongDeckCells(ship, getNeughtbourDeckCells));
                 }
             }
             return wrongDeckCells.Count > 0;
