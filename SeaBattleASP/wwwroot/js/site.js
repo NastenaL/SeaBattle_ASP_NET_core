@@ -520,25 +520,35 @@ function getShipsByPlayerId(game, playerId) {
 }
 
 stateGameHubconnection.on("makeStepSignalR", function (game) {
+    repaintAllShips(game);
+});
 
+function repaintAllShips(game) {
     var parameters = getUrlParams(window.location.href);
     var playerId = parameters.playerId;
 
     var myShips = getShipsByPlayerId(game, playerId);
 
     var enemy = getEnemy(game, playerId);
-    console.log("enemy");
-    console.log(enemy);
+
     var enemyShips = getShipsByPlayerId(game, enemy.id);
-    console.log(enemyShips);
+    var hurtedShips = getFiredEnemyShips(enemyShips);
 
     emptyCellsToField('#leftField');
     emptyCellsToField('#rightField');
 
-    repaintShips(enemyShips, '#rightField', 'usualShipColor');
-    repaintShips(myShips, '#leftField', 'usualShipColor');
+    var parameters = getUrlParams(window.location.href);
+    var playerId = parameters.playerId;
 
-});
+    var enemy = getEnemy(game, playerId);
+    var enemyShips = getShipsByPlayerId(game, enemy.id);
+    var hurtedShips = getFiredEnemyShips(enemyShips);
+
+    emptyCellsToField('#rightField');
+
+    repaintShips(hurtedShips, '#rightField', 'shipFiredColor');
+    repaintShips(myShips, '#leftField', 'usualShipColor');
+}
 
 stateGameHubconnection.on("makeStepFireSignalR", function (game) {
     var parameters = getUrlParams(window.location.href);
@@ -549,8 +559,6 @@ stateGameHubconnection.on("makeStepFireSignalR", function (game) {
     var hurtedShips = getFiredEnemyShips(enemyShips);
 
     emptyCellsToField('#rightField');
-
-    paintDeckShip(deckcell,  '#rightField', 'shipFiredColor');
     repaintShips(hurtedShips, '#rightField', 'shipFiredColor');
 });
 
@@ -561,6 +569,7 @@ function getFiredEnemyShips(enemyShips) {
         ship.deckCells.forEach(function (deckCell) {
             console.log(deckCell.deck.state);
             if (deckCell.deck.state == 1) {
+              
                 hurtedShips.push(ship);
             }
         });
@@ -570,7 +579,7 @@ function getFiredEnemyShips(enemyShips) {
 }
 
 stateGameHubconnection.on("makeRepairStepSignalR", function (game) {
-    console.log("Repair");
+    repaintAllShips(game);
 });
 
 
