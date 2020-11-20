@@ -447,19 +447,23 @@ document.getElementById("gameOver").addEventListener("click", function (event) {
 
 
 stateGameHubconnection.on("startGameSignalR", function (game) {
-    var parameters = getUrlParams(window.location.href);
-    var playerId = parameters.playerId;
-    var myShips = getShipsByPlayerId(game, playerId);
+    
+    if (game.state == 1) {
+        var parameters = getUrlParams(window.location.href);
+        var playerId = parameters.playerId;
+        var myShips = getShipsByPlayerId(game, playerId);
 
-    emptyCellsToField('#leftField');
+        emptyCellsToField('#leftField');
 
-    repaintShips(myShips, '#leftField', 'usualShipColor');
+        repaintShips(myShips, '#leftField', 'usualShipColor');
 
-    changeButtonVisibility(game);
-    var encodedMsg = "Message: The game is start";
-    var li = document.createElement("li");
-    li.textContent = encodedMsg;
-    document.getElementById("messagesList").appendChild(li);
+        changeButtonVisibility(game);
+
+        var encodedMsg = "Message: The game is start";
+        var li = document.createElement("li");
+        li.textContent = encodedMsg;
+        document.getElementById("messagesList").appendChild(li);
+    }
 });
 
 var delayInMilliseconds = 2000;

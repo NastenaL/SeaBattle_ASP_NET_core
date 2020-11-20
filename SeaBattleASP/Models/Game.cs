@@ -45,7 +45,8 @@
         {
             MapModel result = new MapModel
             {
-                Ships = Rules.CreateShips()
+                Ships = Rules.CreateShips(),
+                CurrentGame = game
             };
             var allPlayingF = PlayingField.GetAllPlayingFields();
             var allShipsInCurrentGame = allPlayingF.Find(g => g.Id == game.PlayingField.Id);
@@ -64,13 +65,16 @@
             }
             else
             {
+                game.State = GameState.Started;
+
                 result.Message = "The game is start. First step is ";
                 var pl1Turn = game.StartGame();
                 result.Message += pl1Turn ? game.Player1.Name 
                                           : game.Player2.Name;
 
-                DbManager.UpdateGame(game);
                 result.CurrentGame = game;
+                DbManager.UpdateGame(game);
+                
             }
 
             return result;
