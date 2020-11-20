@@ -217,13 +217,14 @@ function changeButtonVisibility(game) {
     directionPanel.style.display = 'none';
 }
 
-function getEnemy(model, playerId) {
+function getEnemy(game, playerId) {
+
     var enemy;
-    if (model.currentGame.player1 == playerId) {
-        enemy = model.currentGame.player2;
+    if (game.player1 == playerId) {
+        enemy = game.player2;
     }
     else {
-        enemy = model.currentGame.player1;
+        enemy = game.player1;
     }
     return enemy;
 }
@@ -231,9 +232,7 @@ function getEnemy(model, playerId) {
 function getEnemyShip(model, enemy) {
     var ships = new Array();
     model.currentGame.playingField.ships.forEach(function (ship) {
-
         if (ship.player.id == enemy.id) {
-
             ships.push(ship);
         }
     });
@@ -252,34 +251,17 @@ function startGame() {
         success: function (model) {
             message = model.message;
             alert(model.message);
-            checkWhoseStep(model);
-
-            //var enemy = getEnemy(model, playerId);
-
-            //console.log(enemy);
-            //var ships = getEnemyShip(model, enemy);
-            //console.log(ships);
-
-            //showEnemyShips(ships);
         },
     });
 };
 
-function showEnemyShips(ships) {
+
+function showEnemyShips(ships, field) {
     ships.forEach(function (ship) {
         ship.deckCells.forEach(function (deckCell) {
-            paintDeckShip(deckCell, '#rightField', 'usualShipColor');
+            paintDeckShip(deckCell, field, 'usualShipColor');
         });
     });
-}
-
-function checkWhoseStep(model) {
-    if (model.currentGame.isPl1Turn) {
-        console.log(model.currentGame.player1);
-    }
-    else {
-        console.log(model.currentGame.player2);
-    }
 }
 
 function getCellPoint(mapModel) {
@@ -353,7 +335,7 @@ function makeRepair(shipId) {
         url: '/Game/MakeRepairStep',
         data: { shipId: shipId },
         success: function (model) {
-            console.log(model);
+      
         },
     });
 }
@@ -366,7 +348,7 @@ function makeFire(shipId) {
         url: '/Game/MakeFireStep',
         data: { shipId: shipId, gameId: gameId },
         success: function (model) {
-            console.log(model);
+      
         },
     });
 }
@@ -376,7 +358,7 @@ function makeMove(shipId, gameId) {
         type: 'POST',
         url: '/Game/MakeMoveStep',
         data: { shipId: shipId, gameId: gameId },
-        success: function () {
+        success: function (model) {
         },
     });
 }
@@ -460,16 +442,21 @@ document.getElementById("gameOver").addEventListener("click", function (event) {
 });
 
 
-stateGameHubconnection.on("startGameSignalR", function (model) {
+stateGameHubconnection.on("startGameSignalR", function (game) {
     var parameters = getUrlParams(window.location.href);
     var playerId = parameters.playerId;
 
-    var enemy = getEnemy(model, playerId);
-    var ships = getEnemyShip(model, enemy);
+    var enemy = getEnemy(game, playerId);
+    var myShips = getShipsByPlayerId(game, playerId);
+    var enemyShips = getShipsByPlayerId(game, enemy.id);
 
-    showEnemyShips(ships);
+    emptyCellsToField('#leftField');
+    emptyCellsToField('#rightField');
 
-    changeButtonVisibility(model.currentGame);
+    showEnemyShips(myShips, '#leftField');
+    showEnemyShips(enemyShips, '#rightField');
+
+    changeButtonVisibility(game);
     var encodedMsg = "Message: The game is start";
     var li = document.createElement("li");
     li.textContent = encodedMsg;
@@ -518,18 +505,38 @@ document.getElementById("sendButton").addEventListener("click", function (event)
     event.preventDefault();
 });
 
-stateGameHubconnection.on("makeStepSignalR", function (ship) {
-    repaintShip(ship);
+function getShipsByPlayerId(game, playerId) {
+    var ships = new Array();
+    game.playingField.ships.forEach(function (ship) {
+        if (ship.player.id == playerId) {
+            ships.push(ship);
+        }
+    });
+    return ships;
+}
+
+stateGameHubconnection.on("makeStepSignalR", function (game) {
 
     var parameters = getUrlParams(window.location.href);
     var playerId = parameters.playerId;
 
-    var enemy = getEnemy(model, playerId);
-    var ships = getEnemyShip(model, enemy);
+    var myShips = getShipsByPlayerId(game, playerId);
 
-    showEnemyShips(ships);
+    var enemy = getEnemy(game, playerId);
+    console.log("enemy");
+    console.log(enemy);
+    var enemyShips = getShipsByPlayerId(game, enemy.id);
+    console.log(enemyShips);
+
+    emptyCellsToField('#leftField');
+    emptyCellsToField('#rightField');
+
+
+    showEnemyShips(enemyShips, '#rightField');
+    showEnemyShips(myShips, '#leftField');
+
 });
 
 stateGameHubconnection.on("makeStepFireSignalR", function (model) {
-    console.log(model);
+  
 });

@@ -83,9 +83,11 @@
             var ship = Ship.GetShipByIdFromDB(shipId);
             ship = ship.Move();
 
-            this.context.Clients.All.SendAsync("makeStepSignalR", ship);
+            var game = Game.GetGameById(gameId);
             this.Model = Game.CheckWinner(Game.GetGameById(gameId));
-            return this.View();
+            this.context.Clients.All.SendAsync("makeStepSignalR", game);
+            
+            return this.Json(this.Model);
         }
         #endregion
 
@@ -149,11 +151,10 @@
 
             if (game != null)
             {
-                this.Model.CurrentGame = game;
                 this.Model = Game.CheckGame(game);
             }
 
-            this.context.Clients.All.SendAsync("startGameSignalR", this.Model);
+            this.context.Clients.All.SendAsync("startGameSignalR", game);
             return this.Json(this.Model);
         }
 
