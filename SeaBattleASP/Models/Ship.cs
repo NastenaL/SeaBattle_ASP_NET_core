@@ -48,12 +48,17 @@
             return ship;
         }
 
-        public static Ship GetShipByIdFromDB(int shipId)
+        private static void LoadRelatedDataForShip()
         {
             Player.GetAll();
             Deck.GetAll();
             Cell.GetAll();
             DeckCell.GetAll();
+        }
+
+        public static Ship GetShipByIdFromDB(int shipId)
+        {
+            LoadRelatedDataForShip();
             List<Ship> allShips = GetAll();
             return allShips.Find(i => i.Id == shipId);
         }
